@@ -1,4 +1,8 @@
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_crm/model/document.dart';
 import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'network_services.dart';
@@ -23,8 +27,6 @@ class CrmService {
   }
 
   Future<Response> userLogin(headers, body) async {
-    print(headers);
-    print(body);
     return await networkService.post(baseUrl + 'auth/login/',
         body: body, headers: getFormatedHeaders(headers));
   }
@@ -62,6 +64,7 @@ class CrmService {
     await updateHeaders();
     String url;
     if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
       String queryString =
           Uri(queryParameters: getFormatedHeaders(queryParams)).query;
       url = baseUrl + 'accounts/' + '?' + queryString;
@@ -101,6 +104,7 @@ class CrmService {
     await updateHeaders();
     String url;
     if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
       String queryString =
           Uri(queryParameters: getFormatedHeaders(queryParams)).query;
       url = baseUrl + 'contacts/' + '?' + queryString;
@@ -134,8 +138,10 @@ class CrmService {
     await updateHeaders();
     String url;
     if (queryParams != null) {
-      String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      queryParams.removeWhere((key, value) => value == "");
+      String queryString = Uri(
+        queryParameters: getFormatedHeaders(queryParams),
+      ).query;
       url = baseUrl + 'leads/' + '?' + queryString;
     } else {
       url = baseUrl + 'leads/';
@@ -169,10 +175,11 @@ class CrmService {
 
   ///////////////////// USERS-SERVICES ///////////////////////////////
 
-  Future<Response> getUsers({queryParams}) async {
+  Future<Response> getUsers({Map queryParams}) async {
     await updateHeaders();
     String url;
     if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
       String queryString =
           Uri(queryParameters: getFormatedHeaders(queryParams)).query;
       url = baseUrl + 'users/' + '?' + queryString;
@@ -205,6 +212,44 @@ class CrmService {
   Future<Response> getDocuments() async {
     await updateHeaders();
     return await networkService.get(baseUrl + 'documents/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  getFileSizes(files) {
+    List _fileSizeList = [];
+    files.forEach((file) async {
+      http.Response r = await http.head(file.documentFile);
+      String fileSize = r.headers['content-length'];
+      _fileSizeList.add(fileSize);
+    });
+    return _fileSizeList;
+  }
+
+  Future createDocument(document, PlatformFile file) async {
+    await updateHeaders();
+    var uri = Uri.parse(
+      baseUrl + 'documents/',
+    );
+    var request = http.MultipartRequest(
+      'POST',
+      uri,
+    )
+      ..headers.addAll(getFormatedHeaders(_headers))
+      ..fields.addAll({
+        'title': document['title'],
+        'teams': document['teams'],
+        'shared_to': document['shared_to']
+      })
+      ..files.add(await http.MultipartFile.fromPath(
+        'document_file',
+        file.path,
+      ));
+    return await request.send();
+  }
+
+  Future<Response> deleteDocument(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'documents/$id/',
         headers: getFormatedHeaders(_headers));
   }
 

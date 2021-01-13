@@ -2,20 +2,21 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
-import 'package:flutter_crm/bloc/contact_bloc.dart';
+import 'package:flutter_crm/bloc/document_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/ui/widgets/profile_pic_widget.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
-class ContactDetails extends StatefulWidget {
-  ContactDetails();
+class DocumentDetails extends StatefulWidget {
+  DocumentDetails();
   @override
-  State createState() => _ContactDetailsState();
+  State createState() => _DocumentDetailsState();
 }
 
-class _ContactDetailsState extends State<ContactDetails> {
+class _DocumentDetailsState extends State<DocumentDetails> {
   bool _isLoading = false;
 
   @override
@@ -23,18 +24,18 @@ class _ContactDetailsState extends State<ContactDetails> {
     super.initState();
   }
 
-  void showDeleteContactAlertDialog(BuildContext context) {
+  void showDeleteDocumentAlertDialog(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             title: Text(
-              contactBloc.currentContact.firstName,
+              documentBLoc.currentDocument.title,
               style: GoogleFonts.robotoSlab(
                   color: Theme.of(context).secondaryHeaderColor),
             ),
             content: Text(
-              "Are you sure you want to delete this contact?",
+              "Are you sure you want to delete this document?",
               style: GoogleFonts.robotoSlab(fontSize: 15.0),
             ),
             actions: <Widget>[
@@ -52,7 +53,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                   isDefaultAction: true,
                   onPressed: () async {
                     Navigator.pop(context);
-                    deleteContact();
+                    deleteDocument();
                   },
                   child: Text(
                     "Delete",
@@ -63,17 +64,18 @@ class _ContactDetailsState extends State<ContactDetails> {
         });
   }
 
-  deleteContact() async {
+  deleteDocument() async {
     setState(() {
       _isLoading = true;
     });
-    Map result = await contactBloc.deleteContact(contactBloc.currentContact);
+    Map result =
+        await documentBLoc.deleteDocument(documentBLoc.currentDocument);
     setState(() {
       _isLoading = false;
     });
     if (result['error'] == false) {
       showToast(result['message']);
-      Navigator.pushReplacementNamed(context, "/contacts");
+      Navigator.pushReplacementNamed(context, "/documents");
     } else if (result['error'] == true) {
       showToast(result['message']);
     } else {
@@ -94,7 +96,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
         onPressed: () {
           Navigator.of(context).pop(true);
-          deleteContact();
+          deleteDocument();
         },
       ),
       duration: Duration(seconds: 10),
@@ -117,7 +119,7 @@ class _ContactDetailsState extends State<ContactDetails> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Contact Details",
+          "Document Details",
           style: GoogleFonts.robotoSlab(),
         ),
       ),
@@ -142,7 +144,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                                 Container(
                                   width: screenWidth * 0.7,
                                   child: Text(
-                                    "${contactBloc.currentContact.firstName} ${contactBloc.currentContact.lastName}",
+                                    documentBLoc.currentDocument.title,
                                     style: GoogleFonts.robotoSlab(
                                         color: Theme.of(context)
                                             .secondaryHeaderColor,
@@ -165,7 +167,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5.0),
                             child: Text(
-                              "Email Address :",
+                              "Status :",
                               style: GoogleFonts.robotoSlab(
                                   color: Theme.of(context).secondaryHeaderColor,
                                   fontSize: screenWidth / 24),
@@ -173,7 +175,8 @@ class _ContactDetailsState extends State<ContactDetails> {
                           ),
                           Container(
                             child: Text(
-                              contactBloc.currentContact.email,
+                              documentBLoc.currentDocument.status
+                                  .capitalizeFirstofEach(),
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -192,7 +195,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5.0),
                             child: Text(
-                              "Mobile Number :",
+                              "Created On:",
                               style: GoogleFonts.robotoSlab(
                                   color: Theme.of(context).secondaryHeaderColor,
                                   fontSize: screenWidth / 24),
@@ -200,77 +203,9 @@ class _ContactDetailsState extends State<ContactDetails> {
                           ),
                           Container(
                             child: Text(
-                              contactBloc.currentContact.phone,
-                              style: GoogleFonts.robotoSlab(
-                                  color: bottomNavBarTextColor,
-                                  fontSize: screenWidth / 24),
-                            ),
-                          ),
-                          Container(
-                              margin: EdgeInsets.symmetric(vertical: 5.0),
-                              child: Divider(color: Colors.grey))
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5.0),
-                            child: Text(
-                              "Billing Address :",
-                              style: GoogleFonts.robotoSlab(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontSize: screenWidth / 24),
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              contactBloc
-                                      .currentContact.address['address_line'] +
-                                  ', ' +
-                                  contactBloc.currentContact.address['street'] +
-                                  ', ' +
-                                  contactBloc.currentContact.address['city'] +
-                                  ', ' +
-                                  contactBloc.currentContact.address['state'] +
-                                  ', ' +
-                                  contactBloc
-                                      .currentContact.address['postcode'] +
-                                  ', ' +
-                                  contactBloc
-                                      .currentContact.address['country'] +
-                                  '.',
-                              style: GoogleFonts.robotoSlab(
-                                  color: bottomNavBarTextColor,
-                                  fontSize: screenWidth / 24),
-                            ),
-                          ),
-                          Container(
-                              margin: EdgeInsets.symmetric(vertical: 5.0),
-                              child: Divider(color: Colors.grey))
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5.0),
-                            child: Text(
-                              "Description :",
-                              style: GoogleFonts.robotoSlab(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontSize: screenWidth / 24),
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              contactBloc.currentContact.description +
-                                  ' ' +
-                                  contactBloc.currentContact.createdBy.lastName,
+                              DateFormat("dd MMM, yyyy 'at' HH:mm").format(
+                                  DateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(
+                                      documentBLoc.currentDocument.createdOn)),
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -297,9 +232,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                           ),
                           Container(
                             child: Text(
-                              contactBloc.currentContact.createdBy.firstName +
-                                  ' ' +
-                                  contactBloc.currentContact.createdBy.lastName,
+                              "${documentBLoc.currentDocument.createdBy.firstName} ${documentBLoc.currentDocument.createdBy.lastName}",
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -318,18 +251,20 @@ class _ContactDetailsState extends State<ContactDetails> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5.0),
                             child: Text(
-                              "Created On :",
+                              "Assigned To :",
                               style: GoogleFonts.robotoSlab(
                                   color: Theme.of(context).secondaryHeaderColor,
                                   fontSize: screenWidth / 24),
                             ),
                           ),
                           Container(
-                            child: Text(
-                              contactBloc.currentContact.createdOn,
-                              style: GoogleFonts.robotoSlab(
-                                  color: bottomNavBarTextColor,
-                                  fontSize: screenWidth / 24),
+                            child: Row(
+                              children: [
+                                ProfilePicViewWidget(documentBLoc
+                                    .currentDocument.sharedTo
+                                    .map((e) => e.profileUrl)
+                                    .toList()),
+                              ],
                             ),
                           ),
                           Container(
@@ -344,9 +279,9 @@ class _ContactDetailsState extends State<ContactDetails> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              await contactBloc.updateCurrentEditContact(
-                                  contactBloc.currentContact);
-                              Navigator.pushNamed(context, '/create_contact');
+                              // await contactBloc.updateCurrentEditContact(
+                              //     contactBloc.currentContact);
+                              // Navigator.pushNamed(context, '/create_contact');
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -378,7 +313,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              showDeleteContactAlertDialog(context);
+                              showDeleteDocumentAlertDialog(context);
                             },
                             child: Container(
                               margin: EdgeInsets.only(left: 10.0),
@@ -402,6 +337,38 @@ class _ContactDetailsState extends State<ContactDetails> {
                                           textStyle: TextStyle(
                                               color: Color.fromRGBO(
                                                   234, 67, 53, 1),
+                                              fontSize: screenWidth / 25)),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey[300])),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 15.0),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10.0),
+                                    child: SvgPicture.asset(
+                                      'assets/images/download_icon.svg',
+                                      width: screenWidth / 19,
+                                      color: Color.fromRGBO(55, 98, 167, 1),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: Text(
+                                      "Download",
+                                      style: GoogleFonts.robotoSlab(
+                                          textStyle: TextStyle(
+                                              color: Color.fromRGBO(
+                                                  55, 98, 167, 1),
                                               fontSize: screenWidth / 25)),
                                     ),
                                   )

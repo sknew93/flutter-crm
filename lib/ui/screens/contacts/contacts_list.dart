@@ -4,6 +4,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
+import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/model/contact.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/ui/widgets/profile_pic_widget.dart';
@@ -39,12 +40,6 @@ class _ContactsListState extends State<ContactsList> {
     if (_isFilter) {
       _filtersFormKey.currentState.save();
     }
-    // if (_isFilter &&
-    //     _filtersFormData['name'] == "" &&
-    //     _filtersFormData['city'] == "" &&
-    //     _filtersFormData['tags'] == "") {
-    //   return;
-    // }
     setState(() {
       _isLoading = true;
     });
@@ -192,7 +187,7 @@ class _ContactsListState extends State<ContactsList> {
                       keyboardType: TextInputType.text,
                     ),
                   ),
-                  _buildMultiSelectDropdown(contactBloc.contactsObjForDropdown),
+                  _buildMultiSelectDropdown(leadBloc.usersObjForDropdown),
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -238,7 +233,7 @@ class _ContactsListState extends State<ContactsList> {
                               _filtersFormData = {
                                 "name": "",
                                 "city": "",
-                                "assigned_to": ""
+                                "assigned_to": []
                               };
                             });
                             _saveForm();
@@ -452,7 +447,7 @@ class _ContactsListState extends State<ContactsList> {
     });
     if (_result['error'] == false) {
       showToast(_result['message']);
-      Navigator.pushReplacementNamed(context, "/sales_contacts");
+      Navigator.of(context).pop();
     } else if (_result['error'] == true) {
       showToast(_result['message']);
     } else {

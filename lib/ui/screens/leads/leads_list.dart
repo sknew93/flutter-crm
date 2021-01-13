@@ -48,14 +48,7 @@ class _LeadsListState extends State<LeadsList> {
     if (_isFilter) {
       _filtersFormKey.currentState.save();
     }
-    // if (_isFilter &&
-    //     _filtersFormData['title'] == "" &&
-    //     _filtersFormData['source'] == "" &&
-    //     _filtersFormData['assigned_to'] == "" &&
-    //     _filtersFormData['status'] == "" &&
-    //     _filtersFormData['tags'] == "") {
-    //   return;
-    // }
+
     setState(() {
       _isLoading = true;
     });
@@ -132,9 +125,9 @@ class _LeadsListState extends State<LeadsList> {
     if (result['error'] == false) {
       showToast(result['message']);
       Navigator.pop(context);
-      setState(() {
-        _leads.removeAt(index);
-      });
+      // setState(() {
+      //   _leads.removeAt(index);
+      // });
     } else if (result['error'] == true) {
       Navigator.pop(context);
     } else {
@@ -272,7 +265,7 @@ class _LeadsListState extends State<LeadsList> {
                       height: 48.0,
                       child: DropdownSearch<String>(
                         mode: Mode.BOTTOM_SHEET,
-                        items: leadBloc.source,
+                        items: leadBloc.status,
                         onChanged: print,
                         selectedItem: _filtersFormData['status'] == ""
                             ? null
@@ -398,7 +391,7 @@ class _LeadsListState extends State<LeadsList> {
                                 "source": null,
                                 "assigned_to": [],
                                 "status": null,
-                                "tags": ""
+                                "tags": []
                               };
                             });
                             _saveForm();

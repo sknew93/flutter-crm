@@ -11,6 +11,8 @@ import 'package:flutter_crm/ui/screens/contacts/contact_create.dart';
 import 'package:flutter_crm/ui/screens/contacts/contact_details.dart';
 import 'package:flutter_crm/ui/screens/contacts/contacts_list.dart';
 import 'package:flutter_crm/ui/screens/dashboard/dashboard.dart';
+import 'package:flutter_crm/ui/screens/documents/document_create.dart';
+import 'package:flutter_crm/ui/screens/documents/document_details.dart';
 import 'package:flutter_crm/ui/screens/documents/documents_list.dart';
 import 'package:flutter_crm/ui/screens/events/events_index.dart';
 import 'package:flutter_crm/ui/screens/invoices/invoices_index.dart';
@@ -61,13 +63,14 @@ class MyApp extends StatelessWidget {
         '/account_details': (BuildContext context) => AccountDetails(),
         '/create_account': (BuildContext context) => CreateAccount(),
         '/cases': (BuildContext context) => CasesScreen(),
-        '/sales_contacts': (BuildContext context) => ContactsList(),
+        '/contacts': (BuildContext context) => ContactsList(),
         '/create_contact': (BuildContext context) => CreateContact(),
         '/contact_details': (BuildContext context) => ContactDetails(),
         '/documents': (BuildContext context) => DocumentsList(),
+        '/create_document': (BuildContext context) => CreateDocument(),
+        '/document_details': (BuildContext context) => DocumentDetails(),
         '/events': (BuildContext context) => EventsScreen(),
         '/invoices': (BuildContext context) => InvoicesScreen(),
-        '/leads': (BuildContext context) => LeadsList(),
         '/leads_list': (BuildContext context) => LeadsList(),
         '/lead_details': (BuildContext context) => LeadDetails(),
         '/create_lead': (BuildContext context) => CreateLead(),

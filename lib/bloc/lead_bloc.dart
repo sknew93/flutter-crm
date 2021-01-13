@@ -49,16 +49,20 @@ class LeadBloc {
         filtersData != null ? new Map.from(filtersData) : null;
     if (filtersData != null) {
       _copyFiltersData['tags'] = _copyFiltersData['tags'].length > 0
-          ? jsonEncode(_copyFiltersData['tags'])
+          ? jsonEncode(
+              (_copyFiltersData['tags'].map((id) => id.toString())).toList())
           : "";
       _copyFiltersData['assigned_to'] =
           _copyFiltersData['assigned_to'].length > 0
-              ? jsonEncode(_copyFiltersData['assigned_to'])
+              ? jsonEncode((_copyFiltersData['assigned_to']
+                  .map((id) => id.toString())).toList())
               : "";
-      _copyFiltersData['source'] =
-          _copyFiltersData['source'] != null ? _copyFiltersData['source'] : "";
-      _copyFiltersData['status'] =
-          _copyFiltersData['status'] != null ? _copyFiltersData['status'] : "";
+      _copyFiltersData['source'] = _copyFiltersData['source'] != null
+          ? _copyFiltersData['source'].toString().toLowerCase()
+          : "";
+      _copyFiltersData['status'] = _copyFiltersData['status'] != null
+          ? _copyFiltersData['status'].toString().toLowerCase()
+          : "";
     }
     await CrmService().getLeads(queryParams: _copyFiltersData).then((response) {
       var res = json.decode(response.body);
@@ -149,7 +153,6 @@ class LeadBloc {
     });
 
     _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
-    print('_copyOfCurrentEditLead');
     await CrmService()
         .editLead(_copyCurrentEditLead, _currentEditLeadId)
         .then((response) async {
@@ -162,7 +165,6 @@ class LeadBloc {
         await fetchLeads();
       }
       result = res;
-      print("editLead Response >> $res");
     }).catchError((onError) {
       print('editLead Error >> $onError');
       result = {"status": "error", "message": "Something went wrong."};
@@ -181,17 +183,15 @@ class LeadBloc {
       ..._copyCurrentEditLead['teams'].map((team) => team.toString())
     ].toString();
     _copyCurrentEditLead['assigned_to'] = (_copyCurrentEditLead['assigned_to']
-        .map((assignedTo) => assignedTo.toString())).toList();
+        .map((assignedTo) => assignedTo.toString())).toList().toString();
 
-    _copyCurrentEditLead['tags'] = _copyCurrentEditLead['tags'];
+    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
 
     _countriesList.forEach((country) {
       if (country[1] == _copyCurrentEditLead['country']) {
         _copyCurrentEditLead['country'] = country[0];
       }
     });
-    print('Print before POST');
-    print(_copyCurrentEditLead);
     await CrmService().createLead(_copyCurrentEditLead).then((response) async {
       var res = json.decode(response.body);
       if (res["error"] != null || res["error"] != "") {
@@ -201,7 +201,6 @@ class LeadBloc {
         }
       }
       result = res;
-      print("createLead Response >> $res");
     }).catchError((onError) {
       print('createLead Error >> $onError');
       result = {"status": "error", "message": "Something went wrong"};
@@ -236,7 +235,6 @@ class LeadBloc {
 
   updateCurrentEditLead(Lead editLead) async {
     _currentEditLeadId = editLead.id.toString();
-    print(_currentEditLeadId);
 
     List teams = [];
     List assignedUsers = [];
@@ -244,12 +242,10 @@ class LeadBloc {
 
     await CrmService().getLeadToUpdate(editLead.id).then((response) {
       var res = json.decode(response.body);
-      print("Update Current Edit Lead Teams, >>");
       teams.clear();
       res['teams'].forEach((team) {
         teams.add(team['id']);
       });
-      print(teams);
     });
 
     editLead.assignedTo.forEach((user) {
@@ -292,8 +288,6 @@ class LeadBloc {
     Map result;
     await CrmService().deleteLead(lead.id).then((response) {
       var res = (json.decode(response.body));
-      print("deleteLead Response >> $res");
-
       result = res;
     }).catchError((onError) {
       print("deleteLead Error >> $onError");

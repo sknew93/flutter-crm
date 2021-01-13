@@ -127,55 +127,55 @@ class ContactBloc {
         _currentEditContact['address']['country'] = country[1];
       }
     });
-
-    // _currentEditContact['created_on_arrow'] = editContact.createdOnText;
     _currentEditContact['teams'] = teams;
     _currentEditContact['assigned_to'] = assignedUsers;
-
-    print(_currentEditContact);
   }
 
   createContact() async {
     Map result;
-    print(currentEditContact);
 
-    currentEditContact['teams'] = (currentEditContact['teams']
-        .map((team) => team.toString())).toList().toString();
-    currentEditContact['assigned_to'] = (currentEditContact['assigned_to']
-        .map((team) => team.toString())).toList().toString();
+    leadBloc.countriesList.forEach((country) {
+      if (country[1] == _currentEditContact['address']['country']) {
+        _currentEditContact['address']['country'] = country[0];
+      }
+    });
 
-    Map copyOfCurrentEditContact = {
-      'first_name': currentEditContact['first_name'],
-      'last_name': currentEditContact['last_name'],
-      'phone': currentEditContact['phone'],
-      'email': currentEditContact['email'],
-      'teams': currentEditContact['teams'],
-      'assigned_to': currentEditContact['assigned_to'],
-      'address_line': (currentEditContact['address'])['address_line'],
-      'street': currentEditContact['address']['street'],
-      'city': currentEditContact['address']['city'],
-      'state': currentEditContact['address']['state'],
-      'postcode': currentEditContact['address']['postcode'],
-      'country': currentEditContact['address']['country'],
-      'description': currentEditContact['description'],
+    Map _copyOfCurrentEditContact = {
+      'first_name': _currentEditContact['first_name'],
+      'last_name': _currentEditContact['last_name'],
+      'phone': _currentEditContact['phone'],
+      'email': _currentEditContact['email'],
+      'teams': _currentEditContact['teams'],
+      'assigned_to': _currentEditContact['assigned_to'],
+      'address_line': (_currentEditContact['address'])['address_line'],
+      'street': _currentEditContact['address']['street'],
+      'city': _currentEditContact['address']['city'],
+      'state': _currentEditContact['address']['state'],
+      'postcode': _currentEditContact['address']['postcode'],
+      'country': _currentEditContact['address']['country'],
+      'description': _currentEditContact['description'],
       // 'contact_attachment' : '',
     };
 
-    print(copyOfCurrentEditContact);
+    _copyOfCurrentEditContact['teams'] = (_copyOfCurrentEditContact['teams']
+        .map((team) => team.toString())).toList().toString();
+    _copyOfCurrentEditContact['assigned_to'] =
+        (_copyOfCurrentEditContact['assigned_to']
+            .map((team) => team.toString())).toList().toString();
 
     await CrmService()
-        .createContact(copyOfCurrentEditContact)
+        .createContact(_copyOfCurrentEditContact)
         .then((response) async {
       var res = json.decode(response.body);
 
       if (res["error"] != null || res["error"] != "") {
         if (res['error'] == false) {
           await fetchContacts();
-          cancelCurrentEditContact();
+          await cancelCurrentEditContact();
         }
       }
       result = res;
-      print("createContact Response >> \n $res");
+      print('createContact Response >> $res');
     }).catchError((onError) {
       print('createContact Error >> $onError');
       result = {"status": "error", "message": "Something went wrong"};
@@ -185,21 +185,20 @@ class ContactBloc {
 
   editContact() async {
     Map _result;
-    print(currentEditContact);
     Map copyOfCurrentEditContact = {
-      'first_name': currentEditContact['first_name'],
-      'last_name': currentEditContact['last_name'],
-      'phone': currentEditContact['phone'],
-      'email': currentEditContact['email'],
-      'teams': currentEditContact['teams'],
-      'assigned_to': currentEditContact['assigned_to'],
-      'address_line': (currentEditContact['address'])['address_line'],
-      'street': currentEditContact['address']['street'],
-      'city': currentEditContact['address']['city'],
-      'state': currentEditContact['address']['state'],
-      'postcode': currentEditContact['address']['postcode'],
-      'country': currentEditContact['address']['country'],
-      'description': currentEditContact['description'],
+      'first_name': _currentEditContact['first_name'],
+      'last_name': _currentEditContact['last_name'],
+      'phone': _currentEditContact['phone'],
+      'email': _currentEditContact['email'],
+      'teams': _currentEditContact['teams'],
+      'assigned_to': _currentEditContact['assigned_to'],
+      'address_line': (_currentEditContact['address'])['address_line'],
+      'street': _currentEditContact['address']['street'],
+      'city': _currentEditContact['address']['city'],
+      'state': _currentEditContact['address']['state'],
+      'postcode': _currentEditContact['address']['postcode'],
+      'country': _currentEditContact['address']['country'],
+      'description': _currentEditContact['description'],
       // 'contact_attachment' : '',
     };
     countriesList.forEach((country) {
@@ -212,9 +211,6 @@ class ContactBloc {
         jsonEncode(copyOfCurrentEditContact['teams']);
     copyOfCurrentEditContact['assigned_to'] =
         jsonEncode(copyOfCurrentEditContact['assigned_to']);
-
-    print(copyOfCurrentEditContact);
-
     await CrmService()
         .editContact(copyOfCurrentEditContact, currentEditContactId)
         .then((response) async {
@@ -227,7 +223,6 @@ class ContactBloc {
         await fetchContacts();
       }
       _result = res;
-      print("createLead Response >> $res");
     }).catchError((onError) {
       print('editContact Error >> $onError');
       _result = {"status": "error", "message": "Something went wrong."};
@@ -239,7 +234,6 @@ class ContactBloc {
     Map result;
     await CrmService().deleteContact(contact.id).then((response) async {
       var res = (json.decode(response.body));
-      print('deleteContact Response >> $res');
       await fetchContacts();
       result = res;
     }).catchError((onError) {
@@ -273,7 +267,7 @@ class ContactBloc {
     return _currentContactIndex;
   }
 
-  set currentContactIndex(int currentContactIndex) {
+  set currentContactIndex(currentContactIndex) {
     _currentContactIndex = currentContactIndex;
   }
 

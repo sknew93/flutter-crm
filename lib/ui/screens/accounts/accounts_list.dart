@@ -40,12 +40,6 @@ class _AccountsListState extends State<AccountsList> {
     if (_isFilter) {
       _filtersFormKey.currentState.save();
     }
-    // if (_isFilter &&
-    //     _filtersFormData['name'] == "" &&
-    //     _filtersFormData['city'] == "" &&
-    //     _filtersFormData['tags'] == "") {
-    //   return;
-    // }
     setState(() {
       _isLoading = true;
     });
@@ -321,7 +315,7 @@ class _AccountsListState extends State<AccountsList> {
                               _filtersFormData = {
                                 "name": "",
                                 "city": "",
-                                "tags": ""
+                                "tags": []
                               };
                             });
                             _saveForm();
@@ -528,9 +522,9 @@ class _AccountsListState extends State<AccountsList> {
     });
     if (result['error'] == false) {
       showToast(result['message']);
-      setState(() {
-        _accounts.removeAt(index);
-      });
+      // setState(() {
+      //   _accounts.removeAt(index);
+      // });
     } else if (result['error'] == true) {
       showToast(result['message']);
     } else {

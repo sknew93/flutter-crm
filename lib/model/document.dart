@@ -1,6 +1,7 @@
 import 'package:flutter_crm/model/company.dart';
 import 'package:flutter_crm/model/profile.dart';
 import 'package:flutter_crm/model/team.dart';
+import 'package:intl/intl.dart';
 
 class Document {
   int id;
@@ -39,7 +40,7 @@ class Document {
         : [];
     this.createdOn = document['created_on'] != null
         ? document['created_on']
-        // ? DateFormat("dd-MM-yyyy")
+        // ? DateFormat("dd MMM, yyyy 'at' HH:mm")
         //     .format(DateFormat("yyyy-MM-dd").parse(document['created_on']))
         : "";
     this.createdBy = document['created_by'] != null

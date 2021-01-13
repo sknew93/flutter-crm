@@ -4,7 +4,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
-import 'package:flutter_crm/bloc/documents_bloc.dart';
+import 'package:flutter_crm/bloc/document_bloc.dart';
 import 'package:flutter_crm/model/contact.dart';
 import 'package:flutter_crm/model/document.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
@@ -13,7 +13,6 @@ import 'package:flutter_crm/ui/widgets/squareFloatingActionBtn.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
@@ -99,9 +98,9 @@ class _DocumentsListState extends State<DocumentsList> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                // contactBloc.currentContact = _contacts[index];
-                // contactBloc.currentContactIndex = index;
-                // Navigator.pushNamed(context, '/contact_details');
+                documentBLoc.currentDocument = _documents[index];
+                documentBLoc.currentDocumentIndex = index;
+                Navigator.pushNamed(context, '/document_details');
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -150,8 +149,9 @@ class _DocumentsListState extends State<DocumentsList> {
                           width: screenWidth * 0.60,
                           child: Text(
                             _documents[index].createdOn != null
-                                ? DateFormat.yMMMMd().add_jm().format(
-                                    DateFormat("yyyy-MM-dd")
+                                ? DateFormat("dd MMM, yyyy 'at'")
+                                    .add_jm()
+                                    .format(DateFormat("yyyy-MM-dd'T'HH:mm:ss")
                                         .parse(_documents[index].createdOn))
                                 : "",
                             overflow: TextOverflow.ellipsis,
@@ -184,7 +184,7 @@ class _DocumentsListState extends State<DocumentsList> {
                           ),
                         ),
                         Container(
-                          width: screenWidth * 0.76,
+                          width: screenWidth * 0.74,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -447,7 +447,7 @@ class _DocumentsListState extends State<DocumentsList> {
         ],
       ),
       floatingActionButton: SquareFloatingActionButton(
-          '/create_contact', "Add Document", "Documents"),
+          '/create_document', "Add Document", "Documents"),
       bottomNavigationBar: BottomNavigationBarWidget(),
     );
   }
