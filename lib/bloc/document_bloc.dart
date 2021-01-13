@@ -13,6 +13,8 @@ class DocumentBloc {
   List _statusObjforDropdown = [];
   List<Map> _usersObjforMultiselect = [];
 
+  Document _currentDocument;
+  int _currentDocumentIndex;
   Map _currentEditDocument = {'title': "", 'teams': [], 'shared_to': []};
   String _currentEditDocumentId;
 
@@ -68,11 +70,27 @@ class DocumentBloc {
       // var res = jsonDecode(response.body);
       print(response);
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('UPLOAD SUCCESSFUL');
+        print('create Document Response >> ${response.reasonPhrase}');
       } else {
-        print("${response.reasonPhrase} UPLOAD UNSUCCESSFUL");
+        print("create Document Error >> ${response.reasonPhrase}");
       }
     });
+  }
+
+  deleteDocument(Document file) async {
+    Map result;
+    await CrmService().deleteDocument(file.id).then((response) async {
+      var res = (json.decode(response.body));
+      await fetchDocuments();
+      result = res;
+    }).catchError((onError) {
+      print("deleteDocument Error >> $onError");
+      result = {
+        "status": "error",
+        "message": "deleteDocument : Something went wrong."
+      };
+    });
+    return result;
   }
 
   List get documents {
@@ -97,6 +115,22 @@ class DocumentBloc {
 
   List get usersObjforMultiselect {
     return _usersObjforMultiselect;
+  }
+
+  Document get currentDocument {
+    return _currentDocument;
+  }
+
+  set currentDocument(document) {
+    _currentDocument = document;
+  }
+
+  int get currentDocumentIndex {
+    return _currentDocumentIndex;
+  }
+
+  set currentDocumentIndex(index) {
+    _currentDocumentIndex = index;
   }
 
   String get currentEditDocumentId {

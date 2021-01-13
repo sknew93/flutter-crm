@@ -247,6 +247,12 @@ class CrmService {
     return await request.send();
   }
 
+  Future<Response> deleteDocument(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'documents/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
 
   Future<Response> getTeams() async {

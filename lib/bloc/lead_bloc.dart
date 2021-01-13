@@ -64,8 +64,6 @@ class LeadBloc {
           ? _copyFiltersData['status'].toString().toLowerCase()
           : "";
     }
-
-    print(_copyFiltersData);
     await CrmService().getLeads(queryParams: _copyFiltersData).then((response) {
       var res = json.decode(response.body);
 

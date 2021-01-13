@@ -133,40 +133,49 @@ class ContactBloc {
 
   createContact() async {
     Map result;
-    currentEditContact['teams'] = (currentEditContact['teams']
-        .map((team) => team.toString())).toList().toString();
-    currentEditContact['assigned_to'] = (currentEditContact['assigned_to']
-        .map((team) => team.toString())).toList().toString();
 
-    Map copyOfCurrentEditContact = {
-      'first_name': currentEditContact['first_name'],
-      'last_name': currentEditContact['last_name'],
-      'phone': currentEditContact['phone'],
-      'email': currentEditContact['email'],
-      'teams': currentEditContact['teams'],
-      'assigned_to': currentEditContact['assigned_to'],
-      'address_line': (currentEditContact['address'])['address_line'],
-      'street': currentEditContact['address']['street'],
-      'city': currentEditContact['address']['city'],
-      'state': currentEditContact['address']['state'],
-      'postcode': currentEditContact['address']['postcode'],
-      'country': currentEditContact['address']['country'],
-      'description': currentEditContact['description'],
+    leadBloc.countriesList.forEach((country) {
+      if (country[1] == _currentEditContact['address']['country']) {
+        _currentEditContact['address']['country'] = country[0];
+      }
+    });
+
+    Map _copyOfCurrentEditContact = {
+      'first_name': _currentEditContact['first_name'],
+      'last_name': _currentEditContact['last_name'],
+      'phone': _currentEditContact['phone'],
+      'email': _currentEditContact['email'],
+      'teams': _currentEditContact['teams'],
+      'assigned_to': _currentEditContact['assigned_to'],
+      'address_line': (_currentEditContact['address'])['address_line'],
+      'street': _currentEditContact['address']['street'],
+      'city': _currentEditContact['address']['city'],
+      'state': _currentEditContact['address']['state'],
+      'postcode': _currentEditContact['address']['postcode'],
+      'country': _currentEditContact['address']['country'],
+      'description': _currentEditContact['description'],
       // 'contact_attachment' : '',
     };
 
+    _copyOfCurrentEditContact['teams'] = (_copyOfCurrentEditContact['teams']
+        .map((team) => team.toString())).toList().toString();
+    _copyOfCurrentEditContact['assigned_to'] =
+        (_copyOfCurrentEditContact['assigned_to']
+            .map((team) => team.toString())).toList().toString();
+
     await CrmService()
-        .createContact(copyOfCurrentEditContact)
+        .createContact(_copyOfCurrentEditContact)
         .then((response) async {
       var res = json.decode(response.body);
 
       if (res["error"] != null || res["error"] != "") {
         if (res['error'] == false) {
           await fetchContacts();
-          cancelCurrentEditContact();
+          await cancelCurrentEditContact();
         }
       }
       result = res;
+      print('createContact Response >> $res');
     }).catchError((onError) {
       print('createContact Error >> $onError');
       result = {"status": "error", "message": "Something went wrong"};
@@ -177,19 +186,19 @@ class ContactBloc {
   editContact() async {
     Map _result;
     Map copyOfCurrentEditContact = {
-      'first_name': currentEditContact['first_name'],
-      'last_name': currentEditContact['last_name'],
-      'phone': currentEditContact['phone'],
-      'email': currentEditContact['email'],
-      'teams': currentEditContact['teams'],
-      'assigned_to': currentEditContact['assigned_to'],
-      'address_line': (currentEditContact['address'])['address_line'],
-      'street': currentEditContact['address']['street'],
-      'city': currentEditContact['address']['city'],
-      'state': currentEditContact['address']['state'],
-      'postcode': currentEditContact['address']['postcode'],
-      'country': currentEditContact['address']['country'],
-      'description': currentEditContact['description'],
+      'first_name': _currentEditContact['first_name'],
+      'last_name': _currentEditContact['last_name'],
+      'phone': _currentEditContact['phone'],
+      'email': _currentEditContact['email'],
+      'teams': _currentEditContact['teams'],
+      'assigned_to': _currentEditContact['assigned_to'],
+      'address_line': (_currentEditContact['address'])['address_line'],
+      'street': _currentEditContact['address']['street'],
+      'city': _currentEditContact['address']['city'],
+      'state': _currentEditContact['address']['state'],
+      'postcode': _currentEditContact['address']['postcode'],
+      'country': _currentEditContact['address']['country'],
+      'description': _currentEditContact['description'],
       // 'contact_attachment' : '',
     };
     countriesList.forEach((country) {

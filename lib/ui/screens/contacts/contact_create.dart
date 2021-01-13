@@ -102,7 +102,7 @@ class _CreateContactState extends State<CreateContact> {
       Navigator.pushReplacementNamed(context, '/contacts');
     } else if (_result['error'] == true) {
       setState(() {
-        _errors = _result['contact_errors'];
+        _errors = _result['errors'];
       });
 
       if (_errors['first_name'] != null && _focusErr == null) {
@@ -123,6 +123,8 @@ class _CreateContactState extends State<CreateContact> {
       if (_errors['email_address'] != null && _focusErr == null) {
         _focusErr = _emailAddressFocusNode;
         focusError();
+      } else {
+        print(_errors);
       }
     } else {
       setState(() {

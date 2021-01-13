@@ -98,9 +98,9 @@ class _DocumentsListState extends State<DocumentsList> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                // contactBloc.currentContact = _contacts[index];
-                // contactBloc.currentContactIndex = index;
-                // Navigator.pushNamed(context, '/contact_details');
+                documentBLoc.currentDocument = _documents[index];
+                documentBLoc.currentDocumentIndex = index;
+                Navigator.pushNamed(context, '/document_details');
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -149,8 +149,9 @@ class _DocumentsListState extends State<DocumentsList> {
                           width: screenWidth * 0.60,
                           child: Text(
                             _documents[index].createdOn != null
-                                ? DateFormat.yMMMMd().add_jm().format(
-                                    DateFormat("yyyy-MM-dd")
+                                ? DateFormat("dd MMM, yyyy 'at'")
+                                    .add_jm()
+                                    .format(DateFormat("yyyy-MM-dd'T'HH:mm:ss")
                                         .parse(_documents[index].createdOn))
                                 : "",
                             overflow: TextOverflow.ellipsis,
