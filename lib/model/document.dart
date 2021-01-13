@@ -39,9 +39,9 @@ class Document {
         ? List<Team>.from(document["teams"].map((team) => Team.fromJson(team)))
         : [];
     this.createdOn = document['created_on'] != null
-        // ? document['created_on']
-        ? DateFormat("dd MMM, yyyy 'at' HH:mm")
-            .format(DateFormat("yyyy-MM-dd").parse(document['created_on']))
+        ? document['created_on']
+        // ? DateFormat("dd MMM, yyyy 'at' HH:mm")
+        //     .format(DateFormat("yyyy-MM-dd").parse(document['created_on']))
         : "";
     this.createdBy = document['created_by'] != null
         ? Profile.fromJson(document['created_by'])

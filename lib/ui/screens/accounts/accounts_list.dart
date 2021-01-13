@@ -40,12 +40,6 @@ class _AccountsListState extends State<AccountsList> {
     if (_isFilter) {
       _filtersFormKey.currentState.save();
     }
-    // if (_isFilter &&
-    //     _filtersFormData['name'] == "" &&
-    //     _filtersFormData['city'] == "" &&
-    //     _filtersFormData['tags'] == "") {
-    //   return;
-    // }
     setState(() {
       _isLoading = true;
     });
@@ -321,7 +315,7 @@ class _AccountsListState extends State<AccountsList> {
                               _filtersFormData = {
                                 "name": "",
                                 "city": "",
-                                "tags": ""
+                                "tags": []
                               };
                             });
                             _saveForm();

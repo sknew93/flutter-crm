@@ -67,7 +67,7 @@ class DocumentBloc {
         .then((response) {
       // var res = jsonDecode(response.body);
       print(response);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         print('UPLOAD SUCCESSFUL');
       } else {
         print("${response.reasonPhrase} UPLOAD UNSUCCESSFUL");

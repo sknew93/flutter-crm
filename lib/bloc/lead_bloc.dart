@@ -49,17 +49,23 @@ class LeadBloc {
         filtersData != null ? new Map.from(filtersData) : null;
     if (filtersData != null) {
       _copyFiltersData['tags'] = _copyFiltersData['tags'].length > 0
-          ? jsonEncode(_copyFiltersData['tags'])
+          ? jsonEncode(
+              (_copyFiltersData['tags'].map((id) => id.toString())).toList())
           : "";
       _copyFiltersData['assigned_to'] =
           _copyFiltersData['assigned_to'].length > 0
-              ? jsonEncode(_copyFiltersData['assigned_to'])
+              ? jsonEncode((_copyFiltersData['assigned_to']
+                  .map((id) => id.toString())).toList())
               : "";
-      _copyFiltersData['source'] =
-          _copyFiltersData['source'] != null ? _copyFiltersData['source'] : "";
-      _copyFiltersData['status'] =
-          _copyFiltersData['status'] != null ? _copyFiltersData['status'] : "";
+      _copyFiltersData['source'] = _copyFiltersData['source'] != null
+          ? _copyFiltersData['source'].toString().toLowerCase()
+          : "";
+      _copyFiltersData['status'] = _copyFiltersData['status'] != null
+          ? _copyFiltersData['status'].toString().toLowerCase()
+          : "";
     }
+
+    print(_copyFiltersData);
     await CrmService().getLeads(queryParams: _copyFiltersData).then((response) {
       var res = json.decode(response.body);
 
@@ -179,9 +185,9 @@ class LeadBloc {
       ..._copyCurrentEditLead['teams'].map((team) => team.toString())
     ].toString();
     _copyCurrentEditLead['assigned_to'] = (_copyCurrentEditLead['assigned_to']
-        .map((assignedTo) => assignedTo.toString())).toList();
+        .map((assignedTo) => assignedTo.toString())).toList().toString();
 
-    _copyCurrentEditLead['tags'] = _copyCurrentEditLead['tags'];
+    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
 
     _countriesList.forEach((country) {
       if (country[1] == _copyCurrentEditLead['country']) {

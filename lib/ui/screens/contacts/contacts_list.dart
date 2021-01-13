@@ -39,12 +39,6 @@ class _ContactsListState extends State<ContactsList> {
     if (_isFilter) {
       _filtersFormKey.currentState.save();
     }
-    // if (_isFilter &&
-    //     _filtersFormData['name'] == "" &&
-    //     _filtersFormData['city'] == "" &&
-    //     _filtersFormData['tags'] == "") {
-    //   return;
-    // }
     setState(() {
       _isLoading = true;
     });
@@ -238,7 +232,7 @@ class _ContactsListState extends State<ContactsList> {
                               _filtersFormData = {
                                 "name": "",
                                 "city": "",
-                                "assigned_to": ""
+                                "assigned_to": []
                               };
                             });
                             _saveForm();

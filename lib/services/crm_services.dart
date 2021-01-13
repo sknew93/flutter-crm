@@ -64,6 +64,7 @@ class CrmService {
     await updateHeaders();
     String url;
     if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
       String queryString =
           Uri(queryParameters: getFormatedHeaders(queryParams)).query;
       url = baseUrl + 'accounts/' + '?' + queryString;
@@ -103,6 +104,7 @@ class CrmService {
     await updateHeaders();
     String url;
     if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
       String queryString =
           Uri(queryParameters: getFormatedHeaders(queryParams)).query;
       url = baseUrl + 'contacts/' + '?' + queryString;
@@ -136,8 +138,10 @@ class CrmService {
     await updateHeaders();
     String url;
     if (queryParams != null) {
-      String queryString =
-          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      queryParams.removeWhere((key, value) => value == "");
+      String queryString = Uri(
+        queryParameters: getFormatedHeaders(queryParams),
+      ).query;
       url = baseUrl + 'leads/' + '?' + queryString;
     } else {
       url = baseUrl + 'leads/';
@@ -171,10 +175,11 @@ class CrmService {
 
   ///////////////////// USERS-SERVICES ///////////////////////////////
 
-  Future<Response> getUsers({queryParams}) async {
+  Future<Response> getUsers({Map queryParams}) async {
     await updateHeaders();
     String url;
     if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
       String queryString =
           Uri(queryParameters: getFormatedHeaders(queryParams)).query;
       url = baseUrl + 'users/' + '?' + queryString;
