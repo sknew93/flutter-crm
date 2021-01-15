@@ -61,13 +61,13 @@ class _CreateDocumentState extends State<CreateDocument> {
       return;
     }
     _createDocumentFormKey.currentState.save();
-    Map _result;
+    dynamic _result;
 
-    // setState(() {
-    //   _isLoading = true;
-    // });
+    setState(() {
+      _isLoading = true;
+    });
     if (documentBLoc.currentEditDocumentId != null) {
-      // _result = await userBloc.editUser();
+      _result = await documentBLoc.editDocument(file);
     } else {
       _result = await documentBLoc.createDocument(file);
     }
@@ -75,26 +75,26 @@ class _CreateDocumentState extends State<CreateDocument> {
       _isLoading = false;
     });
 
-    // if (_result['error'] == false) {
-    //   setState(() {
-    //     _errors = null;
-    //   });
-    //   showToast(_result['message']);
-    //   Navigator.pushReplacementNamed(context, '/users_list');
-    // } else if (_result['error'] == true) {
-    //   setState(() {
-    //     _errors = _result['errors'];
-    //   });
-    //   if (_errors['name'] != null && _focuserr == null) {
-    //     _focuserr = _titleFocusNode;
-    //     focusError();
-    //   }
-    // } else {
-    //   setState(() {
-    //     _errors = null;
-    //   });
-    //   showErrorMessage(context, 'Something went wrong');
-    // }
+    if (_result['error'] == false) {
+      setState(() {
+        _errors = null;
+      });
+      showToast(_result['message']);
+      Navigator.pushReplacementNamed(context, '/documents');
+    } else if (_result['error'] == true) {
+      setState(() {
+        _errors = _result['errors'];
+      });
+      if (_errors['title'] != null && _focuserr == null) {
+        _focuserr = _titleFocusNode;
+        focusError();
+      }
+    } else {
+      setState(() {
+        _errors = null;
+      });
+      showErrorMessage(context, 'Something went wrong');
+    }
   }
 
   void showErrorMessage(BuildContext context, String errorContent) {
@@ -151,7 +151,7 @@ class _CreateDocumentState extends State<CreateDocument> {
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
                         focusNode: _titleFocusNode,
-                        // initialValue: userBloc.currentEditUser['title'],
+                        initialValue: documentBLoc.currentEditDocument['title'],
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(12.0),
                             enabledBorder: boxBorder(),
@@ -261,7 +261,12 @@ class _CreateDocumentState extends State<CreateDocument> {
                         : Container(
                             margin: EdgeInsets.fromLTRB(5, 0, 0, 0),
                             child: Text(
-                              "No file chosen.",
+                              (documentBLoc.currentEditDocumentId == null)
+                                  ? "No file chosen."
+                                  : (documentBLoc
+                                      .currentEditDocument['document_file']
+                                      .split('/')
+                                      .last),
                               style: GoogleFonts.robotoSlab(),
                             ),
                           ),
@@ -367,6 +372,57 @@ class _CreateDocumentState extends State<CreateDocument> {
                               ],
                             ),
                           ),
+                          (documentBLoc.currentEditDocumentId != null)
+                              ? Container(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: EdgeInsets.only(bottom: 5.0),
+                                        child: Text(
+                                          'Status :',
+                                          style: GoogleFonts.robotoSlab(
+                                              textStyle: TextStyle(
+                                                  color: Theme.of(context)
+                                                      .secondaryHeaderColor,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: screenWidth / 25)),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 48.0,
+                                        margin: EdgeInsets.only(bottom: 5.0),
+                                        child: DropdownButtonFormField(
+                                          decoration: InputDecoration(
+                                              border: boxBorder(),
+                                              contentPadding:
+                                                  EdgeInsets.all(12.0)),
+                                          style: GoogleFonts.robotoSlab(
+                                              textStyle: TextStyle(
+                                                  color: Colors.black)),
+                                          hint: Text('select Status'),
+                                          value: documentBLoc
+                                              .currentEditDocument['status'],
+                                          onChanged: (value) {
+                                            documentBLoc.currentEditDocument[
+                                                'status'] = value;
+                                          },
+                                          items: ['active', 'inactive']
+                                              .map((item) {
+                                            return DropdownMenuItem(
+                                              child: new Text(item),
+                                              value: item,
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                      Divider(color: Colors.grey)
+                                    ],
+                                  ),
+                                )
+                              : Container(),
                         ],
                       ),
                     ),

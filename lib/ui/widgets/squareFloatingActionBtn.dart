@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crm/bloc/account_bloc.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
+import 'package:flutter_crm/bloc/document_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
 import 'package:flutter_crm/bloc/user_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
@@ -23,6 +24,7 @@ class SquareFloatingActionButton extends StatelessWidget {
         leadBloc.cancelCurrentEditLead();
         contactBloc.cancelCurrentEditContact();
         userBloc.cancelCurrentEditUser();
+        documentBLoc.cancelCurrentEditDocument();
         Navigator.pushNamed(context, _route);
       },
       child: Container(

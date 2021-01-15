@@ -53,7 +53,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   isDefaultAction: true,
                   onPressed: () async {
                     Navigator.pop(context);
-                    deleteDocument();
+                    await deleteDocument();
                   },
                   child: Text(
                     "Delete",
@@ -279,9 +279,10 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              // await contactBloc.updateCurrentEditContact(
-                              //     contactBloc.currentContact);
-                              // Navigator.pushNamed(context, '/create_contact');
+                              await documentBLoc.updateCurrentEditDocument(
+                                  documentBLoc.currentDocument);
+                              await Navigator.pushNamed(
+                                  context, '/create_document');
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -345,7 +346,19 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () async {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await requestDownload(
+                                  documentBLoc.currentDocument.documentFile,
+                                  documentBLoc.currentDocument.documentFile
+                                      .split('/')
+                                      .last);
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            },
                             child: Container(
                               margin: EdgeInsets.only(left: 10.0),
                               decoration: BoxDecoration(

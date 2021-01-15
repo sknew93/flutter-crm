@@ -209,19 +209,34 @@ class CrmService {
 
   ///////////////////// DOCUMENTS-SERVICES ///////////////////////////////
 
-  Future<Response> getDocuments() async {
+  Future<Response> getDocuments({queryParams}) async {
     await updateHeaders();
-    return await networkService.get(baseUrl + 'documents/',
-        headers: getFormatedHeaders(_headers));
+    String url;
+    if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
+      String queryString = Uri(
+        queryParameters: getFormatedHeaders(queryParams),
+      ).query;
+      url = baseUrl + 'documents/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'documents/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
   }
 
   getFileSizes(files) {
     List _fileSizeList = [];
-    files.forEach((file) async {
+    files.forEach((Document file) async {
       http.Response r = await http.head(file.documentFile);
-      String fileSize = r.headers['content-length'];
-      _fileSizeList.add(fileSize);
+      if (r.headers['content-length'] != null) {
+        String fileSize = r.headers['content-length'].toString();
+        // int id = r.
+        _fileSizeList.add([file.id, fileSize]);
+      } else {
+        _fileSizeList.add([file.id, "0"]);
+      }
     });
+    print(_fileSizeList);
     return _fileSizeList;
   }
 
@@ -239,6 +254,30 @@ class CrmService {
         'title': document['title'],
         'teams': document['teams'],
         'shared_to': document['shared_to']
+      })
+      ..files.add(await http.MultipartFile.fromPath(
+        'document_file',
+        file.path,
+      ));
+    final response = await request.send();
+    return await response.stream.bytesToString();
+  }
+
+  Future editDocument(document, PlatformFile file, id) async {
+    await updateHeaders();
+    var uri = Uri.parse(
+      baseUrl + 'documents/$id/',
+    );
+    var request = http.MultipartRequest(
+      'PUT',
+      uri,
+    )
+      ..headers.addAll(getFormatedHeaders(_headers))
+      ..fields.addAll({
+        'title': document['title'],
+        'teams': document['teams'],
+        'shared_to': document['shared_to'],
+        'status': document['status']
       })
       ..files.add(await http.MultipartFile.fromPath(
         'document_file',
