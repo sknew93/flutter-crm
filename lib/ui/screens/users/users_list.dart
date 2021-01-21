@@ -579,48 +579,45 @@ class _UsersListState extends State<UsersList> {
                 child: new Center(child: new CircularProgressIndicator())),
           )
         : new Container();
-    return WillPopScope(
-      onWillPop: onWillPop,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-            title: Text(
-          "Users",
-          style: GoogleFonts.robotoSlab(),
-        )),
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            Container(
-              padding: EdgeInsets.all(10.0),
-              child: Column(
-                children: [
-                  _buildTabs(),
-                  _buildFilterWidget(),
-                  _users.length > 0
-                      ? Expanded(child: _buildUserList())
-                      : Container(
-                          margin: EdgeInsets.only(top: 30.0),
-                          child: Center(
-                            child: Text(
-                              "No User Found",
-                              style: GoogleFonts.robotoSlab(),
-                            ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+          title: Text(
+        "Users",
+        style: GoogleFonts.robotoSlab(),
+      )),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                _buildTabs(),
+                _buildFilterWidget(),
+                _users.length > 0
+                    ? Expanded(child: _buildUserList())
+                    : Container(
+                        margin: EdgeInsets.only(top: 30.0),
+                        child: Center(
+                          child: Text(
+                            "No User Found",
+                            style: GoogleFonts.robotoSlab(),
                           ),
-                        )
-                ],
-              ),
+                        ),
+                      )
+              ],
             ),
-            new Align(
-              child: loadingIndicator,
-              alignment: FractionalOffset.center,
-            )
-          ],
-        ),
-        floatingActionButton:
-            SquareFloatingActionButton('/create_user', "Add User", "Users"),
-        bottomNavigationBar: BottomNavigationBarWidget(),
+          ),
+          new Align(
+            child: loadingIndicator,
+            alignment: FractionalOffset.center,
+          )
+        ],
       ),
+      floatingActionButton:
+          SquareFloatingActionButton('/create_user', "Add User", "Users"),
+      bottomNavigationBar: BottomNavigationBarWidget(),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter_crm/model/profile.dart';
 import 'package:intl/intl.dart';
 
 import 'account.dart';
+import 'company.dart';
 
 class Opportunity {
   int id;
@@ -22,7 +23,7 @@ class Opportunity {
   bool isActive;
   List tags;
   // List<Team> teams;
-  int compantId;
+  Company company;
   String createdOnText;
 
   Opportunity({
@@ -32,7 +33,7 @@ class Opportunity {
     this.amount,
     this.closedBy,
     this.closedOn,
-    this.compantId,
+    this.company,
     this.createdBy,
     this.createdOn,
     this.createdOnText,
@@ -88,8 +89,9 @@ class Opportunity {
     this.tags = opportunity['tags'] != null ? opportunity['tags'] : [];
     // this.teams = opportunity['teams'] != null ? List<Team>.from(opportunity["teams"].map((x) => Team.fromJson(x)))
     //     : [];
-    this.compantId =
-        opportunity['company'] != null ? opportunity['company'] : 0;
+    this.company = opportunity['company'] != null
+        ? Company.fromJson(opportunity['company'])
+        : Company();
     this.createdOnText = opportunity['created_on_arrow'] != null
         ? opportunity['created_on_arrow']
         : "";
@@ -115,7 +117,7 @@ class Opportunity {
       'is_active': isActive,
       'tags': tags,
       // 'teams': teams,
-      'company': compantId,
+      'company': company,
       'created_on_arrow': createdOnText,
     };
   }

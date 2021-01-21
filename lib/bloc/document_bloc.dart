@@ -33,6 +33,7 @@ class DocumentBloc {
       _inActiveDocuments.clear();
       _documents.clear();
       _fileSizes.clear();
+      _usersObjforMultiselect.clear();
 
       var res = jsonDecode(response.body);
 
@@ -73,7 +74,7 @@ class DocumentBloc {
 
   createDocument(file) async {
     Map result;
-    Map _copyOfCurrentEditDocument = Map.from(_currentEditDocument);
+    Map _copyOfCurrentEditDocument = new Map.from(_currentEditDocument);
     _copyOfCurrentEditDocument['teams'] = (_copyOfCurrentEditDocument['teams']
         .map((team) => team.toString())).toList().toString();
     _copyOfCurrentEditDocument['shared_to'] =
@@ -83,7 +84,7 @@ class DocumentBloc {
     await CrmService()
         .createDocument(_copyOfCurrentEditDocument, file)
         .then((response) async {
-      var res = jsonDecode(response);
+      var res = json.decode(response);
       if (res["error"] == false) {
         await fetchDocuments();
       }
@@ -107,7 +108,7 @@ class DocumentBloc {
     await CrmService()
         .editDocument(_copyOfCurrentEditDocument, file, _currentEditDocumentId)
         .then((response) async {
-      var res = jsonDecode(response);
+      var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchDocuments();
       }
@@ -116,6 +117,7 @@ class DocumentBloc {
       print("editDocument Error >> $onError");
       result = {"status": "error", "message": "Something went wrong"};
     });
+    return result;
   }
 
   deleteDocument(Document file) async {
@@ -151,6 +153,7 @@ class DocumentBloc {
     _currentEditDocument['document_file'] = editFile.documentFile;
     _currentEditDocument['teams'] = teams;
     _currentEditDocument['shared_to'] = sharedToList;
+    _currentEditDocument['status'] = editFile.status;
     print(_currentEditDocument);
   }
 

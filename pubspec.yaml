@@ -12,19 +12,19 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.0
-  connectivity: ^0.4.9+5
+  cupertino_icons: ^1.0.2
+  connectivity: ^2.0.2
   flushbar: ^1.10.4
   http: ^0.12.2
-  shared_preferences: ^0.5.12+2
-  fluttertoast: ^7.1.5
+  shared_preferences: ^0.5.12+4
+  fluttertoast: ^7.1.6
   dropdown_search: ^0.4.8
-  file_picker: ^2.0.12
+  file_picker: ^2.1.5+1
   textfield_tags: ^1.1.0+1
   json_table: ^1.4.0 
   google_fonts: ^1.1.1
   flutter_svg:
-  rxdart: ^0.24.1
+  rxdart: ^0.25.0
   intl: ^0.16.1
   random_color: ^1.0.5
   multiselect_formfield: ^0.1.5
@@ -32,9 +32,8 @@ dependencies:
   flutter_downloader: ^1.5.2
   ext_storage:
   path_provider: ^1.6.27
+  dapackages: ^1.4.0
   
-
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

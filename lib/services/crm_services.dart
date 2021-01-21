@@ -255,10 +255,8 @@ class CrmService {
         'teams': document['teams'],
         'shared_to': document['shared_to']
       })
-      ..files.add(await http.MultipartFile.fromPath(
-        'document_file',
-        file.path,
-      ));
+      ..files
+          .add(await http.MultipartFile.fromPath('document_file', file.path));
     final response = await request.send();
     return await response.stream.bytesToString();
   }
@@ -279,10 +277,8 @@ class CrmService {
         'shared_to': document['shared_to'],
         'status': document['status']
       })
-      ..files.add(await http.MultipartFile.fromPath(
-        'document_file',
-        file.path,
-      ));
+      ..files
+          .add(await http.MultipartFile.fromPath('document_file', file.path));
     return await request.send();
   }
 

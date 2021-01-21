@@ -222,6 +222,7 @@ class _CreateDocumentState extends State<CreateDocument> {
                         )),
                     GestureDetector(
                       onTap: () async {
+                        FocusScope.of(context).unfocus();
                         result = await FilePicker.platform.pickFiles(
                             type: FileType.custom,
                             allowedExtensions: [
@@ -402,7 +403,7 @@ class _CreateDocumentState extends State<CreateDocument> {
                                           style: GoogleFonts.robotoSlab(
                                               textStyle: TextStyle(
                                                   color: Colors.black)),
-                                          hint: Text('select Status'),
+                                          hint: Text('Select Status'),
                                           value: documentBLoc
                                               .currentEditDocument['status'],
                                           onChanged: (value) {

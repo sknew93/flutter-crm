@@ -365,8 +365,9 @@ class _DocumentsListState extends State<DocumentsList> {
               CupertinoDialogAction(
                   textStyle: TextStyle(color: Colors.red),
                   isDefaultAction: true,
-                  onPressed: () async {
-                    await deleteDocument(index, document);
+                  onPressed: () {
+                    Navigator.pop(context);
+                    deleteDocument(index, document);
                   },
                   child: Text(
                     "Delete",
