@@ -33,6 +33,7 @@ dependencies:
   ext_storage:
   path_provider: ^1.6.27
   dapackages: ^1.4.0
+  number_inc_dec: ^0.6.6
   
 dev_dependencies:
   flutter_test:

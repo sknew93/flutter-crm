@@ -295,4 +295,57 @@ class CrmService {
     return await networkService.get(baseUrl + 'users/get-teams-and-users/',
         headers: getFormatedHeaders(_headers));
   }
+
+  ///////////////////// OPPORTUNITIES-SERVICES ////////////////////////////
+
+  Future<Response> getOpportunities({queryParams}) async {
+    await updateHeaders();
+    String url;
+    if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'opportunities/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'opportunities/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> deletefromModule(moduleName, id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + '$moduleName/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future createOpportunity(opportunity, PlatformFile file) async {
+    await updateHeaders();
+    var uri = Uri.parse(
+      baseUrl + 'opportunities/',
+    );
+    var request = http.MultipartRequest(
+      'POST',
+      uri,
+    )
+      ..headers.addAll(getFormatedHeaders(_headers))
+      ..fields.addAll({
+        'name': opportunity['name'],
+        'account': opportunity['account'],
+        'amount': opportunity['amount'],
+        'currency': opportunity['currency'],
+        'stage': opportunity['stage'],
+        'lead_source': opportunity['lead_source'],
+        'probability': opportunity['probability'],
+        'description': opportunity['description'],
+        'teams': opportunity['teams'],
+        'assigned_to': opportunity['assigned_to'],
+        'contacts': opportunity['contacts'],
+        'closed_on': opportunity['closed_on'],
+        'tags': opportunity['tags'],
+      })
+      ..files.add(await http.MultipartFile.fromPath(
+          'opportunity_attachment', file.path));
+    final response = await request.send();
+    return await response.stream.bytesToString();
+  }
 }

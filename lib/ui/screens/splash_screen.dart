@@ -8,6 +8,7 @@ import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/dashboard_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
+import 'package:flutter_crm/bloc/opportunity_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_svg/svg.dart';
@@ -48,6 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
         await leadBloc.fetchLeads();
         // await teamBloc.fetchTeams();
         await contactBloc.fetchContacts();
+        await opportunityBloc.fetchOpportunities();
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
         Navigator.pushReplacementNamed(context, '/sub_domain');

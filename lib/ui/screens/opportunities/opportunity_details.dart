@@ -2,39 +2,40 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/lead_bloc.dart';
+import 'package:flutter_crm/bloc/opportunity_bloc.dart';
+import 'package:flutter_crm/model/opportunities.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:random_color/random_color.dart';
 
-class LeadDetails extends StatefulWidget {
-  LeadDetails();
+class OpportunityDetails extends StatefulWidget {
+  OpportunityDetails();
   @override
-  State createState() => _LeadDetailsState();
+  State createState() => _OpportunityDetailsState();
 }
 
-class _LeadDetailsState extends State<LeadDetails> {
+class _OpportunityDetailsState extends State<OpportunityDetails> {
   @override
   void initState() {
     super.initState();
   }
 
   bool _isLoading = false;
-  void showDeleteLeadAlertDialog(BuildContext context) {
+
+  void showDeleteOpportunityAlertDialog(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             title: Text(
-              leadBloc.currentLead.firstName +
-                  " " +
-                  leadBloc.currentLead.lastName,
+              opportunityBloc.currentOpportunity.name,
               style: GoogleFonts.robotoSlab(
                   color: Theme.of(context).secondaryHeaderColor),
             ),
             content: Text(
-              "Are you sure you want to delete this Lead?",
+              "Are you sure you want to delete this Opportunity?",
               style: GoogleFonts.robotoSlab(fontSize: 15.0),
             ),
             actions: <Widget>[
@@ -52,7 +53,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                   isDefaultAction: true,
                   onPressed: () async {
                     Navigator.pop(context);
-                    deleteLead();
+                    deleteOpportunity();
                   },
                   child: Text(
                     "Delete",
@@ -63,17 +64,18 @@ class _LeadDetailsState extends State<LeadDetails> {
         });
   }
 
-  deleteLead() async {
+  deleteOpportunity() async {
     setState(() {
       _isLoading = true;
     });
-    Map result = await leadBloc.deleteLead(leadBloc.currentLead);
+    Map result = await opportunityBloc
+        .deleteOpportunity(opportunityBloc.currentOpportunity);
     setState(() {
       _isLoading = false;
     });
     if (result['error'] == false) {
       showToast(result['message']);
-      Navigator.pushReplacementNamed(context, "/leads_list");
+      Navigator.pushReplacementNamed(context, "/opportunities");
     } else if (result['error'] == true) {
       showToast(result['message']);
     } else {
@@ -94,7 +96,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
         onPressed: () {
           Navigator.of(context).pop(true);
-          deleteLead();
+          deleteOpportunity();
         },
       ),
       duration: Duration(seconds: 10),
@@ -107,7 +109,7 @@ class _LeadDetailsState extends State<LeadDetails> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Lead Details",
+          "Opportunity Details",
           style: GoogleFonts.robotoSlab(),
         ),
       ),
@@ -119,42 +121,6 @@ class _LeadDetailsState extends State<LeadDetails> {
             padding: EdgeInsets.all(10.0),
             child: Column(
               children: [
-                Container(
-                  child: Column(
-                    children: [
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: screenWidth * 0.7,
-                              child: Text(
-                                '${leadBloc.currentLead.title}',
-                                style: GoogleFonts.robotoSlab(
-                                    color:
-                                        Theme.of(context).secondaryHeaderColor,
-                                    fontSize: screenWidth / 20),
-                              ),
-                            ),
-                            Container(
-                              child: Text(
-                                leadBloc.currentLeadType,
-                                style: GoogleFonts.robotoSlab(
-                                    color: leadBloc.currentLeadType == "Open"
-                                        ? Color.fromRGBO(117, 174, 51, 1)
-                                        : Color.fromRGBO(234, 67, 53, 1),
-                                    fontSize: screenWidth / 22),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.symmetric(vertical: 5.0),
-                          child: Divider(color: bottomNavBarTextColor))
-                    ],
-                  ),
-                ),
                 Container(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,7 +136,34 @@ class _LeadDetailsState extends State<LeadDetails> {
                       ),
                       Container(
                         child: Text(
-                          '${leadBloc.currentLead.firstName} ${leadBloc.currentLead.lastName}',
+                          '${opportunityBloc.currentOpportunity.name}',
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarTextColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      ),
+                      Container(
+                          margin: EdgeInsets.symmetric(vertical: 5.0),
+                          child: Divider(color: Colors.grey))
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Text(
+                          "Amount :",
+                          style: GoogleFonts.robotoSlab(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      ),
+                      Container(
+                        child: Text(
+                          opportunityBloc.currentOpportunity.amount,
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),
@@ -197,142 +190,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                       ),
                       Container(
                         child: Text(
-                          leadBloc.currentLead.accountName,
-                          style: GoogleFonts.robotoSlab(
-                              color: bottomNavBarTextColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.symmetric(vertical: 5.0),
-                          child: Divider(color: Colors.grey))
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          "Mobile Number :",
-                          style: GoogleFonts.robotoSlab(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                        child: Text(
-                          leadBloc.currentLead.phone,
-                          style: GoogleFonts.robotoSlab(
-                              color: bottomNavBarTextColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.symmetric(vertical: 5.0),
-                          child: Divider(color: Colors.grey))
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          "Email Address :",
-                          style: GoogleFonts.robotoSlab(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                        child: Text(
-                          leadBloc.currentLead.email,
-                          style: GoogleFonts.robotoSlab(
-                              color: bottomNavBarTextColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.symmetric(vertical: 5.0),
-                          child: Divider(color: Colors.grey))
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          "Status :",
-                          style: GoogleFonts.robotoSlab(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                        child: Text(
-                          leadBloc.currentLead.status,
-                          style: GoogleFonts.robotoSlab(
-                              color: bottomNavBarTextColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.symmetric(vertical: 5.0),
-                          child: Divider(color: Colors.grey))
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          "Source :",
-                          style: GoogleFonts.robotoSlab(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                        child: Text(
-                          leadBloc.currentLead.source,
-                          style: GoogleFonts.robotoSlab(
-                              color: bottomNavBarTextColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.symmetric(vertical: 5.0),
-                          child: Divider(color: Colors.grey))
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          "Website :",
-                          style: GoogleFonts.robotoSlab(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontSize: screenWidth / 24),
-                        ),
-                      ),
-                      Container(
-                        child: Text(
-                          leadBloc.currentLead.website,
+                          opportunityBloc.currentOpportunity.account.name,
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),
@@ -359,7 +217,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                       ),
                       Container(
                         child: Text(
-                          leadBloc.currentLead.description,
+                          opportunityBloc.currentOpportunity.description,
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),
@@ -378,7 +236,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                       Container(
                         margin: EdgeInsets.only(bottom: 5.0),
                         child: Text(
-                          "Billing Address :",
+                          "Stage :",
                           style: GoogleFonts.robotoSlab(
                               color: Theme.of(context).secondaryHeaderColor,
                               fontSize: screenWidth / 24),
@@ -386,18 +244,92 @@ class _LeadDetailsState extends State<LeadDetails> {
                       ),
                       Container(
                         child: Text(
-                          leadBloc.currentLead.addressLine +
-                              ', ' +
-                              leadBloc.currentLead.street +
-                              ', ' +
-                              leadBloc.currentLead.city +
-                              ', ' +
-                              leadBloc.currentLead.state +
-                              ', ' +
-                              leadBloc.currentLead.postcode +
-                              ', ' +
-                              leadBloc.currentLead.country +
-                              '.',
+                          opportunityBloc.currentOpportunity.stage,
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarTextColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      ),
+                      Container(
+                          margin: EdgeInsets.symmetric(vertical: 5.0),
+                          child: Divider(color: Colors.grey))
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Text(
+                          "Lead Source :",
+                          style: GoogleFonts.robotoSlab(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      ),
+                      Container(
+                        child: Text(
+                          opportunityBloc.currentOpportunity.leadSource,
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarTextColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      ),
+                      Container(
+                          margin: EdgeInsets.symmetric(vertical: 5.0),
+                          child: Divider(color: Colors.grey))
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Text(
+                          "Probability :",
+                          style: GoogleFonts.robotoSlab(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      ),
+                      Container(
+                        child: Text(
+                          opportunityBloc.currentOpportunity.probability
+                                  .toString() +
+                              "%",
+                          style: GoogleFonts.robotoSlab(
+                              color: bottomNavBarTextColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      ),
+                      Container(
+                          margin: EdgeInsets.symmetric(vertical: 5.0),
+                          child: Divider(color: Colors.grey))
+                    ],
+                  ),
+                ),
+                Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: Text(
+                          "Close Date :",
+                          style: GoogleFonts.robotoSlab(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontSize: screenWidth / 24),
+                        ),
+                      ),
+                      Container(
+                        child: Text(
+                          DateFormat("dd MMM, yyyy").format(
+                              DateFormat("yyyy-MM-dd").parse(
+                                  opportunityBloc.currentOpportunity.closedOn)),
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),
@@ -424,9 +356,11 @@ class _LeadDetailsState extends State<LeadDetails> {
                       ),
                       Container(
                         child: Text(
-                          leadBloc.currentLead.createdBy.firstName +
+                          opportunityBloc
+                                  .currentOpportunity.createdBy.firstName +
                               ' ' +
-                              leadBloc.currentLead.createdBy.lastName,
+                              opportunityBloc
+                                  .currentOpportunity.createdBy.lastName,
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),
@@ -453,7 +387,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                       ),
                       Container(
                         child: Text(
-                          leadBloc.currentLead.createdOn,
+                          opportunityBloc.currentOpportunity.createdOn,
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),
@@ -484,7 +418,8 @@ class _LeadDetailsState extends State<LeadDetails> {
                             // physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: leadBloc.currentLead.tags.length,
+                            itemCount:
+                                opportunityBloc.currentOpportunity.tags.length,
                             itemBuilder: (BuildContext context, int tagIndex) {
                               return Container(
                                 margin: EdgeInsets.only(right: 5.0),
@@ -493,7 +428,8 @@ class _LeadDetailsState extends State<LeadDetails> {
                                 color: randomColor.randomColor(
                                     colorBrightness: ColorBrightness.light),
                                 child: Text(
-                                  leadBloc.currentLead.tags[tagIndex]['name'],
+                                  opportunityBloc.currentOpportunity
+                                      .tags[tagIndex]['name'],
                                   style: GoogleFonts.robotoSlab(
                                       textStyle: TextStyle(
                                           color: Colors.white, fontSize: 12.0)),
@@ -513,9 +449,9 @@ class _LeadDetailsState extends State<LeadDetails> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          await leadBloc
-                              .updateCurrentEditLead(leadBloc.currentLead);
-                          Navigator.pushNamed(context, '/create_lead');
+                          // await leadBloc
+                          //     .updateCurrentEditLead(leadBloc.currentLead);
+                          // Navigator.pushNamed(context, '/create_lead');
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -548,7 +484,7 @@ class _LeadDetailsState extends State<LeadDetails> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          showDeleteLeadAlertDialog(context);
+                          showDeleteOpportunityAlertDialog(context);
                         },
                         child: Container(
                           margin: EdgeInsets.only(left: 10.0),
