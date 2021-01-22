@@ -1,9 +1,8 @@
-import 'dart:convert';
+import 'dart:io';
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/document_bloc.dart';
 import 'package:flutter_crm/model/contact.dart';
 import 'package:flutter_crm/model/document.dart';
@@ -15,6 +14,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
+
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DocumentsList extends StatefulWidget {
   DocumentsList();
@@ -29,8 +31,10 @@ class _DocumentsListState extends State<DocumentsList> {
   bool _isSearch = false;
   List _documents = [];
 
+  Map _searchFormData = {'title': ""};
+
   @override
-  void initState() {
+  initState() {
     super.initState();
     setState(() {
       _documents = documentBLoc.documents;
@@ -38,10 +42,14 @@ class _DocumentsListState extends State<DocumentsList> {
   }
 
   _saveForm() async {
+    if (_isSearch) {
+      _documentsFormKey.currentState.save();
+    }
     setState(() {
       _isLoading = true;
     });
-    await documentBLoc.fetchDocuments();
+    await documentBLoc.fetchDocuments(
+        searchData: _isSearch ? _searchFormData : null);
     setState(() {
       _isLoading = false;
     });
@@ -51,39 +59,52 @@ class _DocumentsListState extends State<DocumentsList> {
     return Container(
       color: Colors.white,
       height: screenHeight * 0.060,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            width: screenWidth * 0.85,
-            child: TextFormField(
-              initialValue: "",
-              onSaved: null,
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(12.0),
-                  enabledBorder: boxBorder(),
-                  focusedErrorBorder: boxBorder(),
-                  focusedBorder: boxBorder(),
-                  errorBorder: boxBorder(),
-                  fillColor: Colors.white,
-                  filled: true,
-                  hintText: 'Search your Document here',
-                  errorStyle: GoogleFonts.robotoSlab(),
-                  hintStyle: GoogleFonts.robotoSlab(
-                      textStyle: TextStyle(fontSize: screenWidth / 26))),
-              keyboardType: TextInputType.text,
+      child: Form(
+        key: _documentsFormKey,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: screenWidth * 0.85,
+              child: TextFormField(
+                initialValue: _searchFormData['title'],
+                onSaved: (value) {
+                  _searchFormData['title'] = value;
+                },
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(12.0),
+                    enabledBorder: boxBorder(),
+                    focusedErrorBorder: boxBorder(),
+                    focusedBorder: boxBorder(),
+                    errorBorder: boxBorder(),
+                    fillColor: Colors.white,
+                    filled: true,
+                    hintText: 'Search your Document here',
+                    errorStyle: GoogleFonts.robotoSlab(),
+                    hintStyle: GoogleFonts.robotoSlab(
+                        textStyle: TextStyle(fontSize: screenWidth / 26))),
+                keyboardType: TextInputType.text,
+              ),
             ),
-          ),
-          Container(
-              width: screenWidth * 0.1,
-              child: IconButton(
-                  icon: Icon(Icons.search, color: Colors.green),
-                  onPressed: () {
-                    setState(() {
-                      _isSearch = !_isSearch;
-                    });
-                  }))
-        ],
+            Container(
+                width: screenWidth * 0.1,
+                child: IconButton(
+                    icon: Icon(Icons.search, color: Colors.green),
+                    onPressed: () async {
+                      setState(() {
+                        _isSearch = true;
+                      });
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        _searchFormData = {"title": ""};
+                      });
+                      await _saveForm();
+                      setState(() {
+                        _isSearch = false;
+                      });
+                    }))
+          ],
+        ),
       ),
     );
   }
@@ -223,10 +244,11 @@ class _DocumentsListState extends State<DocumentsList> {
                                 children: [
                                   GestureDetector(
                                     onTap: () async {
-                                      // await contactBloc.updateCurrentEditContact(
-                                      //     _contacts[index]);
-                                      // Navigator.pushNamed(
-                                      //     context, '/create_contact');
+                                      await documentBLoc
+                                          .updateCurrentEditDocument(
+                                              _documents[index]);
+                                      await Navigator.pushNamed(
+                                          context, '/create_document');
                                     },
                                     child: Container(
                                       margin: EdgeInsets.only(right: 10.0),
@@ -246,8 +268,8 @@ class _DocumentsListState extends State<DocumentsList> {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      // showDeleteContactAlertDialog(
-                                      //     context, _contacts[index], index);
+                                      showDeleteDocumentAlertDialog(
+                                          context, _documents[index], index);
                                     },
                                     child: Container(
                                       margin: EdgeInsets.only(right: 10.0),
@@ -266,12 +288,20 @@ class _DocumentsListState extends State<DocumentsList> {
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: () async {
-                                      // await contactBloc.updateCurrentEditContact(
-                                      //     _contacts[index]);
-                                      // Navigator.pushNamed(
-                                      //     context, '/create_contact');
+                                    onTap: () {
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
+                                      requestDownload(
+                                          _documents[index].documentFile,
+                                          _documents[index]
+                                              .documentFile
+                                              .split('/')
+                                              .last);
 
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
                                       // await documentBLoc.downloadFunc(
                                       //     "Document_ID_${_documents[index].id}}",
                                       //     _documents[index].documentFile);
@@ -307,19 +337,19 @@ class _DocumentsListState extends State<DocumentsList> {
     );
   }
 
-  void showDeleteContactAlertDialog(
-      BuildContext context, Contact contact, index) {
+  void showDeleteDocumentAlertDialog(
+      BuildContext context, Document document, index) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             title: Text(
-              contact.firstName + ' ' + contact.lastName,
+              document.title,
               style: GoogleFonts.robotoSlab(
                   color: Theme.of(context).secondaryHeaderColor),
             ),
             content: Text(
-              "Are you sure you want to delete this Contact?",
+              "Are you sure you want to delete this Document?",
               style: GoogleFonts.robotoSlab(fontSize: 15.0),
             ),
             actions: <Widget>[
@@ -335,8 +365,9 @@ class _DocumentsListState extends State<DocumentsList> {
               CupertinoDialogAction(
                   textStyle: TextStyle(color: Colors.red),
                   isDefaultAction: true,
-                  onPressed: () async {
-                    deleteContact(index, contact);
+                  onPressed: () {
+                    Navigator.pop(context);
+                    deleteDocument(index, document);
                   },
                   child: Text(
                     "Delete",
@@ -347,24 +378,21 @@ class _DocumentsListState extends State<DocumentsList> {
         });
   }
 
-  deleteContact(index, contact) async {
-    // setState(() {
-    //   _contacts.removeAt(index);
-    // });
+  deleteDocument(index, document) async {
     setState(() {
       _isLoading = true;
     });
-    Map _result = await contactBloc.deleteContact(contact);
+    Map _result = await documentBLoc.deleteDocument(document);
     setState(() {
       _isLoading = false;
     });
     if (_result['error'] == false) {
       showToast(_result['message']);
-      Navigator.pushReplacementNamed(context, "/sales_contacts");
+      Navigator.pushReplacementNamed(context, "/documents");
     } else if (_result['error'] == true) {
       showToast(_result['message']);
     } else {
-      showErrorMessage(context, 'Something went wrong', index, contact);
+      showErrorMessage(context, 'Something went wrong', index, document);
     }
   }
 
@@ -382,7 +410,7 @@ class _DocumentsListState extends State<DocumentsList> {
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
         onPressed: () {
           Navigator.of(context).pop(true);
-          deleteContact(index, contact);
+          deleteDocument(index, contact);
         },
       ),
       duration: Duration(seconds: 10),

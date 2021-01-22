@@ -15,15 +15,25 @@ class DocumentBloc {
 
   Document _currentDocument;
   int _currentDocumentIndex;
-  Map _currentEditDocument = {'title': "", 'teams': [], 'shared_to': []};
+  Map _currentEditDocument = {
+    'title': "",
+    'teams': [],
+    'shared_to': [],
+    'document_file': ''
+  };
   String _currentEditDocumentId;
 
-  fetchDocuments() async {
-    await CrmService().getDocuments().then((response) async {
+  fetchDocuments({searchData}) async {
+    Map _copySearchData = searchData != null ? new Map.from(searchData) : null;
+
+    await CrmService()
+        .getDocuments(queryParams: _copySearchData)
+        .then((response) async {
       _activeDocuments.clear();
       _inActiveDocuments.clear();
       _documents.clear();
       _fileSizes.clear();
+      _usersObjforMultiselect.clear();
 
       var res = jsonDecode(response.body);
 
@@ -44,20 +54,27 @@ class DocumentBloc {
 
       res['users'].forEach((_user) {
         Profile user = Profile.fromJson(_user);
-        Map data = {};
-        data['id'] = user.id;
-        data['name'] = "${user.firstName} ${user.lastName}";
-        _usersObjforMultiselect.add(data);
+        _usersObjforMultiselect.add({
+          "name": "${user.firstName} ${user.lastName}",
+          "id": user.id.toString()
+        });
       });
     }).catchError((onError) {
       print('fetchDocuments Error >> $onError');
     });
 
     // _fileSizes = await CrmService().getFileSizes(_documents);
+    // print(fileSizes);
+  }
+
+  cancelCurrentEditDocument() {
+    _currentEditDocumentId = null;
+    _currentEditDocument = {'title': "", 'teams': [], 'shared_to': []};
   }
 
   createDocument(file) async {
-    Map _copyOfCurrentEditDocument = Map.from(_currentEditDocument);
+    Map result;
+    Map _copyOfCurrentEditDocument = new Map.from(_currentEditDocument);
     _copyOfCurrentEditDocument['teams'] = (_copyOfCurrentEditDocument['teams']
         .map((team) => team.toString())).toList().toString();
     _copyOfCurrentEditDocument['shared_to'] =
@@ -66,15 +83,41 @@ class DocumentBloc {
     print(_copyOfCurrentEditDocument);
     await CrmService()
         .createDocument(_copyOfCurrentEditDocument, file)
-        .then((response) {
-      // var res = jsonDecode(response.body);
-      print(response);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print('create Document Response >> ${response.reasonPhrase}');
-      } else {
-        print("create Document Error >> ${response.reasonPhrase}");
+        .then((response) async {
+      var res = json.decode(response);
+      if (res["error"] == false) {
+        await fetchDocuments();
       }
+      result = res;
+    }).catchError((onError) {
+      print("editDocument Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong"};
     });
+    return result;
+  }
+
+  Future editDocument(file) async {
+    Map result;
+    Map _copyOfCurrentEditDocument = Map.from(_currentEditDocument);
+    _copyOfCurrentEditDocument['teams'] = (_copyOfCurrentEditDocument['teams']
+        .map((team) => team.toString())).toList().toString();
+    _copyOfCurrentEditDocument['shared_to'] =
+        (_copyOfCurrentEditDocument['shared_to']
+            .map((assignedTo) => assignedTo.toString())).toList().toString();
+    print(_copyOfCurrentEditDocument);
+    await CrmService()
+        .editDocument(_copyOfCurrentEditDocument, file, _currentEditDocumentId)
+        .then((response) async {
+      var res = json.decode(response.body);
+      if (res["error"] == false) {
+        await fetchDocuments();
+      }
+      result = res;
+    }).catchError((onError) {
+      print("editDocument Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong"};
+    });
+    return result;
   }
 
   deleteDocument(Document file) async {
@@ -91,6 +134,27 @@ class DocumentBloc {
       };
     });
     return result;
+  }
+
+  updateCurrentEditDocument(Document editFile) {
+    _currentEditDocumentId = editFile.id.toString();
+    List sharedToList = [];
+    List teams = [];
+
+    editFile.sharedTo.forEach((sharee) {
+      sharedToList.add(sharee.id.toString());
+    });
+
+    editFile.teams.forEach((team) {
+      teams.add(team.id);
+    });
+
+    _currentEditDocument['title'] = editFile.title;
+    _currentEditDocument['document_file'] = editFile.documentFile;
+    _currentEditDocument['teams'] = teams;
+    _currentEditDocument['shared_to'] = sharedToList;
+    _currentEditDocument['status'] = editFile.status;
+    print(_currentEditDocument);
   }
 
   List get documents {

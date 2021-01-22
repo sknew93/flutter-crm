@@ -8,7 +8,9 @@ import 'package:flutter_crm/bloc/auth_bloc.dart';
 import 'package:flutter_crm/bloc/contact_bloc.dart';
 import 'package:flutter_crm/bloc/dashboard_bloc.dart';
 import 'package:flutter_crm/bloc/lead_bloc.dart';
+import 'package:flutter_crm/bloc/opportunity_bloc.dart';
 import 'package:flutter_crm/utils/utils.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +25,15 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Timer(Duration(seconds: 3), () => checkInternet());
     super.initState();
+
+    _downloadPackageInit();
+  }
+
+  _downloadPackageInit() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await FlutterDownloader.initialize(
+        debug: false // optional: set false to disable printing logs to console
+        );
   }
 
   checkInternet() async {
@@ -38,6 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
         await leadBloc.fetchLeads();
         // await teamBloc.fetchTeams();
         await contactBloc.fetchContacts();
+        await opportunityBloc.fetchOpportunities();
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
         Navigator.pushReplacementNamed(context, '/sub_domain');

@@ -2,21 +2,22 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/document_bloc.dart';
+import 'package:flutter_crm/bloc/account_bloc.dart';
+import 'package:flutter_crm/bloc/contact_bloc.dart';
+import 'package:flutter_crm/bloc/team_bloc.dart';
 import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:flutter_crm/ui/widgets/profile_pic_widget.dart';
 import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
-class DocumentDetails extends StatefulWidget {
-  DocumentDetails();
+class ContactDetails extends StatefulWidget {
+  ContactDetails();
   @override
-  State createState() => _DocumentDetailsState();
+  State createState() => _ContactDetailsState();
 }
 
-class _DocumentDetailsState extends State<DocumentDetails> {
+class _ContactDetailsState extends State<ContactDetails> {
   bool _isLoading = false;
 
   @override
@@ -24,18 +25,18 @@ class _DocumentDetailsState extends State<DocumentDetails> {
     super.initState();
   }
 
-  void showDeleteDocumentAlertDialog(BuildContext context) {
+  void showDeleteTeamAlertDialog(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             title: Text(
-              documentBLoc.currentDocument.title,
+              contactBloc.currentContact.firstName,
               style: GoogleFonts.robotoSlab(
                   color: Theme.of(context).secondaryHeaderColor),
             ),
             content: Text(
-              "Are you sure you want to delete this document?",
+              "Are you sure you want to delete this team?",
               style: GoogleFonts.robotoSlab(fontSize: 15.0),
             ),
             actions: <Widget>[
@@ -53,7 +54,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                   isDefaultAction: true,
                   onPressed: () async {
                     Navigator.pop(context);
-                    await deleteDocument();
+                    deleteTeam();
                   },
                   child: Text(
                     "Delete",
@@ -64,23 +65,22 @@ class _DocumentDetailsState extends State<DocumentDetails> {
         });
   }
 
-  deleteDocument() async {
+  deleteTeam() async {
     setState(() {
       _isLoading = true;
     });
-    Map result =
-        await documentBLoc.deleteDocument(documentBLoc.currentDocument);
+    // Map result = await teamBloc.deleteTeam(teamBloc.currentTeam);
     setState(() {
       _isLoading = false;
     });
-    if (result['error'] == false) {
-      showToast(result['message']);
-      Navigator.pushReplacementNamed(context, "/documents");
-    } else if (result['error'] == true) {
-      showToast(result['message']);
-    } else {
-      showErrorMessage(context, 'Something went wrong');
-    }
+    // if (result['error'] == false) {
+    //   showToast(result['message']);
+    //   Navigator.pushReplacementNamed(context, "/contacts");
+    // } else if (result['error'] == true) {
+    //   showToast(result['message']);
+    // } else {
+    //   showErrorMessage(context, 'Something went wrong');
+    // }
   }
 
   void showErrorMessage(BuildContext context, String errorContent) {
@@ -96,7 +96,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
         onPressed: () {
           Navigator.of(context).pop(true);
-          deleteDocument();
+          deleteTeam();
         },
       ),
       duration: Duration(seconds: 10),
@@ -119,7 +119,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Document Details",
+          "Team Details",
           style: GoogleFonts.robotoSlab(),
         ),
       ),
@@ -144,7 +144,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                                 Container(
                                   width: screenWidth * 0.7,
                                   child: Text(
-                                    documentBLoc.currentDocument.title,
+                                    // "${teamBloc.currentTeam.name}",
+                                    "",
+
                                     style: GoogleFonts.robotoSlab(
                                         color: Theme.of(context)
                                             .secondaryHeaderColor,
@@ -167,7 +169,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5.0),
                             child: Text(
-                              "Status :",
+                              "Description :",
                               style: GoogleFonts.robotoSlab(
                                   color: Theme.of(context).secondaryHeaderColor,
                                   fontSize: screenWidth / 24),
@@ -175,64 +177,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                           ),
                           Container(
                             child: Text(
-                              documentBLoc.currentDocument.status
-                                  .capitalizeFirstofEach(),
-                              style: GoogleFonts.robotoSlab(
-                                  color: bottomNavBarTextColor,
-                                  fontSize: screenWidth / 24),
-                            ),
-                          ),
-                          Container(
-                              margin: EdgeInsets.symmetric(vertical: 5.0),
-                              child: Divider(color: Colors.grey))
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5.0),
-                            child: Text(
-                              "Created On:",
-                              style: GoogleFonts.robotoSlab(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontSize: screenWidth / 24),
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              DateFormat("dd MMM, yyyy 'at' HH:mm").format(
-                                  DateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(
-                                      documentBLoc.currentDocument.createdOn)),
-                              style: GoogleFonts.robotoSlab(
-                                  color: bottomNavBarTextColor,
-                                  fontSize: screenWidth / 24),
-                            ),
-                          ),
-                          Container(
-                              margin: EdgeInsets.symmetric(vertical: 5.0),
-                              child: Divider(color: Colors.grey))
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(bottom: 5.0),
-                            child: Text(
-                              "Created By :",
-                              style: GoogleFonts.robotoSlab(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontSize: screenWidth / 24),
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              "${documentBLoc.currentDocument.createdBy.firstName} ${documentBLoc.currentDocument.createdBy.lastName}",
+                              contactBloc.currentContact.description +
+                                  ' ' +
+                                  contactBloc.currentContact.createdBy.lastName,
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -260,11 +207,67 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                           Container(
                             child: Row(
                               children: [
-                                ProfilePicViewWidget(documentBLoc
-                                    .currentDocument.sharedTo
-                                    .map((e) => e.profileUrl)
-                                    .toList()),
+                                //   ProfilePicViewWidget(documentBLoc
+                                //       .currentDocument.sharedTo
+                                //       .map((e) => e.profileUrl)
+                                //       .toList()),
                               ],
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.0),
+                              child: Divider(color: Colors.grey))
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5.0),
+                            child: Text(
+                              "Created By :",
+                              style: GoogleFonts.robotoSlab(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              contactBloc.currentContact.createdBy.firstName +
+                                  ' ' +
+                                  contactBloc.currentContact.createdBy.lastName,
+                              style: GoogleFonts.robotoSlab(
+                                  color: bottomNavBarTextColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.0),
+                              child: Divider(color: Colors.grey))
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5.0),
+                            child: Text(
+                              "Created On :",
+                              style: GoogleFonts.robotoSlab(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              contactBloc.currentContact.createdOn,
+                              style: GoogleFonts.robotoSlab(
+                                  color: bottomNavBarTextColor,
+                                  fontSize: screenWidth / 24),
                             ),
                           ),
                           Container(
@@ -279,10 +282,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              await documentBLoc.updateCurrentEditDocument(
-                                  documentBLoc.currentDocument);
-                              await Navigator.pushNamed(
-                                  context, '/create_document');
+                              // await contactBloc.updateCurrentEditContact(
+                              //     contactBloc.currentContact);
+                              // Navigator.pushNamed(context, '/create_contact');
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -314,7 +316,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              showDeleteDocumentAlertDialog(context);
+                              showDeleteTeamAlertDialog(context);
                             },
                             child: Container(
                               margin: EdgeInsets.only(left: 10.0),
@@ -338,50 +340,6 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                                           textStyle: TextStyle(
                                               color: Color.fromRGBO(
                                                   234, 67, 53, 1),
-                                              fontSize: screenWidth / 25)),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              await requestDownload(
-                                  documentBLoc.currentDocument.documentFile,
-                                  documentBLoc.currentDocument.documentFile
-                                      .split('/')
-                                      .last);
-                              setState(() {
-                                _isLoading = false;
-                              });
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey[300])),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 15.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10.0),
-                                    child: SvgPicture.asset(
-                                      'assets/images/download_icon.svg',
-                                      width: screenWidth / 19,
-                                      color: Color.fromRGBO(55, 98, 167, 1),
-                                    ),
-                                  ),
-                                  Container(
-                                    child: Text(
-                                      "Download",
-                                      style: GoogleFonts.robotoSlab(
-                                          textStyle: TextStyle(
-                                              color: Color.fromRGBO(
-                                                  55, 98, 167, 1),
                                               fontSize: screenWidth / 25)),
                                     ),
                                   )

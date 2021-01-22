@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:random_color/random_color.dart';
+import 'package:ext_storage/ext_storage.dart';
 
 var screenWidth;
 var screenHeight;
@@ -51,4 +53,27 @@ extension CapExtension on String {
   String get allInCaps => this.toUpperCase();
   String capitalizeFirstofEach() =>
       this.split(" ").map((str) => str.inCaps).join(" ");
+}
+
+Future<void> requestDownload(String _url, String _name) async {
+  // final dir = await getDownloadsDirectory(); //From path_provider package
+  // var _localPath = dir.path + _name;
+  var _localPath = "/storage/emulated/0/Download/";
+
+  final savedDir = Directory(_localPath);
+  await savedDir.create(recursive: true).then((value) async {
+    String _taskid = await FlutterDownloader.enqueue(
+      url: _url,
+      fileName: _name,
+      savedDir: _localPath,
+      showNotification: true,
+      openFileFromNotification: false,
+    ).catchError((onError) {
+      showToast("Downloaded Error >> $onError");
+    });
+
+    if (_taskid != null) {
+      showToast("$_name, Successfully Downloaded");
+    }
+  });
 }

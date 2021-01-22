@@ -24,9 +24,11 @@ import 'package:flutter_crm/ui/screens/marketing/contacts/contacts_index.dart';
 import 'package:flutter_crm/ui/screens/marketing/dashboard/dashboard_index.dart';
 import 'package:flutter_crm/ui/screens/marketing/email_templates/email_index.dart';
 import 'package:flutter_crm/ui/screens/more_options_screen.dart';
-import 'package:flutter_crm/ui/screens/opportunities/opportunities_index.dart';
 import 'package:flutter_crm/ui/screens/authentication/change_password.dart';
 import 'package:flutter_crm/ui/screens/authentication/profile_details.dart';
+import 'package:flutter_crm/ui/screens/opportunities/opportunities_list.dart';
+import 'package:flutter_crm/ui/screens/opportunities/opportunity_create.dart';
+import 'package:flutter_crm/ui/screens/opportunities/opportunity_details.dart';
 import 'package:flutter_crm/ui/screens/splash_screen.dart';
 import 'package:flutter_crm/ui/screens/tasks/tasks_index.dart';
 import 'package:flutter_crm/ui/screens/teams/teams_index.dart';
@@ -74,7 +76,9 @@ class MyApp extends StatelessWidget {
         '/leads_list': (BuildContext context) => LeadsList(),
         '/lead_details': (BuildContext context) => LeadDetails(),
         '/create_lead': (BuildContext context) => CreateLead(),
-        '/opportunities': (BuildContext context) => OpportunitiesScreen(),
+        '/opportunities': (BuildContext context) => OpportunitiesList(),
+        '/opportunity_details': (BuildContext context) => OpportunityDetails(),
+        '/create_opportunity': (BuildContext context) => CreateOpportunity(),
         '/tasks': (BuildContext context) => TasksScreen(),
         '/teams': (BuildContext context) => TeamsScreen(),
         '/change_password': (BuildContext context) => ChangePassword(),

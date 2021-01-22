@@ -1,0 +1,469 @@
+import 'dart:convert';
+
+import 'package:flushbar/flushbar.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_crm/model/team.dart';
+import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:flutter_crm/ui/widgets/profile_pic_widget.dart';
+import 'package:flutter_crm/ui/widgets/squareFloatingActionBtn.dart';
+import 'package:flutter_crm/utils/utils.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
+
+class TeamsList extends StatefulWidget {
+  TeamsList();
+  @override
+  State createState() => _TeamsListState();
+}
+
+class _TeamsListState extends State<TeamsList> {
+  bool _isFilter = false;
+  final GlobalKey<FormState> _filtersFormKey = GlobalKey<FormState>();
+  Map _filtersFormData = {"name": "", "city": "", "assigned_to": []};
+  bool _isLoading = false;
+
+  List<Team> _teams = [];
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      // _contacts = contactBloc.contacts;
+    });
+  }
+
+  _saveForm() async {
+    // if (_isFilter) {
+    //   _filtersFormKey.currentState.save();
+    // }
+    // setState(() {
+    //   _isLoading = true;
+    // });
+    // await contactBloc.fetchContacts(
+    //     filtersData: _isFilter ? _filtersFormData : null);
+    // setState(() {
+    //   _isLoading = false;
+    // });
+  }
+
+  Widget _buildMultiSelectDropdown(data) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10.0),
+      child: MultiSelectFormField(
+        border: boxBorder(),
+        fillColor: Colors.white,
+        autovalidate: false,
+        dataSource: data,
+        textField: 'name',
+        valueField: 'id',
+        okButtonLabel: 'OK',
+        chipLabelStyle:
+            GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.black)),
+        dialogTextStyle: GoogleFonts.robotoSlab(),
+        cancelButtonLabel: 'CANCEL',
+        hintWidget: Text(
+          "Please choose one or more",
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.grey)),
+        ),
+        title: Text(
+          "Assigned Profiles",
+          style: GoogleFonts.robotoSlab(
+              textStyle: TextStyle(color: Colors.grey[700]),
+              fontSize: screenWidth / 26),
+        ),
+        initialValue: _filtersFormData["assigned_to"],
+        onSaved: (value) {
+          if (value == null) return;
+          setState(() {
+            _filtersFormData["assigned_to"] = value;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildFilterWidget() {
+    return _isFilter
+        ? Container(
+            padding: EdgeInsets.all(10.0),
+            margin: EdgeInsets.only(top: 10.0),
+            color: Colors.white,
+            child: Form(
+              key: _filtersFormKey,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: _filtersFormData["name"],
+                      onSaved: (newValue) {
+                        _filtersFormData["name"] = newValue;
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter First Name',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle:
+                                  TextStyle(fontSize: screenWidth / 26))),
+                      keyboardType: TextInputType.text,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: TextFormField(
+                      initialValue: _filtersFormData["city"],
+                      onSaved: (newValue) {
+                        _filtersFormData["city"] = newValue;
+                      },
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(12.0),
+                          enabledBorder: boxBorder(),
+                          focusedErrorBorder: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          errorBorder: boxBorder(),
+                          fillColor: Colors.white,
+                          filled: true,
+                          hintText: 'Enter City',
+                          errorStyle: GoogleFonts.robotoSlab(),
+                          hintStyle: GoogleFonts.robotoSlab(
+                              textStyle:
+                                  TextStyle(fontSize: screenWidth / 26))),
+                      keyboardType: TextInputType.text,
+                    ),
+                  ),
+                  // _buildMultiSelectDropdown(leadBloc.usersObjForDropdown),
+                  Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            _saveForm();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeight * 0.05,
+                            width: screenWidth * 0.3,
+                            decoration: BoxDecoration(
+                              color: submitButtonColor,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(3.0)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  'Filter',
+                                  style: GoogleFonts.robotoSlab(
+                                      textStyle: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: screenWidth / 24)),
+                                ),
+                                SvgPicture.asset(
+                                    'assets/images/arrow_forward.svg')
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isFilter = false;
+                            });
+                            FocusScope.of(context).unfocus();
+                            setState(() {
+                              _filtersFormData = {
+                                "name": "",
+                                "city": "",
+                                "assigned_to": []
+                              };
+                            });
+                            _saveForm();
+                          },
+                          child: Container(
+                            child: Text(
+                              "Reset",
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: bottomNavBarTextColor,
+                                      fontSize: screenWidth / 24)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
+        : Container();
+  }
+
+  Widget _buildTeamList() {
+    return (_teams.length != 0)
+        ? Container(
+            margin: EdgeInsets.only(top: 10.0),
+            child: ListView.builder(
+                itemCount: _teams.length,
+                physics: const AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      // contactBloc.currentContact = _teams[index];
+                      // contactBloc.currentContactIndex = index;
+                      // Navigator.pushNamed(context, '/contact_details');
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5.0),
+                      color: Colors.white,
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: screenWidth * 0.43,
+                                  child: Text(
+                                    "${_teams[index].name}",
+                                    style: GoogleFonts.robotoSlab(
+                                        color: Theme.of(context)
+                                            .secondaryHeaderColor,
+                                        fontSize: screenWidth / 25,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  width: screenWidth * 0.25,
+                                  child: Text(
+                                    _teams[index].createdOnText == ""
+                                        ? _teams[index].createdOn
+                                        : _teams[index].createdOnText,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.robotoSlab(
+                                        color: bottomNavBarTextColor,
+                                        fontSize: screenWidth / 27),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Container(
+                                //   margin: EdgeInsets.only(top: 5.0),
+                                //   child: ProfilePicViewWidget(_teams[index]
+                                //       .assignedTo
+                                //       .map((assignedUser) => assignedUser.profileUrl)
+                                //       .toList()),
+                                // ),
+                                Container(
+                                  child: Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () async {
+                                          // await contactBloc.updateCurrentEditContact(
+                                          //     _teams[index]);
+                                          Navigator.pushNamed(
+                                              context, '/create_contact');
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(right: 10.0),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1.0,
+                                                color: Colors.grey[300]),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(3.0)),
+                                          ),
+                                          padding: EdgeInsets.all(4.0),
+                                          child: SvgPicture.asset(
+                                            'assets/images/Icon_edit_color.svg',
+                                            width: screenWidth / 23,
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDeleteTeamAlertDialog(
+                                              context, _teams[index], index);
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                width: 1.0,
+                                                color: Colors.grey[300]),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(3.0)),
+                                          ),
+                                          padding: EdgeInsets.all(4.0),
+                                          child: SvgPicture.asset(
+                                            'assets/images/icon_delete_color.svg',
+                                            width: screenWidth / 23,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+          )
+        : Container();
+  }
+
+  void showDeleteTeamAlertDialog(BuildContext context, Team team, index) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              team.name,
+              style: GoogleFonts.robotoSlab(
+                  color: Theme.of(context).secondaryHeaderColor),
+            ),
+            content: Text(
+              "Are you sure you want to delete this Team?",
+              style: GoogleFonts.robotoSlab(fontSize: 15.0),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+              CupertinoDialogAction(
+                  textStyle: TextStyle(color: Colors.red),
+                  isDefaultAction: true,
+                  onPressed: () async {
+                    deleteTeam(index, team);
+                  },
+                  child: Text(
+                    "Delete",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+            ],
+          );
+        });
+  }
+
+  deleteTeam(index, contact) async {
+    // setState(() {
+    //   _isLoading = true;
+    // });
+    // Map _result = await teamBloc.deleteTeam(contact);
+    // setState(() {
+    //   _isLoading = false;
+    // });
+    // if (_result['error'] == false) {
+    //   showToast(_result['message']);
+    //   Navigator.of(context).pop();
+    // } else if (_result['error'] == true) {
+    //   showToast(_result['message']);
+    // } else {
+    //   showErrorMessage(context, 'Something went wrong', index, contact);
+    // }
+  }
+
+  void showErrorMessage(
+      BuildContext context, String errorContent, int index, Team team) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          deleteTeam(index, team);
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget loadingIndicator = _isLoading
+        ? new Container(
+            color: Colors.transparent,
+            width: 300.0,
+            height: 300.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(child: new CircularProgressIndicator())),
+          )
+        : new Container();
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text("Teams", style: GoogleFonts.robotoSlab()),
+        automaticallyImplyLeading: false,
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                _buildFilterWidget(),
+                _teams.length > 0
+                    ? Expanded(child: _buildTeamList())
+                    : Container(
+                        margin: EdgeInsets.only(top: 30.0),
+                        child: Text(
+                          "No Teams Found",
+                          style: GoogleFonts.robotoSlab(),
+                        ),
+                      )
+              ],
+            ),
+          ),
+          new Align(
+            child: loadingIndicator,
+            alignment: FractionalOffset.center,
+          )
+        ],
+      ),
+      floatingActionButton:
+          SquareFloatingActionButton('/create_team', "Add Team", "Teams"),
+      bottomNavigationBar: BottomNavigationBarWidget(),
+    );
+  }
+}
