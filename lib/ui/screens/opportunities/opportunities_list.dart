@@ -1,15 +1,14 @@
+import 'package:bottle_crm/bloc/account_bloc.dart';
+import 'package:bottle_crm/bloc/opportunity_bloc.dart';
+import 'package:bottle_crm/model/opportunities.dart';
+import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/ui/widgets/squareFloatingActionBtn.dart';
+import 'package:bottle_crm/ui/widgets/tags_widget.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
-import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/bloc/opportunity_bloc.dart';
-import 'package:flutter_crm/model/opportunities.dart';
-import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/ui/widgets/squareFloatingActionBtn.dart';
-import 'package:flutter_crm/ui/widgets/tags_widget.dart';
-import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
@@ -481,7 +480,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                 ),
                                 Container(
                                   child: Text(
-                                    _opportunities[index].createdOnText != null
+                                    _opportunities[index].leadSource != ""
                                         ? _opportunities[index]
                                             .leadSource
                                             .toLowerCase()
@@ -516,10 +515,11 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                               children: [
                                 GestureDetector(
                                   onTap: () async {
-                                    // await contactBloc.updateCurrentEditContact(
-                                    //     _contacts[index]);
-                                    // Navigator.pushNamed(
-                                    //     context, '/create_contact');
+                                    await opportunityBloc
+                                        .updateCurrentEditOpportunity(
+                                            _opportunities[index]);
+                                    Navigator.pushNamed(
+                                        context, '/create_opportunity');
                                   },
                                   child: Container(
                                     margin: EdgeInsets.only(right: 10.0),

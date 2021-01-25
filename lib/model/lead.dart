@@ -1,4 +1,4 @@
-import 'package:flutter_crm/model/profile.dart';
+import 'package:bottle_crm/model/profile.dart';
 import 'package:intl/intl.dart';
 
 import 'contact.dart';

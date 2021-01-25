@@ -1,5 +1,5 @@
-import 'package:flutter_crm/model/company.dart';
-import 'package:flutter_crm/model/profile.dart';
+import 'package:bottle_crm/model/company.dart';
+import 'package:bottle_crm/model/profile.dart';
 
 class Team {
   int id;

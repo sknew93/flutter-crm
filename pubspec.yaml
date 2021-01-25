@@ -1,9 +1,9 @@
-name: flutter_crm
-description: A new Flutter project.
+name: bottle_crm
+description: CRM for startups
 
 publish_to: 'none' 
 
-version: 1.0.0+1
+version: 1.0.7+7
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -39,12 +39,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_launcher_icons: "^0.8.0"
+  flutter_launcher_icons: "^0.8.1"
 
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/bg_logo.png"
+  image_path: "assets/images/new_logo.png"
 
 flutter:
 

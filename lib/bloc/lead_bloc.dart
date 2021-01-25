@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter_crm/model/lead.dart';
-import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/services/crm_services.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/model/lead.dart';
+import 'package:bottle_crm/model/profile.dart';
+import 'package:bottle_crm/services/crm_services.dart';
+import 'package:bottle_crm/utils/utils.dart';
 
 class LeadBloc {
   List<Lead> _openLeads = [];

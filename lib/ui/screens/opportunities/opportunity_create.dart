@@ -1,14 +1,14 @@
+import 'package:bottle_crm/bloc/account_bloc.dart';
+import 'package:bottle_crm/bloc/contact_bloc.dart';
+import 'package:bottle_crm/bloc/opportunity_bloc.dart';
+import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
-import 'package:flutter_crm/bloc/contact_bloc.dart';
-import 'package:flutter_crm/bloc/opportunity_bloc.dart';
-import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -90,7 +90,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
       _isLoading = true;
     });
     if (opportunityBloc.currentEditOpportunityId != null) {
-      // _result = await opportunityBloc.editOpportunity();
+      _result = await opportunityBloc.editOpportunity(file);
     } else {
       _result = await opportunityBloc.createOpportunity(file);
     }
@@ -173,7 +173,8 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
                       focusNode: _nameFocusNode,
-                      // initialValue: opportunityBloc.currentEditOpportunity['name'],
+                      initialValue:
+                          opportunityBloc.currentEditOpportunity['name'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -243,9 +244,14 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         mode: Mode.BOTTOM_SHEET,
                         items: opportunityBloc.accountsObjforDropDown,
                         onChanged: print,
-                        // selectedItem: opportunityBloc.currentEditOpportunity['account'] == ""
-                        //     ? null
-                        //     : opportunityBloc.currentEditOpportunity['account'],
+                        selectedItem: opportunityBloc
+                                        .currentEditOpportunity['account'] ==
+                                    "" ||
+                                opportunityBloc
+                                        .currentEditOpportunity['account'] ==
+                                    null
+                            ? ""
+                            : opportunityBloc.currentEditOpportunity['account'],
                         hint: "Select Account",
                         showSearchBox: true,
                         showSelectedItem: false,
@@ -322,8 +328,8 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
-                      // initialValue:
-                      //     opportunityBloc.currentEditOpportunity['amount'],
+                      initialValue:
+                          opportunityBloc.currentEditOpportunity['amount'],
                       controller: null,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -388,12 +394,12 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         mode: Mode.BOTTOM_SHEET,
                         items: opportunityBloc.currencyObjforDropDown,
                         onChanged: print,
-                        // selectedItem: opportunityBloc
-                        //             .currentEditOpportunity['currency'] ==
-                        //         ""
-                        //     ? null
-                        //     : opportunityBloc
-                        //         .currentEditOpportunity['currency'],
+                        selectedItem: opportunityBloc
+                                    .currentEditOpportunity['currency'] ==
+                                ""
+                            ? null
+                            : opportunityBloc
+                                .currentEditOpportunity['currency'],
                         hint: "Select Currency",
                         showSearchBox: true,
                         showSelectedItem: false,
@@ -893,9 +899,15 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.robotoSlab(),
                                 )
-                              : Text('Please choose a Due Date.',
-                                  style: GoogleFonts.robotoSlab(
-                                      color: Colors.grey)),
+                              : (opportunityBloc.currentEditOpportunityId !=
+                                      null)
+                                  ? Text(
+                                      opportunityBloc
+                                          .currentEditOpportunity['closed_on'],
+                                      style: GoogleFonts.robotoSlab())
+                                  : Text('Please choose a Due Date.',
+                                      style: GoogleFonts.robotoSlab(
+                                          color: Colors.grey)),
                         ),
                       )),
                   Divider(color: Colors.grey)
@@ -920,7 +932,8 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   Container(
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: TextFieldTags(
-                      // initialTags: accountBloc.currentEditAccount['tags'],
+                      initialTags:
+                          opportunityBloc.currentEditOpportunity['tags'],
                       textFieldStyler: TextFieldStyler(
                         contentPadding: EdgeInsets.all(12.0),
                         textFieldBorder: boxBorder(),
@@ -982,7 +995,8 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
                       maxLines: 5,
-                      // initialValue: opportunityBloc.currentEditOpportunity['description'],
+                      initialValue:
+                          opportunityBloc.currentEditOpportunity['description'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -1052,14 +1066,30 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       ),
                     ),
                   ),
-                  file != null
+                  (opportunityBloc.currentEditOpportunityId != null)
                       ? Container(
-                          child: Text(
-                            file.name,
-                            style: GoogleFonts.robotoSlab(),
-                          ),
+                          child: (opportunityBloc
+                                      .currentEditOpportunity[
+                                          'opportunity_attachment']
+                                      .length >
+                                  0)
+                              ? Text(
+                                  opportunityBloc.currentEditOpportunity[
+                                          'opportunity_attachment']
+                                      .split('/')
+                                      .last,
+                                  style: GoogleFonts.robotoSlab(),
+                                )
+                              : Container(),
                         )
-                      : Container(),
+                      : (file != null)
+                          ? Container(
+                              child: Text(
+                                file.name,
+                                style: GoogleFonts.robotoSlab(),
+                              ),
+                            )
+                          : Container(),
                   Divider(color: Colors.grey)
                 ],
               ),
@@ -1103,7 +1133,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
-                      // accountBloc.cancelCurrentEditAccount();
+                      opportunityBloc.cancelCurrentEditOpportunity()();
                     },
                     child: Container(
                       child: Text(

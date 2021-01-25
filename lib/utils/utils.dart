@@ -3,9 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:random_color/random_color.dart';
-import 'package:ext_storage/ext_storage.dart';
 
 var screenWidth;
 var screenHeight;

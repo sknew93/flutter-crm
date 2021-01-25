@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter_crm/model/document.dart';
-import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/services/crm_services.dart';
+import 'package:bottle_crm/model/document.dart';
+import 'package:bottle_crm/model/profile.dart';
+import 'package:bottle_crm/services/crm_services.dart';
 
 class DocumentBloc {
   List<Document> _activeDocuments = [];
@@ -108,7 +108,8 @@ class DocumentBloc {
     await CrmService()
         .editDocument(_copyOfCurrentEditDocument, file, _currentEditDocumentId)
         .then((response) async {
-      var res = json.decode(response.body);
+      print(response);
+      var res = json.decode(response);
       if (res["error"] == false) {
         await fetchDocuments();
       }

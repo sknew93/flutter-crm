@@ -1,5 +1,5 @@
-import 'package:flutter_crm/model/team.dart';
-import 'package:flutter_crm/services/crm_services.dart';
+import 'package:bottle_crm/model/team.dart';
+import 'package:bottle_crm/services/crm_services.dart';
 
 class TeamBloc {
   List<Team> _teams = [];
