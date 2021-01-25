@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
-import 'package:flutter_crm/bloc/contact_bloc.dart';
-import 'package:flutter_crm/bloc/document_bloc.dart';
-import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/bloc/user_bloc.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/bloc/account_bloc.dart';
+import 'package:bottle_crm/bloc/contact_bloc.dart';
+import 'package:bottle_crm/bloc/document_bloc.dart';
+import 'package:bottle_crm/bloc/lead_bloc.dart';
+import 'package:bottle_crm/bloc/user_bloc.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SquareFloatingActionButton extends StatelessWidget {

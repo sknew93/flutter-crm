@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/dashboard_bloc.dart';
-import 'package:flutter_crm/bloc/document_bloc.dart';
-import 'package:flutter_crm/bloc/user_bloc.dart';
-import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/ui/widgets/dashboard_count_card.dart';
-import 'package:flutter_crm/ui/widgets/recent_card_widget.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/bloc/dashboard_bloc.dart';
+import 'package:bottle_crm/bloc/document_bloc.dart';
+import 'package:bottle_crm/bloc/user_bloc.dart';
+import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/ui/widgets/dashboard_count_card.dart';
+import 'package:bottle_crm/ui/widgets/recent_card_widget.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Dashboard extends StatefulWidget {

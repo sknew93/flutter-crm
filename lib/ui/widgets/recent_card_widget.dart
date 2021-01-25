@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class RecentCardWidget extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_crm/model/document.dart';
+import 'package:bottle_crm/model/document.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 
@@ -245,10 +245,7 @@ class CrmService {
     var uri = Uri.parse(
       baseUrl + 'documents/',
     );
-    var request = http.MultipartRequest(
-      'POST',
-      uri,
-    )
+    var request = http.MultipartRequest('POST', uri)
       ..headers.addAll(getFormatedHeaders(_headers))
       ..fields.addAll({
         'title': document['title'],
@@ -266,10 +263,7 @@ class CrmService {
     var uri = Uri.parse(
       baseUrl + 'documents/$id/',
     );
-    var request = http.MultipartRequest(
-      'PUT',
-      uri,
-    )
+    var request = http.MultipartRequest('PUT', uri)
       ..headers.addAll(getFormatedHeaders(_headers))
       ..fields.addAll({
         'title': document['title'],

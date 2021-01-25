@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/model/contact.dart';
-import 'package:flutter_crm/model/team.dart';
-import 'package:flutter_crm/services/crm_services.dart';
+import 'package:bottle_crm/bloc/lead_bloc.dart';
+import 'package:bottle_crm/model/contact.dart';
+import 'package:bottle_crm/model/team.dart';
+import 'package:bottle_crm/services/crm_services.dart';
 
 class ContactBloc {
   List<Contact> _contacts = [];

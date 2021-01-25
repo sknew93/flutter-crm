@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:flutter_crm/model/account.dart';
-import 'package:flutter_crm/model/opportunities.dart';
-import 'package:flutter_crm/services/crm_services.dart';
+import 'package:bottle_crm/model/account.dart';
+import 'package:bottle_crm/model/opportunities.dart';
+import 'package:bottle_crm/services/crm_services.dart';
 
 class DashboardBloc {
   Map _dashboardData = {};
