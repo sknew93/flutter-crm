@@ -1,9 +1,9 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/bloc/auth_bloc.dart';
-import 'package:flutter_crm/ui/widgets/footer_button.dart';
-import 'package:flutter_crm/ui/widgets/bottleCrm_logo.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/bloc/auth_bloc.dart';
+import 'package:bottle_crm/ui/widgets/footer_button.dart';
+import 'package:bottle_crm/ui/widgets/bottleCrm_logo.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 

@@ -1,5 +1,5 @@
+import 'package:bottle_crm/model/document.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_crm/model/document.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 
@@ -318,7 +318,7 @@ class CrmService {
         headers: getFormatedHeaders(_headers));
   }
 
-  Future createOpportunity(opportunity, PlatformFile file) async {
+  Future createOpportunity(opportunity, [PlatformFile file]) async {
     await updateHeaders();
     var uri = Uri.parse(
       baseUrl + 'opportunities/',
@@ -347,5 +347,34 @@ class CrmService {
           'opportunity_attachment', file.path));
     final response = await request.send();
     return await response.stream.bytesToString();
+  }
+
+  Future editOpportunity(opportunity, id, [PlatformFile file]) async {
+    await updateHeaders();
+    var uri = Uri.parse(
+      baseUrl + 'opportunities`/$id/',
+    );
+    var request = http.MultipartRequest(
+      'PUT',
+      uri,
+    )
+      ..headers.addAll(getFormatedHeaders(_headers))
+      ..fields.addAll({
+        'name': opportunity['name'],
+        'account': opportunity['account'],
+        'amount': opportunity['amount'],
+        'currency': opportunity['currency'],
+        'stage': opportunity['stage'],
+        'lead_source': opportunity['lead_source'],
+        'probability': opportunity['probability'],
+        'description': opportunity['description'],
+        'teams': opportunity['teams'],
+        'assigned_to': opportunity['assigned_to'],
+        'contacts': opportunity['contacts'],
+        'tags': opportunity['tags'],
+      })
+      ..files.add(await http.MultipartFile.fromPath(
+          'opportunity_attachment', file.path));
+    return await request.send();
   }
 }

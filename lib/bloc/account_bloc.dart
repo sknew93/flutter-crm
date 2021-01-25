@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/model/account.dart';
-import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/services/crm_services.dart';
+import 'package:bottle_crm/bloc/lead_bloc.dart';
+import 'package:bottle_crm/model/account.dart';
+import 'package:bottle_crm/model/profile.dart';
+import 'package:bottle_crm/services/crm_services.dart';
 
 class AccountBloc {
   List<Account> _openAccounts = [];

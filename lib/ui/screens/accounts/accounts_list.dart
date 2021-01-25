@@ -1,15 +1,13 @@
-import 'dart:convert';
-
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
-import 'package:flutter_crm/model/account.dart';
-import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/ui/widgets/squareFloatingActionBtn.dart';
-import 'package:flutter_crm/ui/widgets/tags_widget.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/bloc/account_bloc.dart';
+import 'package:bottle_crm/model/account.dart';
+import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/ui/widgets/squareFloatingActionBtn.dart';
+import 'package:bottle_crm/ui/widgets/tags_widget.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';

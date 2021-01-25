@@ -1,15 +1,16 @@
 import 'dart:async';
 
+import 'package:bottle_crm/bloc/account_bloc.dart';
+import 'package:bottle_crm/bloc/auth_bloc.dart';
+import 'package:bottle_crm/bloc/contact_bloc.dart';
+import 'package:bottle_crm/bloc/dashboard_bloc.dart';
+import 'package:bottle_crm/bloc/lead_bloc.dart';
+import 'package:bottle_crm/bloc/opportunity_bloc.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:flutter_crm/bloc/account_bloc.dart';
-import 'package:flutter_crm/bloc/auth_bloc.dart';
-import 'package:flutter_crm/bloc/contact_bloc.dart';
-import 'package:flutter_crm/bloc/dashboard_bloc.dart';
-import 'package:flutter_crm/bloc/lead_bloc.dart';
-import 'package:flutter_crm/bloc/opportunity_bloc.dart';
-import 'package:flutter_crm/utils/utils.dart';
+
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';

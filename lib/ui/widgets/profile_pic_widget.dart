@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/utils/utils.dart';
 
 class ProfilePicViewWidget extends StatelessWidget {
   final List profilePicsList;

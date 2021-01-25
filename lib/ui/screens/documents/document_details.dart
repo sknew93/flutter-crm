@@ -2,10 +2,10 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/document_bloc.dart';
-import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/ui/widgets/profile_pic_widget.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/bloc/document_bloc.dart';
+import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/ui/widgets/profile_pic_widget.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -275,7 +275,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                     ),
                     Container(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
                             onTap: () async {
@@ -288,7 +288,7 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey[300])),
                               padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 15.0),
+                                  vertical: 8.0, horizontal: 12.0),
                               child: Row(
                                 children: [
                                   Container(
@@ -317,11 +317,10 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                               showDeleteDocumentAlertDialog(context);
                             },
                             child: Container(
-                              margin: EdgeInsets.only(left: 10.0),
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey[300])),
                               padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 15.0),
+                                  vertical: 8.0, horizontal: 12.0),
                               child: Row(
                                 children: [
                                   Container(
@@ -360,11 +359,10 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                               });
                             },
                             child: Container(
-                              margin: EdgeInsets.only(left: 10.0),
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey[300])),
                               padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 15.0),
+                                  vertical: 8.0, horizontal: 12.0),
                               child: Row(
                                 children: [
                                   Container(

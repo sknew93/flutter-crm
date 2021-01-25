@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crm/utils/utils.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 
 class HeaderTextWidget extends StatelessWidget {

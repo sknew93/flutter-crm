@@ -1,8 +1,8 @@
-import 'package:flutter_crm/model/company.dart';
-import 'package:flutter_crm/model/contact.dart';
-import 'package:flutter_crm/model/lead.dart';
-import 'package:flutter_crm/model/profile.dart';
-import 'package:flutter_crm/model/team.dart';
+import 'package:bottle_crm/model/company.dart';
+import 'package:bottle_crm/model/contact.dart';
+import 'package:bottle_crm/model/lead.dart';
+import 'package:bottle_crm/model/profile.dart';
+import 'package:bottle_crm/model/team.dart';
 import 'package:intl/intl.dart';
 
 class Account {

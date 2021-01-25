@@ -1,11 +1,10 @@
+import 'package:bottle_crm/bloc/opportunity_bloc.dart';
+import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/utils/utils.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_crm/bloc/opportunity_bloc.dart';
-import 'package:flutter_crm/model/opportunities.dart';
-import 'package:flutter_crm/ui/widgets/bottom_navigation_bar.dart';
-import 'package:flutter_crm/utils/utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:random_color/random_color.dart';
@@ -190,7 +189,10 @@ class _OpportunityDetailsState extends State<OpportunityDetails> {
                       ),
                       Container(
                         child: Text(
-                          opportunityBloc.currentOpportunity.account.name,
+                          (opportunityBloc.currentOpportunity.account.name !=
+                                  null)
+                              ? opportunityBloc.currentOpportunity.account.name
+                              : "N/A",
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),
@@ -327,9 +329,11 @@ class _OpportunityDetailsState extends State<OpportunityDetails> {
                       ),
                       Container(
                         child: Text(
-                          DateFormat("dd MMM, yyyy").format(
-                              DateFormat("yyyy-MM-dd").parse(
-                                  opportunityBloc.currentOpportunity.closedOn)),
+                          (opportunityBloc.currentOpportunity.closedOn != "")
+                              ? (DateFormat("dd MMM, yyyy").format(
+                                  DateFormat("yyyy-MM-dd").parse(opportunityBloc
+                                      .currentOpportunity.closedOn)))
+                              : "N/A",
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),
@@ -414,28 +418,46 @@ class _OpportunityDetailsState extends State<OpportunityDetails> {
                       ),
                       Container(
                         height: screenHeight / 33,
-                        child: ListView.builder(
-                            // physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount:
-                                opportunityBloc.currentOpportunity.tags.length,
-                            itemBuilder: (BuildContext context, int tagIndex) {
-                              return Container(
+                        child: (opportunityBloc.currentOpportunity.tags.length >
+                                0)
+                            ? ListView.builder(
+                                // physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: opportunityBloc
+                                    .currentOpportunity.tags.length,
+                                itemBuilder:
+                                    (BuildContext context, int tagIndex) {
+                                  return Container(
+                                    margin: EdgeInsets.only(right: 5.0),
+                                    alignment: Alignment.center,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 5.0),
+                                    color: randomColor.randomColor(
+                                        colorBrightness: ColorBrightness.light),
+                                    child: Text(
+                                      opportunityBloc.currentOpportunity
+                                          .tags[tagIndex]['name'],
+                                      style: GoogleFonts.robotoSlab(
+                                          textStyle: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12.0)),
+                                    ),
+                                  );
+                                })
+                            : Container(
                                 margin: EdgeInsets.only(right: 5.0),
                                 alignment: Alignment.center,
                                 padding: EdgeInsets.symmetric(horizontal: 5.0),
                                 color: randomColor.randomColor(
                                     colorBrightness: ColorBrightness.light),
                                 child: Text(
-                                  opportunityBloc.currentOpportunity
-                                      .tags[tagIndex]['name'],
+                                  "No Tags Assigned.",
                                   style: GoogleFonts.robotoSlab(
                                       textStyle: TextStyle(
                                           color: Colors.white, fontSize: 12.0)),
                                 ),
-                              );
-                            }),
+                              ),
                       ),
                       Container(
                           margin: EdgeInsets.symmetric(vertical: 5.0),
