@@ -275,43 +275,43 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                     ),
                     Container(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          GestureDetector(
-                            onTap: () async {
-                              await documentBLoc.updateCurrentEditDocument(
-                                  documentBLoc.currentDocument);
-                              await Navigator.pushNamed(
-                                  context, '/create_document');
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey[300])),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 12.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10.0),
-                                    child: SvgPicture.asset(
-                                      'assets/images/Icon_edit_color.svg',
-                                      width: screenWidth / 25,
-                                    ),
-                                  ),
-                                  Container(
-                                    child: Text(
-                                      "Edit",
-                                      style: GoogleFonts.robotoSlab(
-                                          textStyle: TextStyle(
-                                              color: Color.fromRGBO(
-                                                  117, 174, 51, 1),
-                                              fontSize: screenWidth / 25)),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () async {
+                          //     await documentBLoc.updateCurrentEditDocument(
+                          //         documentBLoc.currentDocument);
+                          //     await Navigator.pushNamed(
+                          //         context, '/create_document');
+                          //   },
+                          //   child: Container(
+                          //     decoration: BoxDecoration(
+                          //         border: Border.all(color: Colors.grey[300])),
+                          //     padding: EdgeInsets.symmetric(
+                          //         vertical: 8.0, horizontal: 12.0),
+                          //     child: Row(
+                          //       children: [
+                          //         Container(
+                          //           margin: EdgeInsets.only(right: 10.0),
+                          //           child: SvgPicture.asset(
+                          //             'assets/images/Icon_edit_color.svg',
+                          //             width: screenWidth / 25,
+                          //           ),
+                          //         ),
+                          //         Container(
+                          //           child: Text(
+                          //             "Edit",
+                          //             style: GoogleFonts.robotoSlab(
+                          //                 textStyle: TextStyle(
+                          //                     color: Color.fromRGBO(
+                          //                         117, 174, 51, 1),
+                          //                     fontSize: screenWidth / 25)),
+                          //           ),
+                          //         )
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                           GestureDetector(
                             onTap: () {
                               showDeleteDocumentAlertDialog(context);
@@ -343,6 +343,9 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                                 ],
                               ),
                             ),
+                          ),
+                          SizedBox(
+                            width: screenWidth * 0.02,
                           ),
                           GestureDetector(
                             onTap: () async {

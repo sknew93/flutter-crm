@@ -471,9 +471,9 @@ class _OpportunityDetailsState extends State<OpportunityDetails> {
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          // await leadBloc
-                          //     .updateCurrentEditLead(leadBloc.currentLead);
-                          // Navigator.pushNamed(context, '/create_lead');
+                          await opportunityBloc.updateCurrentEditOpportunity(
+                              opportunityBloc.currentOpportunity);
+                          Navigator.pushNamed(context, '/create_opportunity');
                         },
                         child: Container(
                           decoration: BoxDecoration(

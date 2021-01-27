@@ -236,30 +236,31 @@ class _DocumentsListState extends State<DocumentsList> {
                               ),
                               Row(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () async {
-                                      await documentBLoc
-                                          .updateCurrentEditDocument(
-                                              _documents[index]);
-                                      await Navigator.pushNamed(
-                                          context, '/create_document');
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(right: 10.0),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1.0,
-                                            color: Colors.grey[300]),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(3.0)),
-                                      ),
-                                      padding: EdgeInsets.all(4.0),
-                                      child: SvgPicture.asset(
-                                        'assets/images/Icon_edit_color.svg',
-                                        width: screenWidth / 23,
-                                      ),
-                                    ),
-                                  ),
+                                  // EDIT BUTTON DISABLED
+                                  // GestureDetector(
+                                  //   onTap: () async {
+                                  //     await documentBLoc
+                                  //         .updateCurrentEditDocument(
+                                  //             _documents[index]);
+                                  //     await Navigator.pushNamed(
+                                  //         context, '/create_document');
+                                  //   },
+                                  //   child: Container(
+                                  //     margin: EdgeInsets.only(right: 10.0),
+                                  //     decoration: BoxDecoration(
+                                  //       border: Border.all(
+                                  //           width: 1.0,
+                                  //           color: Colors.grey[300]),
+                                  //       borderRadius: BorderRadius.all(
+                                  //           Radius.circular(3.0)),
+                                  //     ),
+                                  //     padding: EdgeInsets.all(4.0),
+                                  //     child: SvgPicture.asset(
+                                  //       'assets/images/Icon_edit_color.svg',
+                                  //       width: screenWidth / 23,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   GestureDetector(
                                     onTap: () {
                                       showDeleteDocumentAlertDialog(

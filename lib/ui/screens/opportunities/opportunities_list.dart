@@ -349,6 +349,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
             return GestureDetector(
               onTap: () {
                 opportunityBloc.currentOpportunity = _opportunities[index];
+                print(opportunityBloc.currentOpportunity);
                 opportunityBloc.currentOpportunityIndex = index;
                 Navigator.pushNamed(context, '/opportunity_details');
               },
