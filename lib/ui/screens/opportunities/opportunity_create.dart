@@ -864,56 +864,64 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
               ),
             ),
 
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: Text(
-                      'Due Date :',
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: screenWidth / 25)),
-                    ),
-                  ),
-                  Container(
-                      height: 48.0,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          border: Border.all(color: Colors.grey, width: 1)),
-                      child: GestureDetector(
-                        onTap: () {
-                          _selectDate(context);
-                        },
-                        child: Center(
-                          child: (_selectedDate != null)
-                              ? Text(
-                                  DateFormat("dd-MM-yyyy").format(
-                                      DateFormat("yyyy-MM-dd")
-                                          .parse(_selectedDate.toString())),
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.robotoSlab(),
-                                )
-                              : (opportunityBloc.currentEditOpportunityId !=
-                                      null)
-                                  ? Text(
-                                      opportunityBloc
-                                          .currentEditOpportunity['closed_on'],
-                                      style: GoogleFonts.robotoSlab())
-                                  : Text('Please choose a Due Date.',
-                                      style: GoogleFonts.robotoSlab(
-                                          color: Colors.grey)),
+            (opportunityBloc.currentEditOpportunityId == null)
+                ? Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(bottom: 5.0),
+                          child: Text(
+                            'Due Date :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25)),
+                          ),
                         ),
-                      )),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
+                        GestureDetector(
+                          onTap: () {
+                            _selectDate(context);
+                            print('clicked');
+                          },
+                          child: Container(
+                              height: 48.0,
+                              margin: EdgeInsets.only(bottom: 5.0),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  border:
+                                      Border.all(color: Colors.grey, width: 1)),
+                              child: Center(
+                                child: (_selectedDate != null)
+                                    ? Text(
+                                        DateFormat("dd-MM-yyyy").format(
+                                            DateFormat("yyyy-MM-dd").parse(
+                                                _selectedDate.toString())),
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.robotoSlab(),
+                                      )
+                                    : (opportunityBloc
+                                                .currentEditOpportunityId !=
+                                            null)
+                                        ? Text(
+                                            opportunityBloc
+                                                    .currentEditOpportunity[
+                                                'closed_on'],
+                                            style: GoogleFonts.robotoSlab())
+                                        : Text('Please choose a Due Date.',
+                                            style: GoogleFonts.robotoSlab(
+                                                color: Colors.grey)),
+                              )),
+                        ),
+                        Divider(color: Colors.grey)
+                      ],
+                    ),
+                  )
+                : Container(),
             Container(
               child: Column(
                 children: [
@@ -1050,9 +1058,12 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      result = await FilePicker.platform.pickFiles();
+                      result = await FilePicker.platform
+                          .pickFiles(allowMultiple: false);
                       setState(() {
+                        _isLoading = true;
                         file = result.files.first;
+                        _isLoading = false;
                       });
                     },
                     child: Container(
@@ -1133,7 +1144,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
-                      opportunityBloc.cancelCurrentEditOpportunity()();
+                      opportunityBloc.cancelCurrentEditOpportunity();
                     },
                     child: Container(
                       child: Text(

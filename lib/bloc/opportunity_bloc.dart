@@ -212,6 +212,8 @@ class OpportunityBloc {
           ? []
           : editOpportunity.opportunityAttachment[0]['file_path']
     };
+
+    print(_currentEditOpportunity);
   }
 
   Future editOpportunity([file]) async {
@@ -226,6 +228,8 @@ class OpportunityBloc {
     _currencyList.forEach((element) {
       if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
         _copyOfCurrentEditOpportunity['currency'] = element[0];
+      } else {
+        _copyOfCurrentEditOpportunity['currency'] = "";
       }
     });
     _copyOfCurrentEditOpportunity['probability'] =
@@ -244,9 +248,11 @@ class OpportunityBloc {
             .toList()
             .toString();
 
-    _copyOfCurrentEditOpportunity['closed_on'] = DateFormat("yyyy-MM-dd")
-        .format(DateFormat("dd-MM-yyyy")
-            .parse(_copyOfCurrentEditOpportunity['closed_on']));
+    // if (_copyOfCurrentEditOpportunity['closed_on'] != "") {
+    //   _copyOfCurrentEditOpportunity['closed_on'] = DateFormat("yyyy-MM-dd")
+    //       .format(DateFormat("dd-MM-yyyy")
+    //           .parse(_copyOfCurrentEditOpportunity['closed_on']));
+    // }
     _copyOfCurrentEditOpportunity['tags'] =
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
 
@@ -254,7 +260,7 @@ class OpportunityBloc {
         .editOpportunity(
             _copyOfCurrentEditOpportunity, _currentEditOpportunityId, file)
         .then((response) async {
-      var res = json.decode(response);
+      var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
       }
