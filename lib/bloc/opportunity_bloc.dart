@@ -111,11 +111,16 @@ class OpportunityBloc {
         _copyOfCurrentEditOpportunity['account'] = element[0].toString();
       }
     });
-    _currencyList.forEach((element) {
-      if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
-        _copyOfCurrentEditOpportunity['currency'] = element[0];
-      }
-    });
+    if (_copyOfCurrentEditOpportunity['currency'] == "" ||
+        _copyOfCurrentEditOpportunity['currency'] == null) {
+      _copyOfCurrentEditOpportunity['currency'] = "";
+    } else {
+      _currencyList.forEach((element) {
+        if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
+          _copyOfCurrentEditOpportunity['currency'] = element[0];
+        }
+      });
+    }
     _copyOfCurrentEditOpportunity['probability'] =
         _copyOfCurrentEditOpportunity['probability'].toString();
 
@@ -132,17 +137,25 @@ class OpportunityBloc {
             .toList()
             .toString();
 
-    _copyOfCurrentEditOpportunity['due_date'] = DateFormat("yyyy-MM-dd").format(
-        DateFormat("dd-MM-yyyy")
-            .parse(_copyOfCurrentEditOpportunity['closed_on']));
+    if (_copyOfCurrentEditOpportunity['closed_on'] != "")
+      _copyOfCurrentEditOpportunity['due_date'] = DateFormat("yyyy-MM-dd")
+          .format(DateFormat("dd-MM-yyyy")
+              .parse(_copyOfCurrentEditOpportunity['closed_on']));
     _copyOfCurrentEditOpportunity['tags'] =
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
     print(_copyOfCurrentEditOpportunity);
+    if (_copyOfCurrentEditOpportunity != null) {
+      _copyOfCurrentEditOpportunity
+          .removeWhere((key, value) => value.runtimeType != String);
+    }
+    print(_copyOfCurrentEditOpportunity);
+
     await CrmService()
-            .createOpportunity(_copyOfCurrentEditOpportunity, file)
+            .createOpportunity(_copyOfCurrentEditOpportunity)
             .then((response) async {
       print(response);
-      var res = json.decode(response);
+      // var res = json.decode(response);  # for multipartrequest
+      var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
       }
@@ -157,7 +170,7 @@ class OpportunityBloc {
   }
 
   cancelCurrentEditOpportunity() {
-    opportunityBloc.currentEditOpportunityId = null;
+    _currentEditOpportunityId = null;
     _currentEditOpportunity = {
       'name': "",
       'account': "",
