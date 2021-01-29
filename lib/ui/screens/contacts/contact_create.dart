@@ -25,11 +25,11 @@ class _CreateContactState extends State<CreateContact> {
   List countiresForDropDown = leadBloc.countries;
   bool _isLoading = false;
 
-  FocusNode _focusErr;
-  FocusNode _firstNameFocusNode = FocusNode();
-  FocusNode _lastNameFocusNode = FocusNode();
-  FocusNode _phoneFocusNode = FocusNode();
-  FocusNode _emailAddressFocusNode = FocusNode();
+  FocusNode _focuserr;
+  FocusNode _firstNameFocusNode = new FocusNode();
+  FocusNode _lastNameFocusNode = new FocusNode();
+  FocusNode _phoneFocusNode = new FocusNode();
+  FocusNode _emailAddressFocusNode = new FocusNode();
   Map _errors;
 
   @override
@@ -37,35 +37,28 @@ class _CreateContactState extends State<CreateContact> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    if (_focuserr != null) {
+      _focuserr.dispose();
+    }
+    _firstNameFocusNode.dispose();
+    _lastNameFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    _emailAddressFocusNode.dispose();
+    super.dispose();
+  }
+
   focusError() {
     setState(() {
       FocusManager.instance.primaryFocus.unfocus();
-      Focus.of(context).requestFocus(_focusErr);
+      FocusScope.of(context).unfocus();
+      Focus.of(context).requestFocus(_focuserr);
     });
   }
 
-  void showErrorMessage(BuildContext context, String errorContent) {
-    Flushbar(
-      backgroundColor: Colors.white,
-      messageText: Text(errorContent,
-          style:
-              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
-      isDismissible: false,
-      mainButton: FlatButton(
-        child: Text('TRY AGAIN',
-            style: GoogleFonts.robotoSlab(
-                textStyle: TextStyle(color: Theme.of(context).accentColor))),
-        onPressed: () {
-          Navigator.of(context).pop(true);
-          _saveForm();
-        },
-      ),
-      duration: Duration(seconds: 10),
-    )..show(context);
-  }
-
   _saveForm() async {
-    _focusErr = null;
+    _focuserr = null;
     setState(() {
       _errors = null;
     });
@@ -99,37 +92,54 @@ class _CreateContactState extends State<CreateContact> {
       Navigator.pushReplacementNamed(context, '/contacts');
     } else if (_result['error'] == true) {
       setState(() {
-        _errors = _result['errors'];
+        _errors = _result['errors']['contact_errors'];
       });
 
-      if (_errors['first_name'] != null && _focusErr == null) {
-        _focusErr = _firstNameFocusNode;
+      if (_errors['first_name'] != null && _focuserr == null) {
+        _focuserr = _firstNameFocusNode;
         focusError();
       }
 
-      if (_errors['last_name'] != null && _focusErr == null) {
-        _focusErr = _lastNameFocusNode;
+      if (_errors['last_name'] != null && _focuserr == null) {
+        _focuserr = _lastNameFocusNode;
         focusError();
       }
 
-      if (_errors['phone'] != null && _focusErr == null) {
-        _focusErr = _phoneFocusNode;
+      if (_errors['phone'] != null && _focuserr == null) {
+        _focuserr = _phoneFocusNode;
         focusError();
       }
 
-      if (_errors['email_address'] != null && _focusErr == null) {
-        _focusErr = _emailAddressFocusNode;
+      if (_errors['email'] != null && _focuserr == null) {
+        _focuserr = _emailAddressFocusNode;
         focusError();
-      } else {
-        print(_errors);
       }
     } else {
       setState(() {
         _errors = null;
       });
-
       showErrorMessage(context, "Something went wrong.");
     }
+  }
+
+  void showErrorMessage(BuildContext context, String errorContent) {
+    Flushbar(
+      backgroundColor: Colors.white,
+      messageText: Text(errorContent,
+          style:
+              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
+      isDismissible: false,
+      mainButton: FlatButton(
+        child: Text('TRY AGAIN',
+            style: GoogleFonts.robotoSlab(
+                textStyle: TextStyle(color: Theme.of(context).accentColor))),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+          _saveForm();
+        },
+      ),
+      duration: Duration(seconds: 10),
+    )..show(context);
   }
 
   Widget _buildForm() {
@@ -184,6 +194,9 @@ class _CreateContactState extends State<CreateContact> {
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value.isEmpty) {
+                            if (_focuserr == null) {
+                              _focuserr = _firstNameFocusNode;
+                            }
                             return 'This field is required.';
                           }
                           return null;
@@ -193,6 +206,17 @@ class _CreateContactState extends State<CreateContact> {
                         },
                       ),
                     ),
+                    _errors != null && _errors['first_name'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['first_name'][0],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -244,6 +268,9 @@ class _CreateContactState extends State<CreateContact> {
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value.isEmpty) {
+                            if (_focuserr == null) {
+                              _focuserr = _lastNameFocusNode;
+                            }
                             return 'This field is required.';
                           }
                           return null;
@@ -253,6 +280,17 @@ class _CreateContactState extends State<CreateContact> {
                         },
                       ),
                     ),
+                    _errors != null && _errors['last_name'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['last_name'][0],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -286,7 +324,6 @@ class _CreateContactState extends State<CreateContact> {
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
                         focusNode: _phoneFocusNode,
-                        maxLines: 1,
                         initialValue: contactBloc.currentEditContact['phone'],
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(12.0),
@@ -303,6 +340,9 @@ class _CreateContactState extends State<CreateContact> {
                         keyboardType: TextInputType.phone,
                         validator: (value) {
                           if (value.isEmpty) {
+                            if (_focuserr == null) {
+                              _focuserr = _phoneFocusNode;
+                            }
                             return 'This field is required.';
                           }
                           return null;
@@ -312,6 +352,17 @@ class _CreateContactState extends State<CreateContact> {
                         },
                       ),
                     ),
+                    _errors != null && _errors['phone'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['phone'][0],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -345,7 +396,6 @@ class _CreateContactState extends State<CreateContact> {
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
                         focusNode: _emailAddressFocusNode,
-                        maxLines: 1,
                         initialValue: contactBloc.currentEditContact['email'],
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(12.0),
@@ -362,7 +412,18 @@ class _CreateContactState extends State<CreateContact> {
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value.isEmpty) {
+                            if (_focuserr == null) {
+                              _focuserr = _emailAddressFocusNode;
+                            }
                             return 'This field is required.';
+                          }
+                          if (!RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value)) {
+                            if (_focuserr == null) {
+                              _focuserr = _emailAddressFocusNode;
+                            }
+                            return 'Enter valid email address.';
                           }
                           return null;
                         },
@@ -371,6 +432,17 @@ class _CreateContactState extends State<CreateContact> {
                         },
                       ),
                     ),
+                    _errors != null && _errors['email'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['email'][0],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -808,12 +880,6 @@ class _CreateContactState extends State<CreateContact> {
                             hintStyle: GoogleFonts.robotoSlab(
                                 textStyle: TextStyle(fontSize: 14.0))),
                         keyboardType: TextInputType.multiline,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'This field is required.';
-                          }
-                          return null;
-                        },
                         onSaved: (value) {
                           contactBloc.currentEditContact['description'] = value;
                         },

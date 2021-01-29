@@ -214,7 +214,7 @@ class _SubDomainState extends State<SubDomain> {
                 subDomainBodyWidget(),
                 FooterBtnWidget(
                   labelText: "Don't Have An Account?",
-                  buttonLabelText: "Register.",
+                  buttonLabelText: "Register",
                   routeName: "/user_register",
                 )
               ],

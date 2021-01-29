@@ -30,6 +30,9 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
   bool _isLoading = false;
   FocusNode _focuserr;
   FocusNode _nameFocusNode = new FocusNode();
+  FocusNode _stageFocusNode = new FocusNode();
+  FocusNode _probabilityFocusNode = new FocusNode();
+
   DateTime _selectedDate;
 
   @override
@@ -37,15 +40,17 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    if (_focuserr != null) {
-      _focuserr.dispose();
-    }
-    _nameFocusNode.dispose();
+  // @override
+  // void dispose() {
+  //   if (_focuserr != null) {
+  //     _focuserr.dispose();
+  //   }
+  //   _nameFocusNode.dispose();
+  //   _stageFocusNode.dispose();
+  //   _probabilityFocusNode.dispose();
 
-    super.dispose();
-  }
+  //   super.dispose();
+  // }
 
   focusError() {
     setState(() {
@@ -109,6 +114,14 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
       });
       if (_errors['name'] != null && _focuserr == null) {
         _focuserr = _nameFocusNode;
+        focusError();
+      }
+      if (_errors['stage'] != null && _focuserr == null) {
+        _focuserr = _stageFocusNode;
+        focusError();
+      }
+      if (_errors['probability'] != null && _focuserr == null) {
+        _focuserr = _probabilityFocusNode;
         focusError();
       }
     } else {
@@ -475,6 +488,10 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                                   fontSize: screenWidth / 25)),
                           children: <TextSpan>[
                             TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
                                 text: ': ', style: GoogleFonts.robotoSlab())
                           ],
                         ),
@@ -482,8 +499,10 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: DropdownButtonFormField(
+                      focusNode: _stageFocusNode,
                       decoration: InputDecoration(
                           border: boxBorder(),
+                          focusedBorder: boxBorder(),
                           contentPadding: EdgeInsets.all(12.0)),
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(color: Colors.black)),
@@ -502,6 +521,15 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                           value: location[0],
                         );
                       }).toList(),
+                      validator: (value) {
+                        if (value == null) {
+                          if (_focuserr == null) {
+                            _focuserr = _stageFocusNode;
+                          }
+                          return 'This field is required.';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   _errors != null && _errors['stage'] != null
@@ -588,35 +616,66 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   Container(
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(bottom: 5.0),
-                      child: Text(
-                        'Probability :',
-                        style: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(
-                                color: Theme.of(context).secondaryHeaderColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth / 25)),
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Probability',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
                       )),
-                  NumberInputWithIncrementDecrement(
-                    controller: TextEditingController(),
-                    initialValue:
-                        opportunityBloc.currentEditOpportunity['probability'],
-                    widgetContainerDecoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 1,
-                        )),
-                    // incIconDecoration: BoxDecoration(border: null),
-                    numberFieldDecoration: InputDecoration(
-                        border: null,
-                        hintText: 'Input value between 0 and 100',
-                        labelStyle: null),
-                    onSubmitted: (value) {
-                      opportunityBloc.currentEditOpportunity['probability'] =
-                          value;
-                    },
-                    min: 0,
-                    max: 100,
+                  Focus(
+                    autofocus: true,
+                    focusNode: _probabilityFocusNode,
+                    child: NumberInputWithIncrementDecrement(
+                      controller: TextEditingController(),
+                      initialValue:
+                          opportunityBloc.currentEditOpportunity['probability'],
+                      widgetContainerDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1,
+                          )),
+                      // incIconDecoration: BoxDecoration(border: null),
+                      numberFieldDecoration: InputDecoration(
+                          border: null,
+                          hintText: 'Input value between 1 and 100',
+                          labelStyle: null),
+                      onDecrement: (value) {
+                        opportunityBloc.currentEditOpportunity['probability'] -=
+                            1;
+                      },
+                      onIncrement: (value) {
+                        opportunityBloc.currentEditOpportunity['probability'] +=
+                            1;
+                      },
+                      onSubmitted: (value) {
+                        opportunityBloc.currentEditOpportunity['probability'] =
+                            value;
+                      },
+                      min: 0,
+                      max: 100,
+                      validator: (value) {
+                        if (int.parse(value) == 0) {
+                          if (_focuserr == null) {
+                            _focuserr = _probabilityFocusNode;
+                          }
+                          return 'This field is required and needs to be greater than 0.';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
                   _errors != null && _errors['probability'] != null
                       ? Container(
@@ -811,10 +870,6 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                                   fontWeight: FontWeight.w500,
                                   fontSize: screenWidth / 25)),
                           children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
                             TextSpan(
                                 text: ': ', style: GoogleFonts.robotoSlab())
                           ],
@@ -1058,8 +1113,9 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      result = await FilePicker.platform
-                          .pickFiles(allowMultiple: false);
+                      result = await FilePicker.platform.pickFiles(
+                        allowMultiple: false,
+                      );
                       setState(() {
                         _isLoading = true;
                         file = result.files.first;

@@ -1,4 +1,5 @@
 import 'package:bottle_crm/bloc/opportunity_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bottle_crm/bloc/account_bloc.dart';
 import 'package:bottle_crm/bloc/contact_bloc.dart';
@@ -15,19 +16,62 @@ class SquareFloatingActionButton extends StatelessWidget {
 
   SquareFloatingActionButton(this._route, this.btnTitle, this.moduleName);
 
+  void showAlertDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text(
+              "Alert",
+              style: GoogleFonts.robotoSlab(
+                  color: Theme.of(context).secondaryHeaderColor),
+            ),
+            content: Text(
+              "You don't have any contacts, Please create contact first.",
+              style: GoogleFonts.robotoSlab(fontSize: 15.0),
+            ),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () {
+                    currentBottomNavigationIndex = "3";
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/contacts");
+                  },
+                  child: Text(
+                    "Create",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+              CupertinoDialogAction(
+                  textStyle: TextStyle(color: Colors.red),
+                  isDefaultAction: true,
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: GoogleFonts.robotoSlab(),
+                  )),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (moduleName == "Accounts") {
+        if (moduleName == "Accounts" && contactBloc.contacts.length == 0) {
+          showAlertDialog(context);
+        } else {
           accountBloc.cancelCurrentEditAccount();
+          leadBloc.cancelCurrentEditLead();
+          contactBloc.cancelCurrentEditContact();
+          userBloc.cancelCurrentEditUser();
+          documentBLoc.cancelCurrentEditDocument();
+          opportunityBloc.cancelCurrentEditOpportunity();
+          Navigator.pushNamed(context, _route);
         }
-        leadBloc.cancelCurrentEditLead();
-        contactBloc.cancelCurrentEditContact();
-        userBloc.cancelCurrentEditUser();
-        documentBLoc.cancelCurrentEditDocument();
-        opportunityBloc.cancelCurrentEditOpportunity();
-        Navigator.pushNamed(context, _route);
       },
       child: Container(
         width: screenWidth * 0.4,

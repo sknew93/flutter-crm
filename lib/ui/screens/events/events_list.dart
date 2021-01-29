@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:bottle_crm/ui/widgets/side_menu.dart';
 import 'package:bottle_crm/utils/utils.dart';
 
-class EventsScreen extends StatefulWidget {
-  EventsScreen();
+class EventsList extends StatefulWidget {
+  EventsList();
   @override
-  State createState() => _EventsScreenState();
+  State createState() => _EventsListState();
 }
 
-class _EventsScreenState extends State<EventsScreen> {
+class _EventsListState extends State<EventsList> {
   @override
   void initState() {
     super.initState();

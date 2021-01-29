@@ -18,6 +18,7 @@ class Opportunity {
   List<Contact> contacts;
   Profile closedBy;
   String closedOn;
+  String dueDate;
   String description;
   List<Profile> assignedTo;
   Profile createdBy;
@@ -36,6 +37,7 @@ class Opportunity {
       this.amount,
       this.closedBy,
       this.closedOn,
+      this.dueDate,
       this.company,
       this.createdBy,
       this.createdOn,
@@ -75,6 +77,8 @@ class Opportunity {
         : Profile();
     this.closedOn =
         opportunity['closed_on'] != null ? opportunity['closed_on'] : "";
+    this.dueDate =
+        opportunity['due_date'] != null ? opportunity['due_date'] : "";
     this.description =
         opportunity['description'] != null ? opportunity['description'] : "";
     this.description =
@@ -121,6 +125,7 @@ class Opportunity {
       'contacts': contacts,
       'closed_by': closedBy,
       'closed_on': closedOn,
+      'due_date': dueDate,
       'description': description,
       'assigned_to': assignedTo,
       'created_by': createdBy,

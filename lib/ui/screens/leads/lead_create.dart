@@ -921,7 +921,9 @@ class _CreateLeadState extends State<CreateLead> {
                       onChanged: (value) {
                         leadBloc.currentEditLead['country'] = value;
                       },
-                      selectedItem: leadBloc.currentEditLead['country'],
+                      selectedItem: leadBloc.currentEditLead['country'] == ""
+                          ? null
+                          : leadBloc.currentEditLead['country'],
                       hint: 'Select Country',
                       showSearchBox: true,
                       showSelectedItem: false,

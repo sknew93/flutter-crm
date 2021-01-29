@@ -111,11 +111,16 @@ class OpportunityBloc {
         _copyOfCurrentEditOpportunity['account'] = element[0].toString();
       }
     });
-    _currencyList.forEach((element) {
-      if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
-        _copyOfCurrentEditOpportunity['currency'] = element[0];
-      }
-    });
+    if (_copyOfCurrentEditOpportunity['currency'] == "" ||
+        _copyOfCurrentEditOpportunity['currency'] == null) {
+      _copyOfCurrentEditOpportunity['currency'] = "";
+    } else {
+      _currencyList.forEach((element) {
+        if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
+          _copyOfCurrentEditOpportunity['currency'] = element[0];
+        }
+      });
+    }
     _copyOfCurrentEditOpportunity['probability'] =
         _copyOfCurrentEditOpportunity['probability'].toString();
 
@@ -132,29 +137,40 @@ class OpportunityBloc {
             .toList()
             .toString();
 
-    _copyOfCurrentEditOpportunity['closed_on'] = DateFormat("yyyy-MM-dd")
-        .format(DateFormat("dd-MM-yyyy")
-            .parse(_copyOfCurrentEditOpportunity['closed_on']));
+    if (_copyOfCurrentEditOpportunity['closed_on'] != "")
+      _copyOfCurrentEditOpportunity['due_date'] = DateFormat("yyyy-MM-dd")
+          .format(DateFormat("dd-MM-yyyy")
+              .parse(_copyOfCurrentEditOpportunity['closed_on']));
     _copyOfCurrentEditOpportunity['tags'] =
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
     print(_copyOfCurrentEditOpportunity);
+    if (_copyOfCurrentEditOpportunity != null) {
+      _copyOfCurrentEditOpportunity
+          .removeWhere((key, value) => value.runtimeType != String);
+    }
+    print(_copyOfCurrentEditOpportunity);
+
     await CrmService()
-        .createOpportunity(_copyOfCurrentEditOpportunity, file)
-        .then((response) async {
-      var res = json.decode(response);
+            .createOpportunity(_copyOfCurrentEditOpportunity)
+            .then((response) async {
+      print(response);
+      // var res = json.decode(response);  # for multipartrequest
+      var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
       }
       result = res;
-    }).catchError((onError) {
-      print("editOpportunity Error >> $onError");
-      result = {"status": "error", "message": "Something went wrong"};
-    });
+    })
+        // .catchError((onError) {
+        //   print("editOpportunity Error >> $onError");
+        //   result = {"status": "error", "message": "Something went wrong"};
+        // })
+        ;
     return result;
   }
 
   cancelCurrentEditOpportunity() {
-    opportunityBloc.currentEditOpportunityId = null;
+    _currentEditOpportunityId = null;
     _currentEditOpportunity = {
       'name': "",
       'account': "",
@@ -225,11 +241,10 @@ class OpportunityBloc {
         _copyOfCurrentEditOpportunity['account'] = element[0].toString();
       }
     });
+
     _currencyList.forEach((element) {
       if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
         _copyOfCurrentEditOpportunity['currency'] = element[0];
-      } else {
-        _copyOfCurrentEditOpportunity['currency'] = "";
       }
     });
     _copyOfCurrentEditOpportunity['probability'] =
@@ -255,6 +270,8 @@ class OpportunityBloc {
     // }
     _copyOfCurrentEditOpportunity['tags'] =
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
+
+    _copyOfCurrentEditOpportunity['opportunity_attachment'] = "";
 
     await CrmService()
         .editOpportunity(

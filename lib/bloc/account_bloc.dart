@@ -51,12 +51,12 @@ class AccountBloc {
       _closedAccounts.clear();
       _assignedToList.clear();
 
-      res['open_accounts'].forEach((_account) {
+      res['active_accounts']['open_accounts'].forEach((_account) {
         Account account = Account.fromJson(_account);
         _openAccounts.add(account);
       });
 
-      res['close_accounts'].forEach((_account) {
+      res['closed_accounts']['close_accounts'].forEach((_account) {
         Account account = Account.fromJson(_account);
         _closedAccounts.add(account);
       });
