@@ -162,7 +162,9 @@ class _OpportunityDetailsState extends State<OpportunityDetails> {
                       ),
                       Container(
                         child: Text(
-                          opportunityBloc.currentOpportunity.amount,
+                          opportunityBloc.currentOpportunity.amount +
+                              " " +
+                              opportunityBloc.currentOpportunity.currency,
                           style: GoogleFonts.robotoSlab(
                               color: bottomNavBarTextColor,
                               fontSize: screenWidth / 24),

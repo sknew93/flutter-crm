@@ -354,6 +354,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                 Navigator.pushNamed(context, '/opportunity_details');
               },
               child: Container(
+                // height: screenHeight * 0.15,
                 margin: EdgeInsets.symmetric(vertical: 5.0),
                 color: Colors.white,
                 padding: EdgeInsets.all(10.0),
@@ -435,7 +436,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                         children: [
                           Container(
                             alignment: Alignment.centerRight,
-                            // width: screenWidth * 0.45,
+                            width: screenWidth * 0.45,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -448,8 +449,9 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                   ),
                                 ),
                                 Container(
+                                  width: screenWidth * 0.27,
                                   child: Text(
-                                    _opportunities[index].createdOnText != null
+                                    _opportunities[index].stage != null
                                         ? _opportunities[index]
                                             .stage
                                             .toLowerCase()
@@ -458,14 +460,14 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                     // overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.robotoSlab(
                                         color: bottomNavBarSelectedTextColor,
-                                        fontSize: screenWidth / 28),
+                                        fontSize: screenWidth / 30),
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           Container(
-                            // width: screenWidth * 0.45,
+                            width: screenWidth * 0.45,
                             alignment: Alignment.centerRight,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -479,6 +481,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                   ),
                                 ),
                                 Container(
+                                  width: screenWidth * 0.17,
                                   child: Text(
                                     _opportunities[index].leadSource != ""
                                         ? _opportunities[index]
@@ -486,10 +489,10 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                             .toLowerCase()
                                             .capitalizeFirstofEach()
                                         : "N/A",
-                                    // overflow: TextOverflow.clip,
+                                    // overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.robotoSlab(
                                         color: bottomNavBarSelectedTextColor,
-                                        fontSize: screenWidth / 28),
+                                        fontSize: screenWidth / 30),
                                   ),
                                 ),
                               ],

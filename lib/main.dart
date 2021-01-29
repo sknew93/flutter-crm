@@ -14,7 +14,7 @@ import 'package:bottle_crm/ui/screens/dashboard/dashboard.dart';
 import 'package:bottle_crm/ui/screens/documents/document_create.dart';
 import 'package:bottle_crm/ui/screens/documents/document_details.dart';
 import 'package:bottle_crm/ui/screens/documents/documents_list.dart';
-import 'package:bottle_crm/ui/screens/events/events_index.dart';
+import 'package:bottle_crm/ui/screens/events/events_list.dart';
 import 'package:bottle_crm/ui/screens/invoices/invoices_index.dart';
 import 'package:bottle_crm/ui/screens/leads/lead_create.dart';
 import 'package:bottle_crm/ui/screens/leads/lead_details.dart';
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
         '/documents': (BuildContext context) => DocumentsList(),
         '/create_document': (BuildContext context) => CreateDocument(),
         '/document_details': (BuildContext context) => DocumentDetails(),
-        '/events': (BuildContext context) => EventsScreen(),
+        '/events': (BuildContext context) => EventsList(),
         '/invoices': (BuildContext context) => InvoicesScreen(),
         '/leads_list': (BuildContext context) => LeadsList(),
         '/lead_details': (BuildContext context) => LeadDetails(),
