@@ -46,10 +46,10 @@ class _SplashScreenState extends State<SplashScreen> {
           preferences.getString('authToken') != "") {
         await authBloc.getProfileDetails();
         await dashboardBloc.fetchDashboardDetails();
+        await contactBloc.fetchContacts();
         await accountBloc.fetchAccounts();
         await leadBloc.fetchLeads();
         // await teamBloc.fetchTeams();
-        await contactBloc.fetchContacts();
         await opportunityBloc.fetchOpportunities();
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {

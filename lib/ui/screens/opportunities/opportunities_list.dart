@@ -377,13 +377,13 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                     style: GoogleFonts.robotoSlab(
                                         color: Theme.of(context)
                                             .secondaryHeaderColor,
-                                        fontSize: screenWidth / 24,
+                                        fontSize: screenWidth / 25,
                                         fontWeight: FontWeight.w600),
                                   ),
                                 ),
                                 Container(
                                   alignment: Alignment.centerRight,
-                                  width: screenWidth * 0.20,
+                                  width: screenWidth * 0.25,
                                   child: Text(
                                     _opportunities[index].createdOnText == ""
                                         ? _opportunities[index].createdOn
@@ -391,7 +391,8 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.robotoSlab(
                                         color: bottomNavBarTextColor,
-                                        fontSize: screenWidth / 27),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: screenWidth / 26),
                                   ),
                                 ),
                               ],
@@ -413,10 +414,12 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                 _opportunities[index].account.name != null
                                     ? "${_opportunities[index].account.name}"
                                     : "",
-                                // overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.robotoSlab(
                                     color: Colors.blue,
-                                    fontSize: screenWidth / 27,
+                                    fontSize: screenWidth / 26,
+                                    fontWeight: FontWeight.w500,
                                     textStyle: TextStyle(
                                         decoration: TextDecoration.underline)),
                               ),
@@ -440,10 +443,8 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                   child: Text(
                                     "Stage : ",
                                     style: GoogleFonts.robotoSlab(
-                                        color: Theme.of(context)
-                                            .secondaryHeaderColor,
-                                        fontSize: screenWidth / 30,
-                                        fontWeight: FontWeight.w600),
+                                        color: bottomNavBarTextColor,
+                                        fontSize: screenWidth / 30),
                                   ),
                                 ),
                                 Container(
@@ -456,7 +457,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                         : "N/A",
                                     // overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.robotoSlab(
-                                        color: bottomNavBarTextColor,
+                                        color: bottomNavBarSelectedTextColor,
                                         fontSize: screenWidth / 28),
                                   ),
                                 ),
@@ -473,10 +474,8 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                   child: Text(
                                     "Lead Source : ",
                                     style: GoogleFonts.robotoSlab(
-                                        color: Theme.of(context)
-                                            .secondaryHeaderColor,
-                                        fontSize: screenWidth / 30,
-                                        fontWeight: FontWeight.w600),
+                                        color: bottomNavBarTextColor,
+                                        fontSize: screenWidth / 30),
                                   ),
                                 ),
                                 Container(
@@ -489,7 +488,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                         : "N/A",
                                     // overflow: TextOverflow.clip,
                                     style: GoogleFonts.robotoSlab(
-                                        color: bottomNavBarTextColor,
+                                        color: bottomNavBarSelectedTextColor,
                                         fontSize: screenWidth / 28),
                                   ),
                                 ),
@@ -673,22 +672,25 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Container(
-            padding: EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                _buildTabBar(_opportunities.length),
-                _buildFilterWidget(),
-                _opportunities.length > 0
-                    ? Expanded(child: _buildOpportunityList())
-                    : Container(
-                        margin: EdgeInsets.only(top: 30.0),
-                        child: Text(
-                          "No Opportunity Found",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
-                      )
-              ],
+          SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.all(10.0),
+              height: screenHeight,
+              child: Column(
+                children: [
+                  _buildTabBar(_opportunities.length),
+                  _buildFilterWidget(),
+                  _opportunities.length > 0
+                      ? Expanded(child: _buildOpportunityList())
+                      : Container(
+                          margin: EdgeInsets.only(top: 30.0),
+                          child: Text(
+                            "No Opportunity Found",
+                            style: GoogleFonts.robotoSlab(),
+                          ),
+                        )
+                ],
+              ),
             ),
           ),
           new Align(

@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -65,10 +66,9 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
     if (picked != null && picked != DateTime.now()) {
       setState(() {
         _selectedDate = picked;
-        opportunityBloc.currentEditOpportunity['closed_on'] =
+        opportunityBloc.currentEditOpportunity['due_date'] =
             DateFormat("dd-MM-yyyy").format(
                 DateFormat("yyyy-MM-dd").parse(_selectedDate.toString()));
-        print(opportunityBloc.currentEditOpportunity['closed_on']);
       });
     } else {
       _selectedDate = null;
@@ -164,8 +164,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                                 text: '* ',
                                 style: GoogleFonts.robotoSlab(
                                     textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
+                            TextSpan(text: ':', style: GoogleFonts.robotoSlab())
                           ],
                         ),
                       )),
@@ -225,17 +224,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Account',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Account :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                       margin: EdgeInsets.only(bottom: 10.0),
@@ -245,12 +240,9 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         items: opportunityBloc.accountsObjforDropDown,
                         onChanged: print,
                         selectedItem: opportunityBloc
-                                        .currentEditOpportunity['account'] ==
-                                    "" ||
-                                opportunityBloc
-                                        .currentEditOpportunity['account'] ==
-                                    null
-                            ? ""
+                                    .currentEditOpportunity['account'] ==
+                                ""
+                            ? null
                             : opportunityBloc.currentEditOpportunity['account'],
                         hint: "Select Account",
                         showSearchBox: true,
@@ -328,9 +320,9 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
-                      initialValue:
-                          opportunityBloc.currentEditOpportunity['amount'],
-                      controller: null,
+                      initialValue: opportunityBloc
+                          .currentEditOpportunity['amount']
+                          .toString(),
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -343,10 +335,12 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                           errorStyle: GoogleFonts.robotoSlab(),
                           hintStyle: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [],
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       onSaved: (value) {
+                        if (value == null) return;
                         opportunityBloc.currentEditOpportunity['amount'] =
                             value;
                       },
@@ -375,17 +369,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Currency',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Currency :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                       margin: EdgeInsets.only(bottom: 10.0),
@@ -467,17 +457,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Stage',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Stage :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -527,17 +513,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Lead Source',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Lead Source :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -589,7 +571,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: Text(
-                        'Probability :',
+                        'Probability % :',
                         style: GoogleFonts.robotoSlab(
                             textStyle: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor,
@@ -612,6 +594,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         hintText: 'Input value between 0 and 100',
                         labelStyle: null),
                     onSubmitted: (value) {
+                      if (value == null) return;
                       opportunityBloc.currentEditOpportunity['probability'] =
                           value;
                     },
@@ -748,7 +731,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.only(bottom: 5.0),
                     child: Text(
-                      'Assign To :',
+                      'Assign Users :',
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                               color: Theme.of(context).secondaryHeaderColor,
@@ -804,21 +787,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Contacts',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Contacts :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 5.0),
@@ -826,12 +801,6 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       border: boxBorder(),
                       fillColor: Colors.white,
                       autovalidate: false,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please select one or more options';
-                        }
-                        return null;
-                      },
                       dataSource: contactBloc.contactsObjForDropdown,
                       textField: 'name',
                       valueField: 'id',
@@ -853,9 +822,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       initialValue:
                           opportunityBloc.currentEditOpportunity['contacts'],
                       onSaved: (value) {
-                        if (value == null) return;
-                        opportunityBloc.currentEditOpportunity['contacts'] =
-                            value;
+                        if (value == null) {
+                          opportunityBloc.currentEditOpportunity['contacts'] =
+                              [];
+                        } else {
+                          opportunityBloc.currentEditOpportunity['contacts'] =
+                              value;
+                        }
                       },
                     ),
                   ),
@@ -910,7 +883,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                                         ? Text(
                                             opportunityBloc
                                                     .currentEditOpportunity[
-                                                'closed_on'],
+                                                'due_date'],
                                             style: GoogleFonts.robotoSlab())
                                         : Text('Please choose a Due Date.',
                                             style: GoogleFonts.robotoSlab(
@@ -987,17 +960,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Description',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Description :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -1117,8 +1086,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      height: screenHeight * 0.06,
-                      width: screenWidth * 0.5,
+                      padding: EdgeInsets.all(10.0),
                       decoration: BoxDecoration(
                         color: submitButtonColor,
                         borderRadius: BorderRadius.all(Radius.circular(3.0)),
@@ -1126,15 +1094,18 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Text(
-                            opportunityBloc.currentEditOpportunityId == null
-                                ? 'Create Opportunity'
-                                : 'Edit Opportunity',
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth / 24)),
+                          Container(
+                            margin: EdgeInsets.only(right: 10.0),
+                            child: Text(
+                              opportunityBloc.currentEditOpportunityId == null
+                                  ? 'Create Opportunity'
+                                  : 'Edit Opportunity',
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: screenWidth / 24)),
+                            ),
                           ),
                           SvgPicture.asset('assets/images/arrow_forward.svg')
                         ],

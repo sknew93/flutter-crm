@@ -46,12 +46,11 @@ class _UserLoginState extends State<UserLogin> {
       });
       await authBloc.getProfileDetails();
       await dashboardBloc.fetchDashboardDetails();
+      await contactBloc.fetchContacts();
       await accountBloc.fetchAccounts();
       await leadBloc.fetchLeads();
       await opportunityBloc.fetchOpportunities();
-
       // await teamBloc.fetchTeams();
-      await contactBloc.fetchContacts();
       Navigator.pushNamedAndRemoveUntil(
           context, '/dashboard', (route) => false);
     } else if (result['error'] == true) {

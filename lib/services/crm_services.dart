@@ -322,33 +322,36 @@ class CrmService {
 
   Future createOpportunity(opportunity, [PlatformFile file]) async {
     await updateHeaders();
-    var uri = Uri.parse(
-      baseUrl + 'opportunities/',
-    );
-    var request = http.MultipartRequest(
-      'POST',
-      uri,
-    )
-      ..headers.addAll(getFormatedHeaders(_headers))
-      ..fields.addAll({
-        'name': opportunity['name'],
-        'account': opportunity['account'],
-        'amount': opportunity['amount'],
-        'currency': opportunity['currency'],
-        'stage': opportunity['stage'],
-        'lead_source': opportunity['lead_source'],
-        'probability': opportunity['probability'],
-        'description': opportunity['description'],
-        'teams': opportunity['teams'],
-        'assigned_to': opportunity['assigned_to'],
-        'contacts': opportunity['contacts'],
-        'closed_on': opportunity['closed_on'],
-        'tags': opportunity['tags'],
-      })
-      ..files.add(await http.MultipartFile.fromPath(
-          'opportunity_attachment', file.path));
-    final response = await request.send();
-    return await response.stream.bytesToString();
+    return await networkService.post(baseUrl + 'opportunities/',
+        headers: getFormatedHeaders(_headers), body: opportunity);
+    // await updateHeaders();
+    // var uri = Uri.parse(
+    //   baseUrl + 'opportunities/',
+    // );
+    // var request = http.MultipartRequest(
+    //   'POST',
+    //   uri,
+    // )
+    //   ..headers.addAll(getFormatedHeaders(_headers))
+    //   ..fields.addAll({
+    //     'name': opportunity['name'],
+    //     'account': opportunity['account'],
+    //     'amount': opportunity['amount'],
+    //     'currency': opportunity['currency'],
+    //     'stage': opportunity['stage'],
+    //     'lead_source': opportunity['lead_source'],
+    //     'probability': opportunity['probability'],
+    //     'description': opportunity['description'],
+    //     'teams': opportunity['teams'],
+    //     'assigned_to': opportunity['assigned_to'],
+    //     'contacts': opportunity['contacts'],
+    //     'closed_on': opportunity['closed_on'],
+    //     'tags': opportunity['tags'],
+    //   })
+    //   ..files.add(await http.MultipartFile.fromPath(
+    //       'opportunity_attachment', file.path));
+    // final response = await request.send();
+    // return await response.stream.bytesToString();
   }
 
   // Future editOpportunity(opportunity, id, [PlatformFile file]) async {
@@ -384,16 +387,19 @@ class CrmService {
   // }
 
   Future<Response> editOpportunity(opportunity, id, [PlatformFile file]) async {
+    // await updateHeaders();
+    // var data = Map.from(opportunity);
+    // if (file != null) {
+    //   data['opportunity_attachment'] = jsonEncode(
+    //       await MultipartFile.fromPath("opportunity_attachment", file.path));
+    // } else {
+    //   data['opportunity_attachment'] = "";
+    // }
+    // print(data);
+    // return await networkService.put(baseUrl + 'opportunities/$id/',
+    //     headers: getFormatedHeaders(_headers), body: data);
     await updateHeaders();
-    var data = Map.from(opportunity);
-    if (file != null) {
-      data['opportunity_attachment'] = jsonEncode(
-          await MultipartFile.fromPath("opportunity_attachment", file.path));
-    } else {
-      data['opportunity_attachment'] = "";
-    }
-    print(data);
     return await networkService.put(baseUrl + 'opportunities/$id/',
-        headers: getFormatedHeaders(_headers), body: data);
+        headers: getFormatedHeaders(_headers), body: opportunity);
   }
 }
