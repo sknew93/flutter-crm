@@ -292,7 +292,7 @@ class CrmService {
 
   Future<Response> getTeams() async {
     await updateHeaders();
-    return await networkService.get(baseUrl + 'users/get-teams-and-users/',
+    return await networkService.get(baseUrl + 'teams/',
         headers: getFormatedHeaders(_headers));
   }
 
@@ -355,6 +355,7 @@ class CrmService {
   Future<Response> createOpportunity(data) async {
     data.removeWhere((key, value) => value == "[]");
     data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
     await updateHeaders();
     return await networkService.post(baseUrl + 'opportunities/',
         headers: getFormatedHeaders(_headers), body: data);
@@ -364,6 +365,7 @@ class CrmService {
     await updateHeaders();
     data.removeWhere((key, value) => value == "[]");
     data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
     return await networkService.put(baseUrl + 'opportunities/$id/',
         headers: getFormatedHeaders(_headers), body: data);
   }

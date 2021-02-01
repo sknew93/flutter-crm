@@ -28,7 +28,7 @@ import 'package:bottle_crm/ui/screens/opportunities/opportunity_create.dart';
 import 'package:bottle_crm/ui/screens/opportunities/opportunity_details.dart';
 import 'package:bottle_crm/ui/screens/splash_screen.dart';
 import 'package:bottle_crm/ui/screens/tasks/tasks_index.dart';
-import 'package:bottle_crm/ui/screens/teams/teams_index.dart';
+import 'package:bottle_crm/ui/screens/teams/teams_list.dart';
 import 'package:bottle_crm/ui/screens/users/user_create.dart';
 import 'package:bottle_crm/ui/screens/users/user_details.dart';
 import 'package:bottle_crm/ui/screens/users/users_list.dart';
@@ -81,7 +81,7 @@ class MyApp extends StatelessWidget {
         '/opportunity_details': (BuildContext context) => OpportunityDetails(),
         '/create_opportunity': (BuildContext context) => CreateOpportunity(),
         '/tasks': (BuildContext context) => TasksScreen(),
-        '/teams': (BuildContext context) => TeamsScreen(),
+        '/teams': (BuildContext context) => TeamsList(),
         '/change_password': (BuildContext context) => ChangePassword(),
         '/marketing_dashboard': (BuildContext context) => MarketingDashboard(),
         '/marketing_contacts': (BuildContext context) =>

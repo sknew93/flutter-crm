@@ -1,7 +1,7 @@
-import 'dart:convert';
-
+import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:bottle_crm/model/team.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/ui/widgets/profile_pic_widget.dart';
 import 'package:bottle_crm/ui/widgets/squareFloatingActionBtn.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:flushbar/flushbar.dart';
@@ -29,7 +29,7 @@ class _TeamsListState extends State<TeamsList> {
   void initState() {
     super.initState();
     setState(() {
-      // _contacts = contactBloc.contacts;
+      _teams = teamBloc.teams;
     });
   }
 
@@ -270,13 +270,13 @@ class _TeamsListState extends State<TeamsList> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // Container(
-                                //   margin: EdgeInsets.only(top: 5.0),
-                                //   child: ProfilePicViewWidget(_teams[index]
-                                //       .assignedTo
-                                //       .map((assignedUser) => assignedUser.profileUrl)
-                                //       .toList()),
-                                // ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 5.0),
+                                  child: ProfilePicViewWidget(_teams[index]
+                                      .users
+                                      .map((user) => user.profileUrl)
+                                      .toList()),
+                                ),
                                 Container(
                                   child: Row(
                                     children: [
