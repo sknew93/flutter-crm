@@ -1,3 +1,4 @@
+import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:bottle_crm/bloc/dashboard_bloc.dart';
 import 'package:bottle_crm/bloc/document_bloc.dart';
@@ -27,6 +28,7 @@ class _DashboardState extends State<Dashboard> {
   loadAdditonalData() async {
     await userBloc.fetchUsers();
     await documentBLoc.fetchDocuments();
+    await teamBloc.fetchTeams();
   }
 
   OutlineInputBorder boxBorder(Color color) {

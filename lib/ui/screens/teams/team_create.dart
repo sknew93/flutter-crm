@@ -1,5 +1,6 @@
 import 'package:bottle_crm/bloc/contact_bloc.dart';
 import 'package:bottle_crm/bloc/lead_bloc.dart';
+import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:file_picker/file_picker.dart';
@@ -21,21 +22,30 @@ class _CreateTeamState extends State<CreateTeam> {
   final GlobalKey<FormState> _createTeamFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
-  List _myActivities;
-  String _selectedStatus = 'Open';
-  List countiresForDropDown = leadBloc.countries;
   bool _isLoading = false;
 
   FocusNode _focusErr;
-  FocusNode _firstNameFocusNode = FocusNode();
-  FocusNode _lastNameFocusNode = FocusNode();
-  FocusNode _phoneFocusNode = FocusNode();
-  FocusNode _emailAddressFocusNode = FocusNode();
+  FocusNode _titleFocusNode = FocusNode();
+  FocusNode _assingedToFocusNode = FocusNode();
+  FocusNode _descriptionFocusNode = FocusNode();
+
   Map _errors;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (_focusErr != null) {
+      _focusErr.dispose();
+    }
+    _titleFocusNode.dispose();
+    _assingedToFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+
+    super.dispose();
   }
 
   focusError() {
@@ -52,7 +62,7 @@ class _CreateTeamState extends State<CreateTeam> {
           style:
               GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
       isDismissible: false,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         child: Text('TRY AGAIN',
             style: GoogleFonts.robotoSlab(
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
@@ -66,71 +76,66 @@ class _CreateTeamState extends State<CreateTeam> {
   }
 
   _saveForm() async {
-    // _focusErr = null;
-    // setState(() {
-    //   _errors = null;
-    // });
+    _focusErr = null;
+    setState(() {
+      _errors = null;
+    });
 
-    // if (!_createTeamFormKey.currentState.validate()) {
-    //   focusError();
-    //   return;
-    // }
-    // _createTeamFormKey.currentState.save();
-    // Map _result;
+    if (!_createTeamFormKey.currentState.validate()) {
+      focusError();
+      return;
+    }
+    _createTeamFormKey.currentState.save();
+    Map _result;
 
-    // setState(() {
-    //   _isLoading = true;
-    // });
+    setState(() {
+      _isLoading = true;
+    });
 
-    // if (contactBloc.currentEditContactId == null) {
-    //   _result = await contactBloc.createTeam();
-    // } else {
-    //   _result = await contactBloc.editContact();
-    // }
+    if (teamBloc.currentEditTeamId == null) {
+      _result = await teamBloc.createTeam();
+    } else {
+      // _result = await teamBloc.editTeam();
+    }
 
-    // setState(() {
-    //   _isLoading = false;
-    // });
+    setState(() {
+      _isLoading = false;
+    });
 
-    // if (_result['error'] == false) {
-    //   setState(() {
-    //     _errors = null;
-    //   });
-    //   showToast(_result['message']);
-    //   Navigator.pushReplacementNamed(context, '/contacts');
-    // } else if (_result['error'] == true) {
-    //   setState(() {
-    //     _errors = _result['errors'];
-    //   });
+    if (_result['error'] == false) {
+      setState(() {
+        _errors = null;
+      });
+      showToast(_result['message']);
+      Navigator.pushReplacementNamed(context, '/teams');
+    } else if (_result['error'] == true) {
+      setState(() {
+        _errors = _result['errors'];
+      });
 
-    //   if (_errors['first_name'] != null && _focusErr == null) {
-    //     _focusErr = _firstNameFocusNode;
-    //     focusError();
-    //   }
+      // if (_errors['name'] != null && _focusErr == null) {
+      //   _focusErr = _titleFocusNode;
+      //   focusError();
+      // }
 
-    //   if (_errors['last_name'] != null && _focusErr == null) {
-    //     _focusErr = _lastNameFocusNode;
-    //     focusError();
-    //   }
+      // if (_errors['description'] != null && _focusErr == null) {
+      //   _focusErr = _descriptionFocusNode;
+      //   focusError();
+      // }
 
-    //   if (_errors['phone'] != null && _focusErr == null) {
-    //     _focusErr = _phoneFocusNode;
-    //     focusError();
-    //   }
+      if (_errors['users'] != null && _focusErr == null) {
+        _focusErr = _assingedToFocusNode;
+        focusError();
+      } else {
+        print(_errors);
+      }
+    } else {
+      setState(() {
+        _errors = null;
+      });
 
-    //   if (_errors['email_address'] != null && _focusErr == null) {
-    //     _focusErr = _emailAddressFocusNode;
-    //     focusError();
-    //   } else {
-    //     print(_errors);
-    //   }
-    // } else {
-    //   setState(() {
-    //     _errors = null;
-    //   });
-
-    //   showErrorMessage(context, "Something went wrong.");
-    // }
+      showErrorMessage(context, "Something went wrong.");
+    }
   }
 
   Widget _buildForm() {
@@ -166,10 +171,9 @@ class _CreateTeamState extends State<CreateTeam> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
-                        focusNode: _firstNameFocusNode,
+                        focusNode: _titleFocusNode,
                         maxLines: 1,
-                        initialValue:
-                            contactBloc.currentEditContact['first_name'],
+                        initialValue: teamBloc.currentEditTeam['name'],
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(12.0),
                             enabledBorder: boxBorder(),
@@ -185,15 +189,29 @@ class _CreateTeamState extends State<CreateTeam> {
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value.isEmpty) {
+                            if (_focusErr == null) {
+                              _focusErr = _titleFocusNode;
+                            }
                             return 'This field is required.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          contactBloc.currentEditContact['first_name'] = value;
+                          teamBloc.currentEditTeam['name'] = value;
                         },
                       ),
                     ),
+                    _errors != null && _errors['name'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['name'][0],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -226,10 +244,9 @@ class _CreateTeamState extends State<CreateTeam> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
-                        focusNode: _lastNameFocusNode,
+                        focusNode: _descriptionFocusNode,
                         maxLines: 5,
-                        // initialValue:
-                        //     teamBLoc.currentEditTeam['description'],
+                        initialValue: teamBloc.currentEditTeam['description'],
                         decoration: InputDecoration(
                             contentPadding: EdgeInsets.all(12.0),
                             enabledBorder: boxBorder(),
@@ -245,15 +262,29 @@ class _CreateTeamState extends State<CreateTeam> {
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value.isEmpty) {
+                            if (_focusErr == null) {
+                              _focusErr = _descriptionFocusNode;
+                            }
                             return 'This field is required.';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          // teamBLoc.currentEditTeam['description'] = value;
+                          teamBloc.currentEditTeam['description'] = value;
                         },
                       ),
                     ),
+                    _errors != null && _errors['description'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['description'][0],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -262,58 +293,81 @@ class _CreateTeamState extends State<CreateTeam> {
                 child: Column(
                   children: [
                     Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: Text(
-                        'Assigned Users :',
-                        style: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(
-                                color: Theme.of(context).secondaryHeaderColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth / 25)),
-                      ),
-                    ),
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Assigned Users',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25)),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: '*',
+                                  style: GoogleFonts.robotoSlab(
+                                      textStyle: TextStyle(color: Colors.red))),
+                              TextSpan(
+                                  text: ' :', style: GoogleFonts.robotoSlab())
+                            ],
+                          ),
+                        )),
                     Container(
                       margin: EdgeInsets.only(bottom: 5.0),
-                      child: MultiSelectFormField(
-                        border: boxBorder(),
-                        fillColor: Colors.white,
-                        autovalidate: false,
-                        dataSource: leadBloc.usersObjForDropdown,
-                        textField: 'name',
-                        valueField: 'id',
-                        okButtonLabel: 'OK',
-                        chipLabelStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(color: Colors.black)),
-                        dialogTextStyle: GoogleFonts.robotoSlab(),
-                        cancelButtonLabel: 'CANCEL',
-                        // required: true,
-                        hintWidget: Text(
-                          "Please choose one or more",
-                          style: GoogleFonts.robotoSlab(),
+                      child: Focus(
+                        focusNode: _assingedToFocusNode,
+                        child: MultiSelectFormField(
+                          border: boxBorder(),
+                          fillColor: Colors.white,
+                          autovalidate: false,
+                          dataSource: leadBloc.usersObjForDropdown,
+                          textField: 'name',
+                          valueField: 'id',
+                          okButtonLabel: 'OK',
+                          chipLabelStyle: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(color: Colors.black)),
+                          dialogTextStyle: GoogleFonts.robotoSlab(),
+                          cancelButtonLabel: 'CANCEL',
+                          // required: true,
+                          hintWidget: Text(
+                            "Please choose one or more",
+                            style: GoogleFonts.robotoSlab(),
+                          ),
+                          title: Text(
+                            "Assigned To",
+                            style: GoogleFonts.robotoSlab(),
+                          ),
+                          initialValue:
+                              teamBloc.currentEditTeam['assign_users'],
+                          validator: (value) {
+                            if (value.length == 0) {
+                              if (_focusErr == null) {
+                                _focusErr = _assingedToFocusNode;
+                              }
+                              return 'This field is required.';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            if (value == null) return;
+                            teamBloc.currentEditTeam['assign_users'] = value;
+                          },
                         ),
-                        title: Text(
-                          "Assigned To",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
-                        initialValue:
-                            contactBloc.currentEditContact['assigned_to'],
-
-                        onSaved: (value) {
-                          if (value == null) return;
-                          contactBloc.currentEditContact['assigned_to'] = value;
-                        },
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Select one or more",
-                        style: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(color: Colors.grey)),
-                      ),
-                    ),
+                    _errors != null && _errors['users'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['users'],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -339,10 +393,9 @@ class _CreateTeamState extends State<CreateTeam> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
-                              // contactBloc.currentEditContactId != null
-                              //     ? 'Update Team'
-                              //     : 'Create Team',
-                              'Create Team',
+                              teamBloc.currentEditTeamId != null
+                                  ? 'Update Team'
+                                  : 'Create Team',
                               style: GoogleFonts.robotoSlab(
                                   textStyle: TextStyle(
                                       color: Colors.white,

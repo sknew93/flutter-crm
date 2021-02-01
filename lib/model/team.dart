@@ -25,26 +25,24 @@ class Team {
       this.companyId,
       this.createdOnText});
 
-  Team.fromJson(Map account) {
-    this.id = account['id'] != null ? account['id'] : 0;
-    this.name = account['name'] != null ? account['name'] : "";
-    this.description =
-        account['description'] != null ? account['description'] : "";
-    this.users = account['users'] != null
-        ? List<Profile>.from(account['users'].map((x) => Profile.fromJson(x)))
+  Team.fromJson(Map team) {
+    this.id = team['id'] != null ? team['id'] : 0;
+    this.name = team['name'] != null ? team['name'] : "";
+    this.description = team['description'] != null ? team['description'] : "";
+    this.users = team['users'] != null
+        ? List<Profile>.from(team['users'].map((x) => Profile.fromJson(x)))
         : [];
-    this.createdOn = account['created_on'] != null ? account['created_on'] : "";
-    this.createdBy = account['created_by'] != null
-        ? Profile.fromJson(account['created_by'])
+    this.createdOn = team['created_on'] != null ? team['created_on'] : "";
+    this.createdBy = team['created_by'] != null
+        ? Profile.fromJson(team['created_by'])
         : Profile();
     this.createdById =
-        account['created_by_id'] != null ? account['created_by_id'] : 0;
-    this.company = account['company'] != null
-        ? Company.fromJson(account['company'])
-        : Company();
-    this.companyId = account['company_id'] != null ? account['company_id'] : 0;
+        team['created_by'] != null ? team['created_by']['id'] : 0;
+    this.company =
+        team['company'] != null ? Company.fromJson(team['company']) : Company();
+    this.companyId = team['company'] != null ? team['company']['id'] : 0;
     this.createdOnText =
-        account['created_on_arrow'] != null ? account['created_on_arrow'] : "";
+        team['created_on_arrow'] != null ? team['created_on_arrow'] : "";
   }
 
   toJson() {

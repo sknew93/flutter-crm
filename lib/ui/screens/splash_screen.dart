@@ -66,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
       messageText: Text(errorContent,
           style: TextStyle(fontWeight: FontWeight.w400, color: Colors.white)),
       isDismissible: false,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         child: Text(
           'TRY AGAIN',
           style: TextStyle(

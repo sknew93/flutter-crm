@@ -230,7 +230,6 @@ class CrmService {
       http.Response r = await http.head(file.documentFile);
       if (r.headers['content-length'] != null) {
         String fileSize = r.headers['content-length'].toString();
-        // int id = r.
         _fileSizeList.add([file.id, fileSize]);
       } else {
         _fileSizeList.add([file.id, "0"]);
@@ -290,10 +289,30 @@ class CrmService {
 
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
 
-  Future<Response> getTeams() async {
+  Future<Response> getTeams({queryParams}) async {
     await updateHeaders();
-    return await networkService.get(baseUrl + 'users/get-teams-and-users/',
-        headers: getFormatedHeaders(_headers));
+    String url;
+    if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value.runtimeType != String);
+      queryParams.removeWhere((key, value) => value == "[]");
+      queryParams.removeWhere((key, value) => value == "");
+      queryParams.removeWhere((key, value) => value == null);
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'teams/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'teams/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> createTeam(data) async {
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    await updateHeaders();
+    return await networkService.post(baseUrl + 'teams/',
+        headers: getFormatedHeaders(_headers), body: data);
   }
 
   ///////////////////// OPPORTUNITIES-SERVICES ////////////////////////////
@@ -355,15 +374,19 @@ class CrmService {
   Future<Response> createOpportunity(data) async {
     data.removeWhere((key, value) => value == "[]");
     data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
     await updateHeaders();
     return await networkService.post(baseUrl + 'opportunities/',
         headers: getFormatedHeaders(_headers), body: data);
   }
 
-  Future<Response> editOpportunity(opportunity, id, [PlatformFile file]) async {
+  Future<Response> editOpportunity(data, id, [PlatformFile file]) async {
     await updateHeaders();
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
     return await networkService.put(baseUrl + 'opportunities/$id/',
-        headers: getFormatedHeaders(_headers), body: opportunity);
+        headers: getFormatedHeaders(_headers), body: data);
   }
 
   // Future editOpportunity(opportunity, id, [PlatformFile file]) async {

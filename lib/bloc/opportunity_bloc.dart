@@ -80,9 +80,6 @@ class OpportunityBloc {
       });
 
       _currencyList = res['currency'];
-      // _currencyObjforDropDown = res['currency'];
-
-      // print(res);
     }).catchError((onError) {
       print("fetchOpportunities Error >> $onError");
     });
@@ -143,29 +140,24 @@ class OpportunityBloc {
               .parse(_copyOfCurrentEditOpportunity['closed_on']));
     _copyOfCurrentEditOpportunity['tags'] =
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
-    print(_copyOfCurrentEditOpportunity);
     if (_copyOfCurrentEditOpportunity != null) {
       _copyOfCurrentEditOpportunity
           .removeWhere((key, value) => value.runtimeType != String);
     }
-    print(_copyOfCurrentEditOpportunity);
 
     await CrmService()
-            .createOpportunity(_copyOfCurrentEditOpportunity)
-            .then((response) async {
-      print(response);
+        .createOpportunity(_copyOfCurrentEditOpportunity)
+        .then((response) async {
       // var res = json.decode(response);  # for multipartrequest
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
       }
       result = res;
-    })
-        // .catchError((onError) {
-        //   print("editOpportunity Error >> $onError");
-        //   result = {"status": "error", "message": "Something went wrong"};
-        // })
-        ;
+    }).catchError((onError) {
+      print("editOpportunity Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong"};
+    });
     return result;
   }
 
@@ -228,8 +220,6 @@ class OpportunityBloc {
           ? []
           : editOpportunity.opportunityAttachment[0]['file_path']
     };
-
-    print(_currentEditOpportunity);
   }
 
   Future editOpportunity([file]) async {
@@ -242,11 +232,16 @@ class OpportunityBloc {
       }
     });
 
-    _currencyList.forEach((element) {
-      if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
-        _copyOfCurrentEditOpportunity['currency'] = element[0];
-      }
-    });
+    if (_copyOfCurrentEditOpportunity['currency'] == "" ||
+        _copyOfCurrentEditOpportunity['currency'] == null) {
+      _copyOfCurrentEditOpportunity['currency'] = "";
+    } else {
+      _currencyList.forEach((element) {
+        if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
+          _copyOfCurrentEditOpportunity['currency'] = element[0];
+        }
+      });
+    }
     _copyOfCurrentEditOpportunity['probability'] =
         _copyOfCurrentEditOpportunity['probability'].toString();
 
