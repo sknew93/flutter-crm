@@ -419,7 +419,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.robotoSlab(
                                     color: Colors.blue,
-                                    fontSize: screenWidth / 26,
+                                    fontSize: screenWidth / 28,
                                     fontWeight: FontWeight.w500,
                                     textStyle: TextStyle(
                                         decoration: TextDecoration.underline)),
@@ -435,67 +435,54 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            alignment: Alignment.centerRight,
-                            width: screenWidth * 0.45,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  child: Text(
-                                    "Stage : ",
-                                    style: GoogleFonts.robotoSlab(
+                            width: screenWidth * 0.42,
+                            child: RichText(
+                              overflow: TextOverflow.ellipsis,
+                              text: TextSpan(
+                                text: 'Stage : ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: GoogleFonts.robotoSlab(
                                         color: bottomNavBarTextColor,
-                                        fontSize: screenWidth / 30),
-                                  ),
-                                ),
-                                Container(
-                                  width: screenWidth * 0.27,
-                                  child: Text(
-                                    _opportunities[index].stage != null
-                                        ? _opportunities[index]
-                                            .stage
-                                            .toLowerCase()
-                                            .capitalizeFirstofEach()
-                                        : "N/A",
-                                    // overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.robotoSlab(
-                                        color: bottomNavBarSelectedTextColor,
-                                        fontSize: screenWidth / 30),
-                                  ),
-                                ),
-                              ],
+                                        fontSize: screenWidth / 32)),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: _opportunities[index].stage != null
+                                          ? _opportunities[index]
+                                              .stage
+                                              .toLowerCase()
+                                              .capitalizeFirstofEach()
+                                          : "N/A",
+                                      style: GoogleFonts.robotoSlab(
+                                          color: bottomNavBarSelectedTextColor,
+                                          fontSize: screenWidth / 30))
+                                ],
+                              ),
                             ),
                           ),
                           Container(
-                            width: screenWidth * 0.45,
-                            alignment: Alignment.centerRight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  child: Text(
-                                    "Lead Source : ",
-                                    style: GoogleFonts.robotoSlab(
+                            width: screenWidth * 0.42,
+                            child: RichText(
+                              overflow: TextOverflow.ellipsis,
+                              text: TextSpan(
+                                text: 'Lead Source : ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: GoogleFonts.robotoSlab(
                                         color: bottomNavBarTextColor,
-                                        fontSize: screenWidth / 30),
-                                  ),
-                                ),
-                                Container(
-                                  width: screenWidth * 0.17,
-                                  child: Text(
-                                    _opportunities[index].leadSource != ""
-                                        ? _opportunities[index]
-                                            .leadSource
-                                            .toLowerCase()
-                                            .capitalizeFirstofEach()
-                                        : "N/A",
-                                    // overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.robotoSlab(
-                                        color: bottomNavBarSelectedTextColor,
-                                        fontSize: screenWidth / 30),
-                                  ),
-                                ),
-                              ],
+                                        fontSize: screenWidth / 32)),
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text:
+                                          _opportunities[index].leadSource != ""
+                                              ? _opportunities[index]
+                                                  .leadSource
+                                                  .toLowerCase()
+                                                  .capitalizeFirstofEach()
+                                              : "N/A",
+                                      style: GoogleFonts.robotoSlab(
+                                          color: bottomNavBarSelectedTextColor,
+                                          fontSize: screenWidth / 30))
+                                ],
+                              ),
                             ),
                           ),
                         ],

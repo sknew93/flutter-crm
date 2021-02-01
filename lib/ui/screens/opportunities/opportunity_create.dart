@@ -258,12 +258,9 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         items: opportunityBloc.accountsObjforDropDown,
                         onChanged: print,
                         selectedItem: opportunityBloc
-                                        .currentEditOpportunity['account'] ==
-                                    "" ||
-                                opportunityBloc
-                                        .currentEditOpportunity['account'] ==
-                                    null
-                            ? ""
+                                    .currentEditOpportunity['account'] ==
+                                ""
+                            ? null
                             : opportunityBloc.currentEditOpportunity['account'],
                         hint: "Select Account",
                         showSearchBox: true,
