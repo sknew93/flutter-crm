@@ -289,10 +289,30 @@ class CrmService {
 
   ///////////////////// TEAMS-SERVICES ///////////////////////////////
 
-  Future<Response> getTeams() async {
+  Future<Response> getTeams({queryParams}) async {
     await updateHeaders();
-    return await networkService.get(baseUrl + 'teams/',
-        headers: getFormatedHeaders(_headers));
+    String url;
+    if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value.runtimeType != String);
+      queryParams.removeWhere((key, value) => value == "[]");
+      queryParams.removeWhere((key, value) => value == "");
+      queryParams.removeWhere((key, value) => value == null);
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'teams/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'teams/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> createTeam(data) async {
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    await updateHeaders();
+    return await networkService.post(baseUrl + 'teams/',
+        headers: getFormatedHeaders(_headers), body: data);
   }
 
   ///////////////////// OPPORTUNITIES-SERVICES ////////////////////////////
