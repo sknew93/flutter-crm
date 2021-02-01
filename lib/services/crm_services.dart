@@ -230,7 +230,6 @@ class CrmService {
       http.Response r = await http.head(file.documentFile);
       if (r.headers['content-length'] != null) {
         String fileSize = r.headers['content-length'].toString();
-        // int id = r.
         _fileSizeList.add([file.id, fileSize]);
       } else {
         _fileSizeList.add([file.id, "0"]);

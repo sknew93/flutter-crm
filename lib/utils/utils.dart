@@ -40,9 +40,9 @@ showToast(message) {
     toastLength: Toast.LENGTH_LONG,
     gravity: ToastGravity.BOTTOM,
     timeInSecForIosWeb: 1,
-    backgroundColor: Colors.white,
-    textColor: Colors.green,
-    fontSize: 16.0,
+    backgroundColor: Colors.grey,
+    textColor: Colors.white,
+    fontSize: screenWidth / 26,
   );
 }
 

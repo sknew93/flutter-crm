@@ -1,4 +1,3 @@
-import 'package:bottle_crm/bloc/account_bloc.dart';
 import 'package:bottle_crm/bloc/opportunity_bloc.dart';
 import 'package:bottle_crm/model/opportunities.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
@@ -349,12 +348,10 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
             return GestureDetector(
               onTap: () {
                 opportunityBloc.currentOpportunity = _opportunities[index];
-                print(opportunityBloc.currentOpportunity);
                 opportunityBloc.currentOpportunityIndex = index;
                 Navigator.pushNamed(context, '/opportunity_details');
               },
               child: Container(
-                // height: screenHeight * 0.15,
                 margin: EdgeInsets.symmetric(vertical: 5.0),
                 color: Colors.white,
                 padding: EdgeInsets.all(10.0),
@@ -368,123 +365,123 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                         children: [
                           Container(
                             width: screenWidth * 0.55,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: screenWidth * 0.30,
-                                  child: Text(
-                                    "${_opportunities[index].name}",
-                                    style: GoogleFonts.robotoSlab(
-                                        color: Theme.of(context)
-                                            .secondaryHeaderColor,
-                                        fontSize: screenWidth / 25,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerRight,
-                                  width: screenWidth * 0.25,
-                                  child: Text(
-                                    _opportunities[index].createdOnText == ""
-                                        ? _opportunities[index].createdOn
-                                        : _opportunities[index].createdOnText,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.robotoSlab(
-                                        color: bottomNavBarTextColor,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: screenWidth / 26),
-                                  ),
-                                ),
-                              ],
+                            child: Text(
+                              "${_opportunities[index].name}",
+                              maxLines: 2,
+                              style: GoogleFonts.robotoSlab(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontSize: screenWidth / 25,
+                                  fontWeight: FontWeight.w600),
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                accountBloc.currentAccount =
-                                    _opportunities[index].account;
-                                Navigator.pushNamed(
-                                    context, '/account_details');
-                              });
-                            },
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              width: screenWidth * 0.25,
-                              child: Text(
-                                _opportunities[index].account.name != null
-                                    ? "${_opportunities[index].account.name}"
-                                    : "",
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.robotoSlab(
-                                    color: Colors.blue,
-                                    fontSize: screenWidth / 28,
-                                    fontWeight: FontWeight.w500,
-                                    textStyle: TextStyle(
-                                        decoration: TextDecoration.underline)),
-                              ),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            width: screenWidth * 0.3,
+                            child: Text(
+                              _opportunities[index].createdOnText == ""
+                                  ? _opportunities[index].createdOn
+                                  : _opportunities[index].createdOnText,
+                              maxLines: 2,
+                              style: GoogleFonts.robotoSlab(
+                                  color: bottomNavBarTextColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 26),
                             ),
                           ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     setState(() {
+                          //       accountBloc.currentAccount =
+                          //           _opportunities[index].account;
+                          //       Navigator.pushNamed(
+                          //           context, '/account_details');
+                          //     });
+                          //   },
+                          //   child: Container(
+                          //     alignment: Alignment.centerLeft,
+                          //     width: screenWidth * 0.25,
+                          //     child: Text(
+                          //       _opportunities[index].account.name != null
+                          //           ? "${_opportunities[index].account.name}"
+                          //           : "",
+                          //       maxLines: 2,
+                          //       overflow: TextOverflow.ellipsis,
+                          //       style: GoogleFonts.robotoSlab(
+                          //           color: Colors.blue,
+                          //           fontSize: screenWidth / 28,
+                          //           fontWeight: FontWeight.w500,
+                          //           textStyle: TextStyle(
+                          //               decoration: TextDecoration.underline)),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                      margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: screenWidth * 0.42,
-                            child: RichText(
-                              overflow: TextOverflow.ellipsis,
-                              text: TextSpan(
-                                text: 'Stage : ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: GoogleFonts.robotoSlab(
-                                        color: bottomNavBarTextColor,
-                                        fontSize: screenWidth / 32)),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: _opportunities[index].stage != null
+                            width: screenWidth * 0.44,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text("Stage : ",
+                                      style: GoogleFonts.robotoSlab(
+                                          textStyle: GoogleFonts.robotoSlab(
+                                              color: Colors.grey,
+                                              fontSize: screenWidth / 28))),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                      _opportunities[index].stage != null
                                           ? _opportunities[index]
                                               .stage
                                               .toLowerCase()
                                               .capitalizeFirstofEach()
                                           : "N/A",
                                       style: GoogleFonts.robotoSlab(
-                                          color: bottomNavBarSelectedTextColor,
-                                          fontSize: screenWidth / 30))
-                                ],
-                              ),
+                                          textStyle: GoogleFonts.robotoSlab(
+                                              color:
+                                                  bottomNavBarSelectedTextColor,
+                                              fontSize: screenWidth / 28))),
+                                ),
+                              ],
                             ),
                           ),
                           Container(
-                            width: screenWidth * 0.42,
-                            child: RichText(
-                              overflow: TextOverflow.ellipsis,
-                              text: TextSpan(
-                                text: 'Lead Source : ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: GoogleFonts.robotoSlab(
-                                        color: bottomNavBarTextColor,
-                                        fontSize: screenWidth / 32)),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text:
-                                          _opportunities[index].leadSource != ""
-                                              ? _opportunities[index]
-                                                  .leadSource
-                                                  .toLowerCase()
-                                                  .capitalizeFirstofEach()
-                                              : "N/A",
+                            width: screenWidth * 0.44,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text("Lead Source : ",
                                       style: GoogleFonts.robotoSlab(
-                                          color: bottomNavBarSelectedTextColor,
-                                          fontSize: screenWidth / 30))
-                                ],
-                              ),
+                                          textStyle: GoogleFonts.robotoSlab(
+                                              color: Colors.grey,
+                                              fontSize: screenWidth / 28))),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                      _opportunities[index].leadSource != ""
+                                          ? _opportunities[index]
+                                              .leadSource
+                                              .toLowerCase()
+                                              .capitalizeFirstofEach()
+                                          : "N/A",
+                                      style: GoogleFonts.robotoSlab(
+                                          textStyle: GoogleFonts.robotoSlab(
+                                              color:
+                                                  bottomNavBarSelectedTextColor,
+                                              fontSize: screenWidth / 28))),
+                                ),
+                              ],
                             ),
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -588,6 +585,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                   textStyle: TextStyle(color: Colors.red),
                   isDefaultAction: true,
                   onPressed: () async {
+                    Navigator.pop(context);
                     deleteOpportunity(index, opportunity);
                   },
                   child: Text(
@@ -600,9 +598,6 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
   }
 
   deleteOpportunity(index, opportunity) async {
-    // setState(() {
-    //   _contacts.removeAt(index);
-    // });
     setState(() {
       _isLoading = true;
     });
@@ -612,7 +607,6 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
     });
     if (_result['error'] == false) {
       showToast(_result['message']);
-      Navigator.of(context).pop();
     } else if (_result['error'] == true) {
       showToast(_result['message']);
     } else {
@@ -628,7 +622,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
           style:
               GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
       isDismissible: false,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         child: Text('TRY AGAIN',
             style: GoogleFonts.robotoSlab(
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
@@ -662,25 +656,22 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.all(10.0),
-              height: screenHeight,
-              child: Column(
-                children: [
-                  _buildTabBar(_opportunities.length),
-                  _buildFilterWidget(),
-                  _opportunities.length > 0
-                      ? Expanded(child: _buildOpportunityList())
-                      : Container(
-                          margin: EdgeInsets.only(top: 30.0),
-                          child: Text(
-                            "No Opportunity Found",
-                            style: GoogleFonts.robotoSlab(),
-                          ),
-                        )
-                ],
-              ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                _buildTabBar(_opportunities.length),
+                _buildFilterWidget(),
+                _opportunities.length > 0
+                    ? Expanded(child: _buildOpportunityList())
+                    : Container(
+                        margin: EdgeInsets.only(top: 30.0),
+                        child: Text(
+                          "No Opportunity Found",
+                          style: GoogleFonts.robotoSlab(),
+                        ),
+                      )
+              ],
             ),
           ),
           new Align(

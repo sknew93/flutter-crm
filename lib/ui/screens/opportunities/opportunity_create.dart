@@ -73,7 +73,6 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
         opportunityBloc.currentEditOpportunity['closed_on'] =
             DateFormat("dd-MM-yyyy").format(
                 DateFormat("yyyy-MM-dd").parse(_selectedDate.toString()));
-        print(opportunityBloc.currentEditOpportunity['closed_on']);
       });
     } else {
       _selectedDate = null;
@@ -139,7 +138,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
           style:
               GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
       isDismissible: false,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         child: Text('TRY AGAIN',
             style: GoogleFonts.robotoSlab(
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
@@ -509,6 +508,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                           ? opportunityBloc.currentEditOpportunity['stage']
                           : null,
                       onChanged: (value) {
+                        FocusScope.of(context).unfocus();
                         opportunityBloc.currentEditOpportunity['stage'] = value;
                       },
                       items:
@@ -580,6 +580,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                               .currentEditOpportunity['lead_source']
                           : null,
                       onChanged: (value) {
+                        FocusScope.of(context).unfocus();
                         opportunityBloc.currentEditOpportunity['lead_source'] =
                             value;
                       },
@@ -644,7 +645,6 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                             color: Colors.grey,
                             width: 1,
                           )),
-                      // incIconDecoration: BoxDecoration(border: null),
                       numberFieldDecoration: InputDecoration(
                           border: null,
                           hintText: 'Input value between 1 and 100',
@@ -937,7 +937,6 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         GestureDetector(
                           onTap: () {
                             _selectDate(context);
-                            print('clicked');
                           },
                           child: Container(
                               height: 48.0,

@@ -80,7 +80,6 @@ class DocumentBloc {
     _copyOfCurrentEditDocument['shared_to'] =
         (_copyOfCurrentEditDocument['shared_to']
             .map((assignedTo) => assignedTo.toString())).toList().toString();
-    print(_copyOfCurrentEditDocument);
     await CrmService()
         .createDocument(_copyOfCurrentEditDocument, file)
         .then((response) async {
@@ -104,11 +103,9 @@ class DocumentBloc {
     _copyOfCurrentEditDocument['shared_to'] =
         (_copyOfCurrentEditDocument['shared_to']
             .map((assignedTo) => assignedTo.toString())).toList().toString();
-    print(_copyOfCurrentEditDocument);
     await CrmService()
         .editDocument(_copyOfCurrentEditDocument, file, _currentEditDocumentId)
         .then((response) async {
-      print(response);
       var res = json.decode(response);
       if (res["error"] == false) {
         await fetchDocuments();
@@ -155,7 +152,6 @@ class DocumentBloc {
     _currentEditDocument['teams'] = teams;
     _currentEditDocument['shared_to'] = sharedToList;
     _currentEditDocument['status'] = editFile.status;
-    print(_currentEditDocument);
   }
 
   List get documents {

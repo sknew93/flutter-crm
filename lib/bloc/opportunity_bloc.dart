@@ -80,9 +80,6 @@ class OpportunityBloc {
       });
 
       _currencyList = res['currency'];
-      // _currencyObjforDropDown = res['currency'];
-
-      // print(res);
     }).catchError((onError) {
       print("fetchOpportunities Error >> $onError");
     });
@@ -143,17 +140,14 @@ class OpportunityBloc {
               .parse(_copyOfCurrentEditOpportunity['closed_on']));
     _copyOfCurrentEditOpportunity['tags'] =
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
-    print(_copyOfCurrentEditOpportunity);
     if (_copyOfCurrentEditOpportunity != null) {
       _copyOfCurrentEditOpportunity
           .removeWhere((key, value) => value.runtimeType != String);
     }
-    print(_copyOfCurrentEditOpportunity);
 
     await CrmService()
         .createOpportunity(_copyOfCurrentEditOpportunity)
         .then((response) async {
-      print(response);
       // var res = json.decode(response);  # for multipartrequest
       var res = json.decode(response.body);
       if (res["error"] == false) {
@@ -226,8 +220,6 @@ class OpportunityBloc {
           ? []
           : editOpportunity.opportunityAttachment[0]['file_path']
     };
-
-    print(_currentEditOpportunity);
   }
 
   Future editOpportunity([file]) async {

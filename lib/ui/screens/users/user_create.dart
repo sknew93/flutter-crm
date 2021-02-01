@@ -109,7 +109,7 @@ class _CreateUserState extends State<CreateUser> {
           style:
               GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
       isDismissible: false,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         child: Text('TRY AGAIN',
             style: GoogleFonts.robotoSlab(
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),

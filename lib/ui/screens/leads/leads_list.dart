@@ -68,7 +68,7 @@ class _LeadsListState extends State<LeadsList> {
           style:
               GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.red))),
       isDismissible: false,
-      mainButton: FlatButton(
+      mainButton: TextButton(
         child: Text('TRY AGAIN',
             style: GoogleFonts.robotoSlab(
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
