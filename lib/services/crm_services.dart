@@ -360,10 +360,12 @@ class CrmService {
         headers: getFormatedHeaders(_headers), body: data);
   }
 
-  Future<Response> editOpportunity(opportunity, id, [PlatformFile file]) async {
+  Future<Response> editOpportunity(data, id, [PlatformFile file]) async {
     await updateHeaders();
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
     return await networkService.put(baseUrl + 'opportunities/$id/',
-        headers: getFormatedHeaders(_headers), body: opportunity);
+        headers: getFormatedHeaders(_headers), body: data);
   }
 
   // Future editOpportunity(opportunity, id, [PlatformFile file]) async {

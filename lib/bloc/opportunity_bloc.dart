@@ -151,8 +151,8 @@ class OpportunityBloc {
     print(_copyOfCurrentEditOpportunity);
 
     await CrmService()
-            .createOpportunity(_copyOfCurrentEditOpportunity)
-            .then((response) async {
+        .createOpportunity(_copyOfCurrentEditOpportunity)
+        .then((response) async {
       print(response);
       // var res = json.decode(response);  # for multipartrequest
       var res = json.decode(response.body);
@@ -160,12 +160,10 @@ class OpportunityBloc {
         await fetchOpportunities();
       }
       result = res;
-    })
-        // .catchError((onError) {
-        //   print("editOpportunity Error >> $onError");
-        //   result = {"status": "error", "message": "Something went wrong"};
-        // })
-        ;
+    }).catchError((onError) {
+      print("editOpportunity Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong"};
+    });
     return result;
   }
 
@@ -242,11 +240,16 @@ class OpportunityBloc {
       }
     });
 
-    _currencyList.forEach((element) {
-      if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
-        _copyOfCurrentEditOpportunity['currency'] = element[0];
-      }
-    });
+    if (_copyOfCurrentEditOpportunity['currency'] == "" ||
+        _copyOfCurrentEditOpportunity['currency'] == null) {
+      _copyOfCurrentEditOpportunity['currency'] = "";
+    } else {
+      _currencyList.forEach((element) {
+        if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
+          _copyOfCurrentEditOpportunity['currency'] = element[0];
+        }
+      });
+    }
     _copyOfCurrentEditOpportunity['probability'] =
         _copyOfCurrentEditOpportunity['probability'].toString();
 
