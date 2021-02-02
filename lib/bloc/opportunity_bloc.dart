@@ -5,6 +5,8 @@ import 'package:bottle_crm/model/opportunities.dart';
 import 'package:bottle_crm/services/crm_services.dart';
 import 'package:intl/intl.dart';
 
+import 'dashboard_bloc.dart';
+
 class OpportunityBloc {
   List<Opportunity> _opportunities = [];
   int _currentOpportunityIndex;
@@ -92,6 +94,7 @@ class OpportunityBloc {
         .then((response) async {
       var res = (json.decode(response.body));
       await fetchOpportunities();
+      dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteOpportunity Error >> $onError");
@@ -152,6 +155,7 @@ class OpportunityBloc {
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
+        dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -275,6 +279,7 @@ class OpportunityBloc {
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
+        dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {

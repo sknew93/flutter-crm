@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bottle_crm/bloc/dashboard_bloc.dart';
 import 'package:bottle_crm/bloc/lead_bloc.dart';
 import 'package:bottle_crm/model/account.dart';
 import 'package:bottle_crm/model/profile.dart';
@@ -105,6 +106,7 @@ class AccountBloc {
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchAccounts();
+        dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -148,6 +150,7 @@ class AccountBloc {
         res["error"] = true;
       } else {
         await fetchAccounts();
+        dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -162,6 +165,7 @@ class AccountBloc {
     await CrmService().deleteAccount(account.id).then((response) async {
       var res = (json.decode(response.body));
       await fetchAccounts();
+      dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteAccount Error >> $onError");

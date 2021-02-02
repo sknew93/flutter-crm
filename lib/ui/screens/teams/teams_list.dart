@@ -308,6 +308,7 @@ class _TeamsListState extends State<TeamsList> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
+                      margin: EdgeInsets.only(right: 10.0),
                       child: CircleAvatar(
                         radius: screenWidth / 17,
                         backgroundImage:
@@ -319,17 +320,18 @@ class _TeamsListState extends State<TeamsList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
+                          margin: EdgeInsets.only(bottom: 5.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Container(
-                                width: screenWidth * 0.43,
+                                width: screenWidth * 0.47,
                                 child: Text(
                                   "${_teams[index].name}",
                                   style: GoogleFonts.robotoSlab(
                                       color: Theme.of(context)
                                           .secondaryHeaderColor,
-                                      fontSize: screenWidth / 25,
+                                      fontSize: screenWidth / 24,
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
@@ -354,6 +356,7 @@ class _TeamsListState extends State<TeamsList> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
+                                width: screenWidth * 0.47,
                                 margin: EdgeInsets.only(top: 5.0),
                                 child: ProfilePicViewWidget(_teams[index]
                                     .users
@@ -363,6 +366,7 @@ class _TeamsListState extends State<TeamsList> {
                               ),
                               Container(
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     GestureDetector(
                                       onTap: () async {
@@ -372,7 +376,7 @@ class _TeamsListState extends State<TeamsList> {
                                         //     context, '/create_contact');
                                       },
                                       child: Container(
-                                        margin: EdgeInsets.only(right: 10.0),
+                                        margin: EdgeInsets.only(right: 8.0),
                                         decoration: BoxDecoration(
                                           border: Border.all(
                                               width: 1.0,
@@ -393,6 +397,7 @@ class _TeamsListState extends State<TeamsList> {
                                             context, _teams[index], index);
                                       },
                                       child: Container(
+                                        margin: EdgeInsets.only(right: 8.0),
                                         decoration: BoxDecoration(
                                           border: Border.all(
                                               width: 1.0,
@@ -404,6 +409,23 @@ class _TeamsListState extends State<TeamsList> {
                                         child: SvgPicture.asset(
                                           'assets/images/icon_delete_color.svg',
                                           width: screenWidth / 23,
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {},
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 1.0,
+                                              color: Colors.grey[300]),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(3.0)),
+                                        ),
+                                        padding: EdgeInsets.all(4.0),
+                                        child: SvgPicture.asset(
+                                          'assets/images/download_icon.svg',
+                                          width: screenWidth / 20,
                                         ),
                                       ),
                                     ),
