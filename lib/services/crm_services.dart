@@ -315,6 +315,24 @@ class CrmService {
         headers: getFormatedHeaders(_headers), body: data);
   }
 
+  Future<Response> deleteTeam(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'teams/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> editTeam(
+    data,
+    id,
+  ) async {
+    await updateHeaders();
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    return await networkService.put(baseUrl + 'teams/$id/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
   ///////////////////// OPPORTUNITIES-SERVICES ////////////////////////////
 
   Future<Response> getOpportunities({queryParams}) async {

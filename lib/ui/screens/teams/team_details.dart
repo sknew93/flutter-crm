@@ -1,5 +1,7 @@
 import 'package:bottle_crm/bloc/contact_bloc.dart';
+import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
+import 'package:bottle_crm/ui/widgets/profile_pic_widget.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,13 +10,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ContactDetails extends StatefulWidget {
-  ContactDetails();
+class TeamDetails extends StatefulWidget {
+  TeamDetails();
   @override
-  State createState() => _ContactDetailsState();
+  State createState() => _TeamDetailsState();
 }
 
-class _ContactDetailsState extends State<ContactDetails> {
+class _TeamDetailsState extends State<TeamDetails> {
   bool _isLoading = false;
 
   @override
@@ -28,7 +30,7 @@ class _ContactDetailsState extends State<ContactDetails> {
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             title: Text(
-              contactBloc.currentContact.firstName,
+              teamBloc.currentTeam.name,
               style: GoogleFonts.robotoSlab(
                   color: Theme.of(context).secondaryHeaderColor),
             ),
@@ -66,18 +68,18 @@ class _ContactDetailsState extends State<ContactDetails> {
     setState(() {
       _isLoading = true;
     });
-    // Map result = await teamBloc.deleteTeam(teamBloc.currentTeam);
+    Map result = await teamBloc.deleteTeam(teamBloc.currentTeam);
     setState(() {
       _isLoading = false;
     });
-    // if (result['error'] == false) {
-    //   showToast(result['message']);
-    //   Navigator.pushReplacementNamed(context, "/contacts");
-    // } else if (result['error'] == true) {
-    //   showToast(result['message']);
-    // } else {
-    //   showErrorMessage(context, 'Something went wrong');
-    // }
+    if (result['error'] == false) {
+      showToast(result['message']);
+      Navigator.pushReplacementNamed(context, "/teams");
+    } else if (result['error'] == true) {
+      showToast(result['message']);
+    } else {
+      showErrorMessage(context, 'Something went wrong');
+    }
   }
 
   void showErrorMessage(BuildContext context, String errorContent) {
@@ -141,9 +143,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                                 Container(
                                   width: screenWidth * 0.7,
                                   child: Text(
-                                    // "${teamBloc.currentTeam.name}",
-                                    "",
-
+                                    "${teamBloc.currentTeam.name}",
                                     style: GoogleFonts.robotoSlab(
                                         color: Theme.of(context)
                                             .secondaryHeaderColor,
@@ -174,9 +174,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                           ),
                           Container(
                             child: Text(
-                              contactBloc.currentContact.description +
-                                  ' ' +
-                                  contactBloc.currentContact.createdBy.lastName,
+                              teamBloc.currentTeam.description,
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -204,10 +202,9 @@ class _ContactDetailsState extends State<ContactDetails> {
                           Container(
                             child: Row(
                               children: [
-                                //   ProfilePicViewWidget(documentBLoc
-                                //       .currentDocument.sharedTo
-                                //       .map((e) => e.profileUrl)
-                                //       .toList()),
+                                ProfilePicViewWidget(teamBloc.currentTeam.users
+                                    .map((e) => e.profileUrl)
+                                    .toList()),
                               ],
                             ),
                           ),
@@ -232,9 +229,9 @@ class _ContactDetailsState extends State<ContactDetails> {
                           ),
                           Container(
                             child: Text(
-                              contactBloc.currentContact.createdBy.firstName +
+                              teamBloc.currentTeam.createdBy.firstName +
                                   ' ' +
-                                  contactBloc.currentContact.createdBy.lastName,
+                                  teamBloc.currentTeam.createdBy.lastName,
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -261,7 +258,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                           ),
                           Container(
                             child: Text(
-                              contactBloc.currentContact.createdOn,
+                              teamBloc.currentTeam.createdOn,
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -279,9 +276,9 @@ class _ContactDetailsState extends State<ContactDetails> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              // await contactBloc.updateCurrentEditContact(
-                              //     contactBloc.currentContact);
-                              // Navigator.pushNamed(context, '/create_contact');
+                              await teamBloc
+                                  .updateCurrentEditTeam(teamBloc.currentTeam);
+                              Navigator.pushNamed(context, '/create_team');
                             },
                             child: Container(
                               decoration: BoxDecoration(

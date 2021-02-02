@@ -22,7 +22,11 @@ class TeamsList extends StatefulWidget {
 class _TeamsListState extends State<TeamsList> {
   bool _isFilter = false;
   final GlobalKey<FormState> _filtersFormKey = GlobalKey<FormState>();
-  Map _filtersFormData = {"name": "", "created_by": "", "assigned_users": []};
+  Map _filtersFormData = {
+    "team_name": "",
+    "created_by": "",
+    "assigned_users": []
+  };
   bool _isLoading = false;
 
   List<Team> _teams = [];
@@ -141,9 +145,9 @@ class _TeamsListState extends State<TeamsList> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
-                      initialValue: _filtersFormData["name"],
+                      initialValue: _filtersFormData["team_name"],
                       onSaved: (newValue) {
-                        _filtersFormData["name"] = newValue;
+                        _filtersFormData["team_name"] = newValue;
                       },
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -296,9 +300,9 @@ class _TeamsListState extends State<TeamsList> {
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                // contactBloc.currentContact = _contacts[index];
-                // contactBloc.currentContactIndex = index;
-                // Navigator.pushNamed(context, '/contact_details');
+                teamBloc.currentTeam = _teams[index];
+                teamBloc.currentTeamIndex = index;
+                Navigator.pushNamed(context, '/team_details');
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -310,7 +314,7 @@ class _TeamsListState extends State<TeamsList> {
                     Container(
                       margin: EdgeInsets.only(right: 10.0),
                       child: CircleAvatar(
-                        radius: screenWidth / 17,
+                        radius: screenWidth / 15,
                         backgroundImage:
                             NetworkImage(_teams[index].createdBy.profileUrl),
                       ),
@@ -353,10 +357,10 @@ class _TeamsListState extends State<TeamsList> {
                         ),
                         Container(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Container(
-                                width: screenWidth * 0.47,
+                                width: screenWidth * 0.57,
                                 margin: EdgeInsets.only(top: 5.0),
                                 child: ProfilePicViewWidget(_teams[index]
                                     .users
@@ -370,10 +374,10 @@ class _TeamsListState extends State<TeamsList> {
                                   children: [
                                     GestureDetector(
                                       onTap: () async {
-                                        // await teamBloc.updateCurrentEditContact(
-                                        //     _teams[index]);
-                                        // Navigator.pushNamed(
-                                        //     context, '/create_contact');
+                                        await teamBloc.updateCurrentEditTeam(
+                                            _teams[index]);
+                                        Navigator.pushNamed(
+                                            context, '/create_team');
                                       },
                                       child: Container(
                                         margin: EdgeInsets.only(right: 8.0),
@@ -409,23 +413,6 @@ class _TeamsListState extends State<TeamsList> {
                                         child: SvgPicture.asset(
                                           'assets/images/icon_delete_color.svg',
                                           width: screenWidth / 23,
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              width: 1.0,
-                                              color: Colors.grey[300]),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(3.0)),
-                                        ),
-                                        padding: EdgeInsets.all(4.0),
-                                        child: SvgPicture.asset(
-                                          'assets/images/download_icon.svg',
-                                          width: screenWidth / 20,
                                         ),
                                       ),
                                     ),
@@ -484,22 +471,22 @@ class _TeamsListState extends State<TeamsList> {
         });
   }
 
-  deleteTeam(index, contact) async {
-    // setState(() {
-    //   _isLoading = true;
-    // });
-    // Map _result = await teamBloc.deleteTeam(contact);
-    // setState(() {
-    //   _isLoading = false;
-    // });
-    // if (_result['error'] == false) {
-    //   showToast(_result['message']);
-    //   Navigator.of(context).pop();
-    // } else if (_result['error'] == true) {
-    //   showToast(_result['message']);
-    // } else {
-    //   showErrorMessage(context, 'Something went wrong', index, contact);
-    // }
+  deleteTeam(index, team) async {
+    setState(() {
+      _isLoading = true;
+    });
+    Map _result = await teamBloc.deleteTeam(team);
+    setState(() {
+      _isLoading = false;
+    });
+    if (_result['error'] == false) {
+      showToast(_result['message']);
+      Navigator.of(context).pop();
+    } else if (_result['error'] == true) {
+      showToast(_result['message']);
+    } else {
+      showErrorMessage(context, 'Something went wrong', index, team);
+    }
   }
 
   void showErrorMessage(

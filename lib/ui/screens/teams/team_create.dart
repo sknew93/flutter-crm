@@ -95,7 +95,7 @@ class _CreateTeamState extends State<CreateTeam> {
     if (teamBloc.currentEditTeamId == null) {
       _result = await teamBloc.createTeam();
     } else {
-      // _result = await teamBloc.editTeam();
+      _result = await teamBloc.editTeam();
     }
 
     setState(() {

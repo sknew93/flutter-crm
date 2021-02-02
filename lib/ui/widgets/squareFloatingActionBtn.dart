@@ -1,4 +1,5 @@
 import 'package:bottle_crm/bloc/opportunity_bloc.dart';
+import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:bottle_crm/bloc/account_bloc.dart';
@@ -70,6 +71,7 @@ class SquareFloatingActionButton extends StatelessWidget {
           userBloc.cancelCurrentEditUser();
           documentBLoc.cancelCurrentEditDocument();
           opportunityBloc.cancelCurrentEditOpportunity();
+          teamBloc.cancelCurrentEditTeam();
           Navigator.pushNamed(context, _route);
         }
       },
