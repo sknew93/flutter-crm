@@ -32,15 +32,14 @@ class TeamBloc {
         _copyFiltersData['assigned_users'] = (_copyFiltersData['assigned_users']
             .map((assignedTo) => assignedTo.toString())).toList().toString();
       }
-      print(_copyFiltersData);
     }
-
-    _teams.clear();
-    _users.clear();
-    _usersObjForDropDown.clear();
 
     await CrmService().getTeams(queryParams: _copyFiltersData).then((response) {
       var res = json.decode(response.body);
+
+      _teams.clear();
+      _users.clear();
+      _usersObjForDropDown.clear();
 
       res['teams'].forEach((_team) {
         Team team = Team.fromJson(_team);

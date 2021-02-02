@@ -520,9 +520,6 @@ class _AccountsListState extends State<AccountsList> {
     });
     if (result['error'] == false) {
       showToast(result['message']);
-      // setState(() {
-      //   _accounts.removeAt(index);
-      // });
     } else if (result['error'] == true) {
       showToast(result['message']);
     } else {

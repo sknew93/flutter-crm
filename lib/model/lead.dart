@@ -1,4 +1,5 @@
 import 'package:bottle_crm/model/profile.dart';
+import 'package:bottle_crm/model/team.dart';
 import 'package:intl/intl.dart';
 
 import 'contact.dart';
@@ -30,7 +31,7 @@ class Lead {
   List tags;
   List<Contact> contacts;
   bool createdFromSite;
-  List teams;
+  List<Team> teams;
   // Company company;
 
   Lead({
@@ -106,7 +107,10 @@ class Lead {
         createdFromSite: lead["created_from_site"] != null
             ? lead["created_from_site"]
             : false,
-        // teams: List<int>.from(lead["teams"].map((x) => x)),
+        teams: lead["teams"] != null
+            ? List<Team>.from(lead["teams"].map((x) => Team.fromJson(x)))
+            : [],
+        // teams: lead
         // company: lead["company"] != null ? lead["company"] : Company(),
       );
 

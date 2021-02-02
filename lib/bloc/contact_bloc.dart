@@ -4,6 +4,8 @@ import 'package:bottle_crm/model/contact.dart';
 import 'package:bottle_crm/model/team.dart';
 import 'package:bottle_crm/services/crm_services.dart';
 
+import 'dashboard_bloc.dart';
+
 class ContactBloc {
   List<Contact> _contacts = [];
   List _contactsObjForDropdown = [];
@@ -48,6 +50,8 @@ class ContactBloc {
         .then((response) {
       var res = (json.decode(response.body));
       _contacts.clear();
+      _contactsObjForDropdown.clear();
+      _teams.clear();
       res['contact_obj_list'].forEach((_contact) {
         Contact contact = Contact.fromJson(_contact);
         _contacts.add(contact);
@@ -171,6 +175,7 @@ class ContactBloc {
       if (res["error"] != null || res["error"] != "") {
         if (res['error'] == false) {
           await fetchContacts();
+          dashboardBloc.fetchDashboardDetails();
           await cancelCurrentEditContact();
         }
       }
@@ -221,6 +226,7 @@ class ContactBloc {
         // res['error'] = true;
       } else {
         await fetchContacts();
+        dashboardBloc.fetchDashboardDetails();
       }
       _result = res;
     }).catchError((onError) {
@@ -235,6 +241,7 @@ class ContactBloc {
     await CrmService().deleteContact(contact.id).then((response) async {
       var res = (json.decode(response.body));
       await fetchContacts();
+      dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteContact Error >> $onError");

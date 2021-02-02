@@ -52,6 +52,9 @@ class OpportunityBloc {
       var res = jsonDecode(response.body);
 
       _opportunities.clear();
+      _accountsObjforDropDown.clear();
+      _accountsList.clear();
+      _currencyObjforDropDown.clear();
 
       res['opportunities'].forEach((_opportunity) {
         Opportunity oppor = Opportunity.fromJson(_opportunity);
@@ -146,6 +149,8 @@ class OpportunityBloc {
     if (_copyOfCurrentEditOpportunity != null) {
       _copyOfCurrentEditOpportunity
           .removeWhere((key, value) => value.runtimeType != String);
+      _copyOfCurrentEditOpportunity
+          .removeWhere((key, value) => key == "closed_on");
     }
 
     await CrmService()

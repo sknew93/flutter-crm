@@ -357,10 +357,9 @@ class _TeamsListState extends State<TeamsList> {
                         ),
                         Container(
                           child: Row(
-                            // mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Container(
-                                width: screenWidth * 0.57,
+                                width: screenWidth * 0.53,
                                 margin: EdgeInsets.only(top: 5.0),
                                 child: ProfilePicViewWidget(_teams[index]
                                     .users
@@ -460,6 +459,7 @@ class _TeamsListState extends State<TeamsList> {
                   textStyle: TextStyle(color: Colors.red),
                   isDefaultAction: true,
                   onPressed: () async {
+                    Navigator.pop(context);
                     deleteTeam(index, team);
                   },
                   child: Text(
@@ -481,7 +481,6 @@ class _TeamsListState extends State<TeamsList> {
     });
     if (_result['error'] == false) {
       showToast(_result['message']);
-      Navigator.of(context).pop();
     } else if (_result['error'] == true) {
       showToast(_result['message']);
     } else {

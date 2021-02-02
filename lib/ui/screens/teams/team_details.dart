@@ -1,4 +1,3 @@
-import 'package:bottle_crm/bloc/contact_bloc.dart';
 import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:bottle_crm/ui/widgets/profile_pic_widget.dart';

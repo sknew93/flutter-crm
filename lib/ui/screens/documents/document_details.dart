@@ -175,8 +175,11 @@ class _DocumentDetailsState extends State<DocumentDetails> {
                           ),
                           Container(
                             child: Text(
-                              documentBLoc.currentDocument.status
-                                  .capitalizeFirstofEach(),
+                              documentBLoc.currentDocument.status != null &&
+                                      documentBLoc.currentDocument.status != ""
+                                  ? documentBLoc.currentDocument.status
+                                      .capitalizeFirstofEach()
+                                  : documentBLoc.currentDocument.status,
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),

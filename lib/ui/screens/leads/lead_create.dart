@@ -606,8 +606,11 @@ class _CreateLeadState extends State<CreateLead> {
                       ),
                       initialValue: leadBloc.currentEditLead['teams'],
                       onSaved: (value) {
-                        if (value == null) return;
-                        leadBloc.currentEditLead['teams'] = value;
+                        if (value == null) {
+                          leadBloc.currentEditLead['teams'] = [];
+                        } else {
+                          leadBloc.currentEditLead['teams'] = value;
+                        }
                       },
                     ),
                   ),
@@ -702,8 +705,11 @@ class _CreateLeadState extends State<CreateLead> {
                       initialValue: leadBloc.currentEditLead['assigned_to'],
 
                       onSaved: (value) {
-                        if (value == null) return;
-                        leadBloc.currentEditLead['assigned_to'] = value;
+                        if (value == null) {
+                          leadBloc.currentEditLead['assigned_to'] = [];
+                        } else {
+                          leadBloc.currentEditLead['assigned_to'] = value;
+                        }
                       },
                     ),
                   ),
