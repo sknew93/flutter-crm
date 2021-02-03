@@ -44,6 +44,13 @@ class OpportunityBloc {
       _copyFiltersData['tags'] = _copyFiltersData['tags'].length > 0
           ? jsonEncode(_copyFiltersData['tags'])
           : "";
+      if (_copyFiltersData['account'] != null) {
+        _accountsList.forEach((element) {
+          if (element[1] == _copyFiltersData['account']) {
+            _copyFiltersData['account'] = element[0].toString();
+          }
+        });
+      }
     }
 
     await CrmService()
