@@ -67,11 +67,6 @@ class DocumentBloc {
     // print(fileSizes);
   }
 
-  cancelCurrentEditDocument() {
-    _currentEditDocumentId = null;
-    _currentEditDocument = {'title': "", 'teams': [], 'shared_to': []};
-  }
-
   createDocument(file) async {
     Map result;
     Map _copyOfCurrentEditDocument = new Map.from(_currentEditDocument);
@@ -132,6 +127,11 @@ class DocumentBloc {
       };
     });
     return result;
+  }
+
+  cancelCurrentEditDocument() {
+    _currentEditDocumentId = null;
+    _currentEditDocument = {'title': "", 'teams': [], 'shared_to': []};
   }
 
   updateCurrentEditDocument(Document editFile) {

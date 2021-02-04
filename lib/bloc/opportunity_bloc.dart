@@ -75,42 +75,15 @@ class OpportunityBloc {
         _accountsObjforDropDown.add(acc.name);
         _accountsList.add([acc.id, acc.name]);
       });
-
-      // res['stage'].map((stage) {
-      //   _stageObjforDropDown.add(stage);
-      // });
       _stageObjforDropDown = res['stage'];
-
-      // res['lead_source'].map((leadSource) {
-      //   _leadSourceObjforDropDown.add(leadSource);
-      // });
-
       _leadSourceObjforDropDown = res['lead_source'];
-
       res['currency'].forEach((curr) {
         _currencyObjforDropDown.add(curr[1]);
       });
-
       _currencyList = res['currency'];
     }).catchError((onError) {
       print("fetchOpportunities Error >> $onError");
     });
-  }
-
-  Future deleteOpportunity(Opportunity opportunity) async {
-    Map result;
-    await CrmService()
-        .deletefromModule('opportunities', opportunity.id)
-        .then((response) async {
-      var res = (json.decode(response.body));
-      await fetchOpportunities();
-      dashboardBloc.fetchDashboardDetails();
-      result = res;
-    }).catchError((onError) {
-      print("deleteOpportunity Error >> $onError");
-      result = {"status": "error", "message": "Something went wrong."};
-    });
-    return result;
   }
 
   Future createOpportunity([file]) async {
@@ -177,6 +150,79 @@ class OpportunityBloc {
     return result;
   }
 
+  Future editOpportunity([file]) async {
+    Map result;
+    Map _copyOfCurrentEditOpportunity = new Map.from(_currentEditOpportunity);
+
+    _accountsList.forEach((element) {
+      if (element[1] == _copyOfCurrentEditOpportunity['account']) {
+        _copyOfCurrentEditOpportunity['account'] = element[0].toString();
+      }
+    });
+
+    if (_copyOfCurrentEditOpportunity['currency'] == "" ||
+        _copyOfCurrentEditOpportunity['currency'] == null) {
+      _copyOfCurrentEditOpportunity['currency'] = "";
+    } else {
+      _currencyList.forEach((element) {
+        if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
+          _copyOfCurrentEditOpportunity['currency'] = element[0];
+        }
+      });
+    }
+    _copyOfCurrentEditOpportunity['probability'] =
+        _copyOfCurrentEditOpportunity['probability'].toString();
+
+    _copyOfCurrentEditOpportunity['teams'] =
+        (_copyOfCurrentEditOpportunity['teams'].map((e) => e.toString()))
+            .toList()
+            .toString();
+    _copyOfCurrentEditOpportunity['assigned_to'] =
+        (_copyOfCurrentEditOpportunity['assigned_to'].map((e) => e.toString()))
+            .toList()
+            .toString();
+    _copyOfCurrentEditOpportunity['contacts'] =
+        (_copyOfCurrentEditOpportunity['contacts'].map((e) => e.toString()))
+            .toList()
+            .toString();
+    _copyOfCurrentEditOpportunity['tags'] =
+        jsonEncode(_copyOfCurrentEditOpportunity['tags']);
+
+    _copyOfCurrentEditOpportunity['opportunity_attachment'] = "";
+
+    await CrmService()
+        .editOpportunity(
+            _copyOfCurrentEditOpportunity, _currentEditOpportunityId, file)
+        .then((response) async {
+      var res = json.decode(response.body);
+      if (res["error"] == false) {
+        await fetchOpportunities();
+        dashboardBloc.fetchDashboardDetails();
+      }
+      result = res;
+    }).catchError((onError) {
+      print("editOpportunity Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong"};
+    });
+    return result;
+  }
+
+  Future deleteOpportunity(Opportunity opportunity) async {
+    Map result;
+    await CrmService()
+        .deletefromModule('opportunities', opportunity.id)
+        .then((response) async {
+      var res = (json.decode(response.body));
+      await fetchOpportunities();
+      dashboardBloc.fetchDashboardDetails();
+      result = res;
+    }).catchError((onError) {
+      print("deleteOpportunity Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong."};
+    });
+    return result;
+  }
+
   cancelCurrentEditOpportunity() {
     _currentEditOpportunityId = null;
     _currentEditOpportunity = {
@@ -236,69 +282,6 @@ class OpportunityBloc {
           ? []
           : editOpportunity.opportunityAttachment[0]['file_path']
     };
-  }
-
-  Future editOpportunity([file]) async {
-    Map result;
-
-    Map _copyOfCurrentEditOpportunity = new Map.from(_currentEditOpportunity);
-    _accountsList.forEach((element) {
-      if (element[1] == _copyOfCurrentEditOpportunity['account']) {
-        _copyOfCurrentEditOpportunity['account'] = element[0].toString();
-      }
-    });
-
-    if (_copyOfCurrentEditOpportunity['currency'] == "" ||
-        _copyOfCurrentEditOpportunity['currency'] == null) {
-      _copyOfCurrentEditOpportunity['currency'] = "";
-    } else {
-      _currencyList.forEach((element) {
-        if (element[1] == _copyOfCurrentEditOpportunity['currency']) {
-          _copyOfCurrentEditOpportunity['currency'] = element[0];
-        }
-      });
-    }
-    _copyOfCurrentEditOpportunity['probability'] =
-        _copyOfCurrentEditOpportunity['probability'].toString();
-
-    _copyOfCurrentEditOpportunity['teams'] =
-        (_copyOfCurrentEditOpportunity['teams'].map((e) => e.toString()))
-            .toList()
-            .toString();
-    _copyOfCurrentEditOpportunity['assigned_to'] =
-        (_copyOfCurrentEditOpportunity['assigned_to'].map((e) => e.toString()))
-            .toList()
-            .toString();
-    _copyOfCurrentEditOpportunity['contacts'] =
-        (_copyOfCurrentEditOpportunity['contacts'].map((e) => e.toString()))
-            .toList()
-            .toString();
-
-    // if (_copyOfCurrentEditOpportunity['closed_on'] != "") {
-    //   _copyOfCurrentEditOpportunity['closed_on'] = DateFormat("yyyy-MM-dd")
-    //       .format(DateFormat("dd-MM-yyyy")
-    //           .parse(_copyOfCurrentEditOpportunity['closed_on']));
-    // }
-    _copyOfCurrentEditOpportunity['tags'] =
-        jsonEncode(_copyOfCurrentEditOpportunity['tags']);
-
-    _copyOfCurrentEditOpportunity['opportunity_attachment'] = "";
-
-    await CrmService()
-        .editOpportunity(
-            _copyOfCurrentEditOpportunity, _currentEditOpportunityId, file)
-        .then((response) async {
-      var res = json.decode(response.body);
-      if (res["error"] == false) {
-        await fetchOpportunities();
-        dashboardBloc.fetchDashboardDetails();
-      }
-      result = res;
-    }).catchError((onError) {
-      print("editOpportunity Error >> $onError");
-      result = {"status": "error", "message": "Something went wrong"};
-    });
-    return result;
   }
 
   List<Opportunity> get opportunities {

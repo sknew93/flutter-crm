@@ -52,19 +52,6 @@ class UserBloc {
     });
   }
 
-  Future deleteUser(Profile user) async {
-    Map result;
-    await CrmService().deleteUser(user.id).then((response) async {
-      var res = (json.decode(response.body));
-      await fetchUsers();
-      result = res;
-    }).catchError((onError) {
-      print("deleteUser Error >> $onError");
-      result = {"status": "error", "message": "Something went wrong."};
-    });
-    return result;
-  }
-
   Future createUser() async {
     Map _result;
     Map _copyOfCurrentEditUser = Map.from(_currentEditUser);
@@ -78,11 +65,8 @@ class UserBloc {
         .createUser(_copyOfCurrentEditUser)
         .then((response) async {
       var res = json.decode(response.body);
-      if (res["error"] != null || res["error"] != "") {
-        if (res['error'] == false) {
-          await fetchUsers();
-          cancelCurrentEditUser();
-        }
+      if (res['error'] == false) {
+        await fetchUsers();
       }
       _result = res;
     }).catchError((onError) {
@@ -90,6 +74,43 @@ class UserBloc {
       _result = {"status": "error", "message": "Something went wrong."};
     });
     return _result;
+  }
+
+  editUser() async {
+    Map _result;
+    Map _copyOfCurrentEditUser = Map.from(_currentEditUser);
+    _copyOfCurrentEditUser['has_marketing_access'] =
+        json.encode(_copyOfCurrentEditUser['has_marketing_access']);
+    _copyOfCurrentEditUser['has_sales_access'] =
+        json.encode(_copyOfCurrentEditUser['has_sales_access']);
+    _copyOfCurrentEditUser['role'] = _copyOfCurrentEditUser['is_admin'];
+    _copyOfCurrentEditUser['status'] = _copyOfCurrentEditUser['is_active'];
+    await CrmService()
+        .editUser(_copyOfCurrentEditUser, _currentEditUserId)
+        .then((response) async {
+      var res = json.decode(response.body);
+      if (res['error'] == false) {
+        await fetchUsers();
+      }
+      _result = res;
+    }).catchError((onError) {
+      print("editUser Error >> $onError");
+      _result = {"status": "error", "message": "Something went wrong."};
+    });
+    return _result;
+  }
+
+  Future deleteUser(Profile user) async {
+    Map result;
+    await CrmService().deleteUser(user.id).then((response) async {
+      var res = (json.decode(response.body));
+      await fetchUsers();
+      result = res;
+    }).catchError((onError) {
+      print("deleteUser Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong."};
+    });
+    return result;
   }
 
   cancelCurrentEditUser() {
@@ -135,33 +156,6 @@ class UserBloc {
     } else {
       _currentEditUser['is_admin'] = "USER";
     }
-  }
-
-  editUser() async {
-    Map _result;
-    Map _copyOfCurrentEditUser = Map.from(_currentEditUser);
-    _copyOfCurrentEditUser['has_marketing_access'] =
-        json.encode(_copyOfCurrentEditUser['has_marketing_access']);
-    _copyOfCurrentEditUser['has_sales_access'] =
-        json.encode(_copyOfCurrentEditUser['has_sales_access']);
-    _copyOfCurrentEditUser['role'] = _copyOfCurrentEditUser['is_admin'];
-    _copyOfCurrentEditUser['status'] = _copyOfCurrentEditUser['is_active'];
-    await CrmService()
-        .editUser(_copyOfCurrentEditUser, _currentEditUserId)
-        .then((response) async {
-      var res = json.decode(response.body);
-      if (res["error"] != null || res["error"] != "") {
-        if (res['error'] == false) {
-          await fetchUsers();
-          cancelCurrentEditUser();
-        }
-      }
-      _result = res;
-    }).catchError((onError) {
-      print("editUser Error >> $onError");
-      _result = {"status": "error", "message": "Something went wrong."};
-    });
-    return _result;
   }
 
   List<Profile> get activeUsers {

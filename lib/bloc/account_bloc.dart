@@ -145,10 +145,7 @@ class AccountBloc {
         .editAccount(_copyCurrentEditAccount, _currentEditAccountId)
         .then((response) async {
       var res = json.decode(response.body);
-      if (res["errors"] != null) {
-        cancelCurrentEditAccount();
-        res["error"] = true;
-      } else {
+      if (res["errors"] == false) {
         await fetchAccounts();
         dashboardBloc.fetchDashboardDetails();
       }

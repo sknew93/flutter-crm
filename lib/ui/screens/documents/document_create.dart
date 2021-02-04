@@ -470,7 +470,6 @@ class _CreateDocumentState extends State<CreateDocument> {
                           GestureDetector(
                             onTap: () {
                               Navigator.pop(context);
-                              // documentBLoc.cancelCurrentEditDocument();
                             },
                             child: Container(
                               child: Text(

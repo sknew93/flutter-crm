@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:bottle_crm/bloc/contact_bloc.dart';
 import 'package:bottle_crm/bloc/lead_bloc.dart';
@@ -193,17 +194,13 @@ class _CreateLeadState extends State<CreateLead> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'First Name',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'First Name :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -239,17 +236,13 @@ class _CreateLeadState extends State<CreateLead> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Last Name',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Last Name :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -285,17 +278,13 @@ class _CreateLeadState extends State<CreateLead> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Phone',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Phone :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -331,17 +320,13 @@ class _CreateLeadState extends State<CreateLead> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Account Name',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Account Name :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -437,17 +422,13 @@ class _CreateLeadState extends State<CreateLead> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Email Address',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Email Address :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -483,17 +464,13 @@ class _CreateLeadState extends State<CreateLead> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Website',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Website :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -529,21 +506,18 @@ class _CreateLeadState extends State<CreateLead> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Description',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Description :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
+                      maxLines: 3,
                       initialValue: leadBloc.currentEditLead['description'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -780,17 +754,13 @@ class _CreateLeadState extends State<CreateLead> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Billing Address',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Billing Address :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -857,7 +827,10 @@ class _CreateLeadState extends State<CreateLead> {
                                 errorStyle: GoogleFonts.robotoSlab(),
                                 hintStyle: GoogleFonts.robotoSlab(
                                     textStyle: TextStyle(fontSize: 14.0))),
-                            keyboardType: TextInputType.phone,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             onSaved: (value) {
                               leadBloc.currentEditLead['postcode'] = value;
                             },
@@ -1005,9 +978,6 @@ class _CreateLeadState extends State<CreateLead> {
                       value: (leadBloc.currentEditLead['status'] != "")
                           ? leadBloc.currentEditLead['status']
                           : null,
-                      // onSaved: (value) {
-                      //   leadBloc.currentEditLead['status'] = value;
-                      // },
                       onChanged: (value) {
                         leadBloc.currentEditLead['status'] = value;
                       },
@@ -1126,7 +1096,6 @@ class _CreateLeadState extends State<CreateLead> {
                     onTap: () {
                       FocusScope.of(context).unfocus();
                       _saveForm();
-                      // leadBloc.cancelCurrentEditLead();
                     },
                     child: Container(
                       alignment: Alignment.center,

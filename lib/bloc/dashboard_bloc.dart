@@ -5,8 +5,6 @@ import 'package:bottle_crm/services/crm_services.dart';
 
 class DashboardBloc {
   Map _dashboardData = {};
-  // final _dashboardFetcher = PublishSubject<Map>();
-  // Stream<Map> get dashboardDetails => _dashboardFetcher.stream;
 
   Future fetchDashboardDetails() async {
     await CrmService().getDashboardDetails().then((response) {
@@ -31,8 +29,6 @@ class DashboardBloc {
       _dashboardData['contactsCount'] = res['contacts_count'];
       _dashboardData['leadsCount'] = res['leads_count'];
       _dashboardData['opportunitiesCount'] = res['opportunities_count'];
-
-      // _dashboardFetcher.sink.add(_dashboardData);
     }).catchError((onError) {
       print("fetchDashboardDetails Error >> $onError");
     });
@@ -41,10 +37,6 @@ class DashboardBloc {
   Map get dashboardData {
     return _dashboardData;
   }
-
-  // void dispose() {
-  //   _dashboardFetcher.close();
-  // }
 }
 
 final dashboardBloc = DashboardBloc();

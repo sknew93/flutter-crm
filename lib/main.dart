@@ -19,10 +19,6 @@ import 'package:bottle_crm/ui/screens/invoices/invoices_index.dart';
 import 'package:bottle_crm/ui/screens/leads/lead_create.dart';
 import 'package:bottle_crm/ui/screens/leads/lead_details.dart';
 import 'package:bottle_crm/ui/screens/leads/leads_list.dart';
-import 'package:bottle_crm/ui/screens/marketing/campaigns/campaigns_index.dart';
-import 'package:bottle_crm/ui/screens/marketing/contacts/contacts_index.dart';
-import 'package:bottle_crm/ui/screens/marketing/dashboard/dashboard_index.dart';
-import 'package:bottle_crm/ui/screens/marketing/email_templates/email_index.dart';
 import 'package:bottle_crm/ui/screens/more_options_screen.dart';
 import 'package:bottle_crm/ui/screens/opportunities/opportunity_create.dart';
 import 'package:bottle_crm/ui/screens/opportunities/opportunity_details.dart';
@@ -87,12 +83,6 @@ class MyApp extends StatelessWidget {
         '/create_team': (BuildContext context) => CreateTeam(),
         '/team_details': (BuildContext context) => TeamDetails(),
         '/change_password': (BuildContext context) => ChangePassword(),
-        '/marketing_dashboard': (BuildContext context) => MarketingDashboard(),
-        '/marketing_contacts': (BuildContext context) =>
-            MarketingContactsScreen(),
-        '/email_templates': (BuildContext context) => EmailTemplatesScreen(),
-        '/marketing_campaigns': (BuildContext context) =>
-            MarketingCampaignsScreen(),
         '/profile_details': (BuildContext context) => ProfileDetails(),
         '/users_list': (BuildContext context) => UsersList(),
         '/create_user': (BuildContext context) => CreateUser(),

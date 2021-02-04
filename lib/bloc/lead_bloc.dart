@@ -135,43 +135,6 @@ class LeadBloc {
     });
   }
 
-  editLead() async {
-    Map result;
-    Map _copyCurrentEditLead = new Map.from(_currentEditLead);
-    _copyCurrentEditLead['status'] =
-        _copyCurrentEditLead['status'].toLowerCase();
-    _copyCurrentEditLead['source'] =
-        _copyCurrentEditLead['source'].toLowerCase();
-    _copyCurrentEditLead['teams'] = (_copyCurrentEditLead['teams']
-        .map((team) => team.toString())).toList().toString();
-    _copyCurrentEditLead['assigned_to'] = (_copyCurrentEditLead['assigned_to']
-        .map((assignedTo) => assignedTo.toString())).toList().toString();
-
-    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
-    _countriesList.forEach((country) {
-      if (country[1] == _copyCurrentEditLead['country']) {
-        _copyCurrentEditLead['country'] = country[0];
-      }
-    });
-    await CrmService()
-        .editLead(_copyCurrentEditLead, _currentEditLeadId)
-        .then((response) async {
-      var res = json.decode(response.body);
-
-      if (res["error"] == true) {
-        cancelCurrentEditLead();
-      } else {
-        await fetchLeads();
-        dashboardBloc.fetchDashboardDetails();
-      }
-      result = res;
-    }).catchError((onError) {
-      print('editLead Error >> $onError');
-      result = {"status": "error", "message": "Something went wrong."};
-    });
-    return result;
-  }
-
   createLead() async {
     Map result;
     Map _copyCurrentEditLead = new Map.from(_currentEditLead);
@@ -195,13 +158,61 @@ class LeadBloc {
       var res = json.decode(response.body);
       if (res['error'] == false) {
         await fetchLeads();
-        cancelCurrentEditLead();
         dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
       print('createLead Error >> $onError');
       result = {"status": "error", "message": "Something went wrong"};
+    });
+    return result;
+  }
+
+  editLead() async {
+    Map result;
+    Map _copyCurrentEditLead = new Map.from(_currentEditLead);
+    _copyCurrentEditLead['status'] =
+        _copyCurrentEditLead['status'].toLowerCase();
+    _copyCurrentEditLead['source'] =
+        _copyCurrentEditLead['source'].toLowerCase();
+    _copyCurrentEditLead['teams'] = (_copyCurrentEditLead['teams']
+        .map((team) => team.toString())).toList().toString();
+    _copyCurrentEditLead['assigned_to'] = (_copyCurrentEditLead['assigned_to']
+        .map((assignedTo) => assignedTo.toString())).toList().toString();
+
+    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
+    _countriesList.forEach((country) {
+      if (country[1] == _copyCurrentEditLead['country']) {
+        _copyCurrentEditLead['country'] = country[0];
+      }
+    });
+    await CrmService()
+        .editLead(_copyCurrentEditLead, _currentEditLeadId)
+        .then((response) async {
+      var res = json.decode(response.body);
+
+      if (res["error"] == false) {
+        await fetchLeads();
+        dashboardBloc.fetchDashboardDetails();
+      }
+      result = res;
+    }).catchError((onError) {
+      print('editLead Error >> $onError');
+      result = {"status": "error", "message": "Something went wrong."};
+    });
+    return result;
+  }
+
+  Future deleteLead(Lead lead) async {
+    Map result;
+    await CrmService().deleteLead(lead.id).then((response) async {
+      var res = (json.decode(response.body));
+      await fetchLeads();
+      dashboardBloc.fetchDashboardDetails();
+      result = res;
+    }).catchError((onError) {
+      print("deleteLead Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong."};
     });
     return result;
   }
@@ -282,20 +293,6 @@ class LeadBloc {
             ? editLead.source.capitalizeFirstofEach()
             : editLead.source;
     _currentEditLead['tags'] = tags;
-  }
-
-  Future deleteLead(Lead lead) async {
-    Map result;
-    await CrmService().deleteLead(lead.id).then((response) async {
-      var res = (json.decode(response.body));
-      await fetchLeads();
-      dashboardBloc.fetchDashboardDetails();
-      result = res;
-    }).catchError((onError) {
-      print("deleteLead Error >> $onError");
-      result = {"status": "error", "message": "Something went wrong."};
-    });
-    return result;
   }
 
   List get tags {
