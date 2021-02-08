@@ -1,11 +1,5 @@
 import 'dart:async';
 
-import 'package:bottle_crm/bloc/account_bloc.dart';
-import 'package:bottle_crm/bloc/auth_bloc.dart';
-import 'package:bottle_crm/bloc/contact_bloc.dart';
-import 'package:bottle_crm/bloc/dashboard_bloc.dart';
-import 'package:bottle_crm/bloc/lead_bloc.dart';
-import 'package:bottle_crm/bloc/opportunity_bloc.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
@@ -14,6 +8,8 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../utils/utils.dart';
 
 class SplashScreen extends StatefulWidget {
   SplashScreen();
@@ -44,13 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
         connectivityResult == ConnectivityResult.wifi) {
       if (preferences.getString('authToken') != null &&
           preferences.getString('authToken') != "") {
-        await authBloc.getProfileDetails();
-        await dashboardBloc.fetchDashboardDetails();
-        await contactBloc.fetchContacts();
-        await accountBloc.fetchAccounts();
-        await leadBloc.fetchLeads();
-        // await teamBloc.fetchTeams();
-        await opportunityBloc.fetchOpportunities();
+        await fetchRequiredData();
         Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
         Navigator.pushReplacementNamed(context, '/sub_domain');

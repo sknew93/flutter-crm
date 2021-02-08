@@ -438,4 +438,42 @@ class CrmService {
   //   final response = await request.send();
   //   return await response.stream.bytesToString();
 
+  ///////////////////// TASKS-SERVICES ///////////////////////////////
+
+  Future<Response> getTasks({queryParams}) async {
+    await updateHeaders();
+    String url;
+    if (queryParams != null) {
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'tasks/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'tasks/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> createTask(data) async {
+    await updateHeaders();
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    return await networkService.post(baseUrl + 'tasks/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
+  Future<Response> editTask(data, id) async {
+    await updateHeaders();
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    return await networkService.put(baseUrl + 'tasks/$id/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
+  Future<Response> deleteTask(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'tasks/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
 }

@@ -302,10 +302,10 @@ class _CreateDocumentState extends State<CreateDocument> {
                                   textStyle: TextStyle(color: Colors.black)),
                               dialogTextStyle: GoogleFonts.robotoSlab(),
                               cancelButtonLabel: 'CANCEL',
-                              hintWidget: Text(
-                                "Please choose one or more",
-                                style: GoogleFonts.robotoSlab(),
-                              ),
+                              hintWidget: Text("Please choose one or more",
+                                  style: GoogleFonts.robotoSlab(
+                                      textStyle:
+                                          TextStyle(color: Colors.grey))),
                               title: Text(
                                 "Teams",
                                 style: GoogleFonts.robotoSlab(),
@@ -353,9 +353,10 @@ class _CreateDocumentState extends State<CreateDocument> {
                                     dialogTextStyle: GoogleFonts.robotoSlab(),
                                     cancelButtonLabel: 'CANCEL',
                                     hintWidget: Text(
-                                      "Please choose one or more",
-                                      style: GoogleFonts.robotoSlab(),
-                                    ),
+                                        "Please choose one or more",
+                                        style: GoogleFonts.robotoSlab(
+                                            textStyle:
+                                                TextStyle(color: Colors.grey))),
                                     title: Text(
                                       "Share To",
                                       style: GoogleFonts.robotoSlab(),

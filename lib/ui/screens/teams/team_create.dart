@@ -281,10 +281,9 @@ class _CreateTeamState extends State<CreateTeam> {
                               textStyle: TextStyle(color: Colors.black)),
                           dialogTextStyle: GoogleFonts.robotoSlab(),
                           cancelButtonLabel: 'CANCEL',
-                          hintWidget: Text(
-                            "Please choose one or more",
-                            style: GoogleFonts.robotoSlab(),
-                          ),
+                          hintWidget: Text("Please choose one or more",
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(color: Colors.grey))),
                           title: Text(
                             "Assigned To",
                             style: GoogleFonts.robotoSlab(),

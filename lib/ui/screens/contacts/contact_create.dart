@@ -480,7 +480,8 @@ class _CreateContactState extends State<CreateContact> {
                         cancelButtonLabel: 'CANCEL',
                         hintWidget: Text(
                           "Please choose one or more",
-                          style: GoogleFonts.robotoSlab(),
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(color: Colors.grey)),
                         ),
                         title: Text(
                           "Teams",
@@ -527,10 +528,9 @@ class _CreateContactState extends State<CreateContact> {
                             textStyle: TextStyle(color: Colors.black)),
                         dialogTextStyle: GoogleFonts.robotoSlab(),
                         cancelButtonLabel: 'CANCEL',
-                        hintWidget: Text(
-                          "Please choose one or more",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
+                        hintWidget: Text("Please choose one or more",
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(color: Colors.grey))),
                         title: Text(
                           "Users",
                           style: GoogleFonts.robotoSlab(),
@@ -574,10 +574,9 @@ class _CreateContactState extends State<CreateContact> {
                             textStyle: TextStyle(color: Colors.black)),
                         dialogTextStyle: GoogleFonts.robotoSlab(),
                         cancelButtonLabel: 'CANCEL',
-                        hintWidget: Text(
-                          "Please choose one or more",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
+                        hintWidget: Text("Please choose one or more",
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(color: Colors.grey))),
                         title: Text(
                           "Assigned To",
                           style: GoogleFonts.robotoSlab(),

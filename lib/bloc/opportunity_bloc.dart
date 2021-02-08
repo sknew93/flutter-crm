@@ -124,6 +124,7 @@ class OpportunityBloc {
       _copyOfCurrentEditOpportunity['due_date'] = DateFormat("yyyy-MM-dd")
           .format(DateFormat("dd-MM-yyyy")
               .parse(_copyOfCurrentEditOpportunity['closed_on']));
+
     _copyOfCurrentEditOpportunity['tags'] =
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
     if (_copyOfCurrentEditOpportunity != null) {
@@ -189,6 +190,18 @@ class OpportunityBloc {
         jsonEncode(_copyOfCurrentEditOpportunity['tags']);
 
     _copyOfCurrentEditOpportunity['opportunity_attachment'] = "";
+
+    if (_copyOfCurrentEditOpportunity['closed_on'] != "")
+      _copyOfCurrentEditOpportunity['due_date'] = DateFormat("yyyy-MM-dd")
+          .format(DateFormat("dd-MM-yyyy")
+              .parse(_copyOfCurrentEditOpportunity['closed_on']));
+
+    if (_copyOfCurrentEditOpportunity != null) {
+      _copyOfCurrentEditOpportunity
+          .removeWhere((key, value) => value.runtimeType != String);
+      _copyOfCurrentEditOpportunity
+          .removeWhere((key, value) => key == "closed_on");
+    }
 
     await CrmService()
         .editOpportunity(

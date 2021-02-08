@@ -23,7 +23,9 @@ import 'package:bottle_crm/ui/screens/more_options_screen.dart';
 import 'package:bottle_crm/ui/screens/opportunities/opportunity_create.dart';
 import 'package:bottle_crm/ui/screens/opportunities/opportunity_details.dart';
 import 'package:bottle_crm/ui/screens/splash_screen.dart';
-import 'package:bottle_crm/ui/screens/tasks/tasks_index.dart';
+import 'package:bottle_crm/ui/screens/tasks/task_create.dart';
+import 'package:bottle_crm/ui/screens/tasks/task_details.dart';
+import 'package:bottle_crm/ui/screens/tasks/tasks_list.dart';
 import 'package:bottle_crm/ui/screens/teams/team_create.dart';
 import 'package:bottle_crm/ui/screens/teams/team_details.dart';
 import 'package:bottle_crm/ui/screens/teams/teams_list.dart';
@@ -55,10 +57,6 @@ class MyApp extends StatelessWidget {
           dividerColor: Color.fromRGBO(232, 243, 245, 1)),
       home: SplashScreen(),
       routes: {
-        '/sub_domain': (BuildContext context) => SubDomain(),
-        '/user_register': (BuildContext context) => UserRegister(),
-        '/user_login': (BuildContext context) => UserLogin(),
-        '/forgot_password': (BuildContext context) => ForgotPassword(),
         '/dashboard': (BuildContext context) => Dashboard(),
         '/account_list': (BuildContext context) => AccountsList(),
         '/account_details': (BuildContext context) => AccountDetails(),
@@ -78,16 +76,24 @@ class MyApp extends StatelessWidget {
         '/opportunities': (BuildContext context) => OpportunitiesList(),
         '/opportunity_details': (BuildContext context) => OpportunityDetails(),
         '/create_opportunity': (BuildContext context) => CreateOpportunity(),
-        '/tasks': (BuildContext context) => TasksScreen(),
         '/teams': (BuildContext context) => TeamsList(),
         '/create_team': (BuildContext context) => CreateTeam(),
         '/team_details': (BuildContext context) => TeamDetails(),
-        '/change_password': (BuildContext context) => ChangePassword(),
-        '/profile_details': (BuildContext context) => ProfileDetails(),
+        '/tasks': (BuildContext context) => TasksList(),
+        '/create_task': (BuildContext context) => CreateTask(),
+        '/task_details': (BuildContext context) => TaskDetails(),
         '/users_list': (BuildContext context) => UsersList(),
         '/create_user': (BuildContext context) => CreateUser(),
         '/user_details': (BuildContext context) => UserDetails(),
-        '/more_options': (BuildContext context) => MoreOptions()
+
+        //Authentication
+        '/sub_domain': (BuildContext context) => SubDomain(),
+        '/user_register': (BuildContext context) => UserRegister(),
+        '/user_login': (BuildContext context) => UserLogin(),
+        '/forgot_password': (BuildContext context) => ForgotPassword(),
+        '/change_password': (BuildContext context) => ChangePassword(),
+        '/profile_details': (BuildContext context) => ProfileDetails(),
+        '/more_options': (BuildContext context) => MoreOptions(),
       },
     );
   }
