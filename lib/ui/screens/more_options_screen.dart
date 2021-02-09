@@ -67,7 +67,7 @@ class _MoreOptionsState extends State<MoreOptions> {
     },
     {
       'title': 'Settings',
-      'route': '/opportunities',
+      'route': '/settings_list',
       'icon': 'assets/images/settings.svg'
     },
     {

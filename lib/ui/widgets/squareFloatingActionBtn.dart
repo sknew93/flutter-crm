@@ -94,6 +94,7 @@ class SquareFloatingActionButton extends StatelessWidget {
               ),
             ),
             Container(
+              width: screenWidth * 0.25,
               child: Text(
                 btnTitle,
                 style: GoogleFonts.robotoSlab(

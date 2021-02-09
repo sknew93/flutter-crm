@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 class Contact {
   int id;
+  String name;
   String firstName;
   String lastName;
   String email;
@@ -23,6 +24,7 @@ class Contact {
 
   Contact(
       {this.id,
+      this.name,
       this.firstName,
       this.lastName,
       this.email,
@@ -41,6 +43,7 @@ class Contact {
 
   Contact.fromJson(Map contact) {
     this.id = contact['id'] != null ? contact['id'] : 0;
+    this.name = contact['name'] != null ? contact['name'] : '';
     this.firstName = contact['first_name'] != null ? contact['first_name'] : '';
     this.lastName = contact['last_name'] != null ? contact['last_name'] : '';
     this.email = contact['email'] != null ? contact['email'] : "";
@@ -73,6 +76,7 @@ class Contact {
   toJson() {
     return {
       'id': id,
+      'name': name,
       'first_name': firstName,
       'last_name': lastName,
       'email': email,

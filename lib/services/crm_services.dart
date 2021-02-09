@@ -1,3 +1,4 @@
+import 'package:bottle_crm/bloc/setting_bloc.dart';
 import 'package:bottle_crm/model/document.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart';
@@ -475,5 +476,103 @@ class CrmService {
     await updateHeaders();
     return await networkService.delete(baseUrl + 'tasks/$id/',
         headers: getFormatedHeaders(_headers));
+  }
+
+  ///////////////////// SETTINGS-SERVICES ///////////////////////////////
+  /// CONTACTS
+  Future<Response> getSettingsContacts({queryParams}) async {
+    await updateHeaders();
+    String url;
+    if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'settings/contacts/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'settings/contacts/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> deleteSettingsContacts(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'settings/contacts/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  /// BLOCKED DOMAINS
+  Future<Response> getBlockedDomains({queryParams}) async {
+    await updateHeaders();
+    String url;
+    if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'settings/block-domains/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'settings/block-domains/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> deleteBlockedDomains(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'settings/block-domains/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  /// BLOCKED EMAILS
+  Future<Response> getBlockedEmails({queryParams}) async {
+    await updateHeaders();
+    String url;
+    if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'settings/block-emails/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'settings/block-emails/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> deleteBlockedEmails(id) async {
+    await updateHeaders();
+    return await networkService.delete(baseUrl + 'settings/block-emails/$id/',
+        headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> createSetting(data) async {
+    await updateHeaders();
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    String _url;
+    if (settingsBloc.currentSettingsTab == "Contacts") {
+      _url = '/settings/contacts';
+    } else if (settingsBloc.currentSettingsTab == "Blocked Domains") {
+      _url = '/settings/block-domains';
+    } else {
+      _url = '/settings/block-emails';
+    }
+    return await networkService.post(baseUrl + '$_url/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
+  Future<Response> editSetting(data, id) async {
+    await updateHeaders();
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    String _url;
+    if (settingsBloc.currentSettingsTab == "Contacts") {
+      _url = '/settings/contacts';
+    } else if (settingsBloc.currentSettingsTab == "Blocked Domains") {
+      _url = '/settings/block-domains';
+    } else {
+      _url = '/settings/block-emails';
+    }
+    return await networkService.put(baseUrl + '$_url/$id/',
+        headers: getFormatedHeaders(_headers), body: data);
   }
 }
