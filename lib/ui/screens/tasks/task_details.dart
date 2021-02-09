@@ -1,4 +1,4 @@
-import 'package:bottle_crm/bloc/team_bloc.dart';
+import 'package:bottle_crm/bloc/task_bloc.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:bottle_crm/ui/widgets/profile_pic_widget.dart';
 import 'package:bottle_crm/utils/utils.dart';
@@ -9,13 +9,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class TeamDetails extends StatefulWidget {
-  TeamDetails();
+class TaskDetails extends StatefulWidget {
+  TaskDetails();
   @override
-  State createState() => _TeamDetailsState();
+  State createState() => _TaskDetailsState();
 }
 
-class _TeamDetailsState extends State<TeamDetails> {
+class _TaskDetailsState extends State<TaskDetails> {
   bool _isLoading = false;
 
   @override
@@ -23,18 +23,18 @@ class _TeamDetailsState extends State<TeamDetails> {
     super.initState();
   }
 
-  void showDeleteTeamAlertDialog(BuildContext context) {
+  void showDeleteTaskAlertDialog(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             title: Text(
-              teamBloc.currentTeam.name,
+              taskBloc.currentTask.title,
               style: GoogleFonts.robotoSlab(
                   color: Theme.of(context).secondaryHeaderColor),
             ),
             content: Text(
-              "Are you sure you want to delete this team?",
+              "Are you sure you want to delete this task?",
               style: GoogleFonts.robotoSlab(fontSize: 15.0),
             ),
             actions: <Widget>[
@@ -52,7 +52,7 @@ class _TeamDetailsState extends State<TeamDetails> {
                   isDefaultAction: true,
                   onPressed: () async {
                     Navigator.pop(context);
-                    deleteTeam();
+                    deleteTask();
                   },
                   child: Text(
                     "Delete",
@@ -63,17 +63,17 @@ class _TeamDetailsState extends State<TeamDetails> {
         });
   }
 
-  deleteTeam() async {
+  deleteTask() async {
     setState(() {
       _isLoading = true;
     });
-    Map result = await teamBloc.deleteTeam(teamBloc.currentTeam);
+    Map result = await taskBloc.deleteTask(taskBloc.currentTask);
     setState(() {
       _isLoading = false;
     });
     if (result['error'] == false) {
       showToast(result['message']);
-      Navigator.pushReplacementNamed(context, "/teams");
+      Navigator.pushReplacementNamed(context, "/tasks");
     } else if (result['error'] == true) {
       showToast(result['message']);
     } else {
@@ -94,7 +94,7 @@ class _TeamDetailsState extends State<TeamDetails> {
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
         onPressed: () {
           Navigator.of(context).pop(true);
-          deleteTeam();
+          deleteTask();
         },
       ),
       duration: Duration(seconds: 10),
@@ -117,7 +117,7 @@ class _TeamDetailsState extends State<TeamDetails> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text(
-          "Team Details",
+          "Task Details",
           style: GoogleFonts.robotoSlab(),
         ),
       ),
@@ -142,7 +142,7 @@ class _TeamDetailsState extends State<TeamDetails> {
                                 Container(
                                   width: screenWidth * 0.7,
                                   child: Text(
-                                    "${teamBloc.currentTeam.name}",
+                                    "${taskBloc.currentTask.title}",
                                     style: GoogleFonts.robotoSlab(
                                         color: Theme.of(context)
                                             .secondaryHeaderColor,
@@ -165,7 +165,7 @@ class _TeamDetailsState extends State<TeamDetails> {
                           Container(
                             margin: EdgeInsets.only(bottom: 5.0),
                             child: Text(
-                              "Description :",
+                              "Priority :",
                               style: GoogleFonts.robotoSlab(
                                   color: Theme.of(context).secondaryHeaderColor,
                                   fontSize: screenWidth / 24),
@@ -173,12 +173,163 @@ class _TeamDetailsState extends State<TeamDetails> {
                           ),
                           Container(
                             child: Text(
-                              teamBloc.currentTeam.description,
+                              taskBloc.currentTask.priority,
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
                             ),
                           ),
+                          Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.0),
+                              child: Divider(color: Colors.grey))
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5.0),
+                            child: Text(
+                              "Status :",
+                              style: GoogleFonts.robotoSlab(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              taskBloc.currentTask.status,
+                              style: GoogleFonts.robotoSlab(
+                                  color: bottomNavBarTextColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.0),
+                              child: Divider(color: Colors.grey))
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5.0),
+                            child: Text(
+                              "Due Date :",
+                              style: GoogleFonts.robotoSlab(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              taskBloc.currentTask.dueDate,
+                              style: GoogleFonts.robotoSlab(
+                                  color: bottomNavBarTextColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.0),
+                              child: Divider(color: Colors.grey))
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5.0),
+                            child: Text(
+                              "Account :",
+                              style: GoogleFonts.robotoSlab(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              taskBloc.currentTask.account.name,
+                              style: GoogleFonts.robotoSlab(
+                                  color: bottomNavBarTextColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.0),
+                              child: Divider(color: Colors.grey))
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5.0),
+                            child: Text(
+                              "Contacts :",
+                              style: GoogleFonts.robotoSlab(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontSize: screenWidth / 24),
+                            ),
+                          ),
+                          Container(
+                              child: NotificationListener<
+                                  OverscrollIndicatorNotification>(
+                            onNotification: (overscroll) {
+                              overscroll.disallowGlow();
+                              return true;
+                            },
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                itemCount: taskBloc.currentTask.contacts.length,
+                                itemBuilder:
+                                    (BuildContext context, int contactIndex) {
+                                  return Container(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                            width: screenWidth / 20,
+                                            child: Text(
+                                              "○",
+                                              style: GoogleFonts.robotoSlab(
+                                                  textStyle: TextStyle(
+                                                      fontSize:
+                                                          screenWidth / 20,
+                                                      color:
+                                                          bottomNavBarTextColor,
+                                                      fontWeight:
+                                                          FontWeight.w600)),
+                                            )),
+                                        Container(
+                                          child: Text(
+                                            taskBloc
+                                                    .currentTask
+                                                    .contacts[contactIndex]
+                                                    .firstName +
+                                                " " +
+                                                taskBloc
+                                                    .currentTask
+                                                    .contacts[contactIndex]
+                                                    .lastName,
+                                            style: GoogleFonts.robotoSlab(
+                                                textStyle: TextStyle(
+                                                    color:
+                                                        bottomNavBarTextColor)),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }),
+                          )),
                           Container(
                               margin: EdgeInsets.symmetric(vertical: 5.0),
                               child: Divider(color: Colors.grey))
@@ -201,7 +352,8 @@ class _TeamDetailsState extends State<TeamDetails> {
                           Container(
                             child: Row(
                               children: [
-                                ProfilePicViewWidget(teamBloc.currentTeam.users
+                                ProfilePicViewWidget(taskBloc
+                                    .currentTask.assignedTo
                                     .map((e) => e.profileUrl)
                                     .toList()),
                               ],
@@ -228,9 +380,9 @@ class _TeamDetailsState extends State<TeamDetails> {
                           ),
                           Container(
                             child: Text(
-                              teamBloc.currentTeam.createdBy.firstName +
+                              taskBloc.currentTask.createdBy.firstName +
                                   ' ' +
-                                  teamBloc.currentTeam.createdBy.lastName,
+                                  taskBloc.currentTask.createdBy.lastName,
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -257,7 +409,7 @@ class _TeamDetailsState extends State<TeamDetails> {
                           ),
                           Container(
                             child: Text(
-                              teamBloc.currentTeam.createdOn,
+                              taskBloc.currentTask.createdOn,
                               style: GoogleFonts.robotoSlab(
                                   color: bottomNavBarTextColor,
                                   fontSize: screenWidth / 24),
@@ -275,9 +427,9 @@ class _TeamDetailsState extends State<TeamDetails> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              await teamBloc
-                                  .updateCurrentEditTeam(teamBloc.currentTeam);
-                              Navigator.pushNamed(context, '/create_team');
+                              await taskBloc
+                                  .updateCurrentEditTask(taskBloc.currentTask);
+                              Navigator.pushNamed(context, '/create_task');
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -309,7 +461,7 @@ class _TeamDetailsState extends State<TeamDetails> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              showDeleteTeamAlertDialog(context);
+                              showDeleteTaskAlertDialog(context);
                             },
                             child: Container(
                               margin: EdgeInsets.only(left: 10.0),

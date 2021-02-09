@@ -5,6 +5,8 @@ import 'package:bottle_crm/model/profile.dart';
 import 'package:bottle_crm/services/crm_services.dart';
 import 'package:bottle_crm/utils/utils.dart';
 
+import 'dashboard_bloc.dart';
+
 class LeadBloc {
   List<Lead> _openLeads = [];
   List<Lead> _closedLeads = [];
@@ -133,6 +135,39 @@ class LeadBloc {
     });
   }
 
+  createLead() async {
+    Map result;
+    Map _copyCurrentEditLead = new Map.from(_currentEditLead);
+    _copyCurrentEditLead['status'] =
+        _copyCurrentEditLead['status'].toLowerCase();
+    _copyCurrentEditLead['source'] =
+        _copyCurrentEditLead['source'].toLowerCase();
+    _copyCurrentEditLead['teams'] = (_copyCurrentEditLead['teams']
+        .map((team) => team.toString())).toList().toString();
+    _copyCurrentEditLead['assigned_to'] = (_copyCurrentEditLead['assigned_to']
+        .map((assignedTo) => assignedTo.toString())).toList().toString();
+
+    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
+
+    _countriesList.forEach((country) {
+      if (country[1] == _copyCurrentEditLead['country']) {
+        _copyCurrentEditLead['country'] = country[0];
+      }
+    });
+    await CrmService().createLead(_copyCurrentEditLead).then((response) async {
+      var res = json.decode(response.body);
+      if (res['error'] == false) {
+        await fetchLeads();
+        dashboardBloc.fetchDashboardDetails();
+      }
+      result = res;
+    }).catchError((onError) {
+      print('createLead Error >> $onError');
+      result = {"status": "error", "message": "Something went wrong"};
+    });
+    return result;
+  }
+
   editLead() async {
     Map result;
     Map _copyCurrentEditLead = new Map.from(_currentEditLead);
@@ -151,18 +186,14 @@ class LeadBloc {
         _copyCurrentEditLead['country'] = country[0];
       }
     });
-
-    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
     await CrmService()
         .editLead(_copyCurrentEditLead, _currentEditLeadId)
         .then((response) async {
       var res = json.decode(response.body);
 
-      if (res["error"] != null) {
-        cancelCurrentEditLead();
-        res["error"] = true;
-      } else {
+      if (res["error"] == false) {
         await fetchLeads();
+        dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -172,38 +203,16 @@ class LeadBloc {
     return result;
   }
 
-  createLead() async {
+  Future deleteLead(Lead lead) async {
     Map result;
-    Map _copyCurrentEditLead = new Map.from(_currentEditLead);
-    _copyCurrentEditLead['status'] =
-        _copyCurrentEditLead['status'].toLowerCase();
-    _copyCurrentEditLead['source'] =
-        _copyCurrentEditLead['source'].toLowerCase();
-    _copyCurrentEditLead['teams'] = [
-      ..._copyCurrentEditLead['teams'].map((team) => team.toString())
-    ].toString();
-    _copyCurrentEditLead['assigned_to'] = (_copyCurrentEditLead['assigned_to']
-        .map((assignedTo) => assignedTo.toString())).toList().toString();
-
-    _copyCurrentEditLead['tags'] = jsonEncode(_copyCurrentEditLead['tags']);
-
-    _countriesList.forEach((country) {
-      if (country[1] == _copyCurrentEditLead['country']) {
-        _copyCurrentEditLead['country'] = country[0];
-      }
-    });
-    await CrmService().createLead(_copyCurrentEditLead).then((response) async {
-      var res = json.decode(response.body);
-      if (res["error"] != null || res["error"] != "") {
-        if (res['error'] == false) {
-          await fetchLeads();
-          cancelCurrentEditLead();
-        }
-      }
+    await CrmService().deleteLead(lead.id).then((response) async {
+      var res = (json.decode(response.body));
+      await fetchLeads();
+      dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
-      print('createLead Error >> $onError');
-      result = {"status": "error", "message": "Something went wrong"};
+      print("deleteLead Error >> $onError");
+      result = {"status": "error", "message": "Something went wrong."};
     });
     return result;
   }
@@ -240,12 +249,8 @@ class LeadBloc {
     List assignedUsers = [];
     List<String> tags = [];
 
-    await CrmService().getLeadToUpdate(editLead.id).then((response) {
-      var res = json.decode(response.body);
-      teams.clear();
-      res['teams'].forEach((team) {
-        teams.add(team['id']);
-      });
+    editLead.teams.forEach((team) {
+      teams.add(team.id);
     });
 
     editLead.assignedTo.forEach((user) {
@@ -279,21 +284,15 @@ class LeadBloc {
     _currentEditLead['city'] = editLead.city;
     _currentEditLead['state'] = editLead.state;
     _currentEditLead['country'] = editLead.country;
-    _currentEditLead['status'] = editLead.status.capitalizeFirstofEach();
-    _currentEditLead['source'] = editLead.source.capitalizeFirstofEach();
+    _currentEditLead['status'] =
+        editLead.status != null && editLead.status != ""
+            ? editLead.status.capitalizeFirstofEach()
+            : editLead.status;
+    _currentEditLead['source'] =
+        editLead.source != null && editLead.source != ""
+            ? editLead.source.capitalizeFirstofEach()
+            : editLead.source;
     _currentEditLead['tags'] = tags;
-  }
-
-  Future deleteLead(Lead lead) async {
-    Map result;
-    await CrmService().deleteLead(lead.id).then((response) {
-      var res = (json.decode(response.body));
-      result = res;
-    }).catchError((onError) {
-      print("deleteLead Error >> $onError");
-      result = {"status": "error", "message": "Something went wrong."};
-    });
-    return result;
   }
 
   List get tags {

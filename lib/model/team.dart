@@ -1,5 +1,6 @@
 import 'package:bottle_crm/model/company.dart';
 import 'package:bottle_crm/model/profile.dart';
+import 'package:intl/intl.dart';
 
 class Team {
   int id;
@@ -32,7 +33,10 @@ class Team {
     this.users = team['users'] != null
         ? List<Profile>.from(team['users'].map((x) => Profile.fromJson(x)))
         : [];
-    this.createdOn = team['created_on'] != null ? team['created_on'] : "";
+    this.createdOn = team['created_on'] != null
+        ? DateFormat("dd-MM-yyyy")
+            .format(DateFormat("yyyy-MM-dd").parse(team['created_on']))
+        : "";
     this.createdBy = team['created_by'] != null
         ? Profile.fromJson(team['created_by'])
         : Profile();

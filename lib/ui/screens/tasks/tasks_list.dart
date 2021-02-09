@@ -1,41 +1,36 @@
-import 'package:bottle_crm/bloc/lead_bloc.dart';
-import 'package:bottle_crm/bloc/team_bloc.dart';
-import 'package:bottle_crm/model/team.dart';
+import 'package:bottle_crm/bloc/task_bloc.dart';
+import 'package:bottle_crm/model/task.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:bottle_crm/ui/widgets/profile_pic_widget.dart';
 import 'package:bottle_crm/ui/widgets/squareFloatingActionBtn.dart';
 import 'package:bottle_crm/utils/utils.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
 
-class TeamsList extends StatefulWidget {
-  TeamsList();
+import '../../../utils/utils.dart';
+
+class TasksList extends StatefulWidget {
+  TasksList();
   @override
-  State createState() => _TeamsListState();
+  State createState() => _TasksListState();
 }
 
-class _TeamsListState extends State<TeamsList> {
+class _TasksListState extends State<TasksList> {
   bool _isFilter = false;
   final GlobalKey<FormState> _filtersFormKey = GlobalKey<FormState>();
-  Map _filtersFormData = {
-    "team_name": "",
-    "created_by": "",
-    "assigned_users": []
-  };
+  Map _filtersFormData = {"title": "", "status": "", "priority": ""};
   bool _isLoading = false;
 
-  List<Team> _teams = [];
+  List<Task> _tasks = [];
 
   @override
   void initState() {
     super.initState();
     setState(() {
-      _teams = teamBloc.teams;
+      _tasks = taskBloc.tasks;
     });
   }
 
@@ -46,47 +41,10 @@ class _TeamsListState extends State<TeamsList> {
     setState(() {
       _isLoading = true;
     });
-    await teamBloc.fetchTeams(filtersData: _isFilter ? _filtersFormData : null);
+    await taskBloc.fetchTasks(filtersData: _isFilter ? _filtersFormData : null);
     setState(() {
       _isLoading = false;
     });
-  }
-
-  Widget _buildMultiSelectDropdown(data) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10.0),
-      child: MultiSelectFormField(
-        border: boxBorder(),
-        fillColor: Colors.white,
-        autovalidate: false,
-        dataSource: data,
-        textField: 'name',
-        valueField: 'id',
-        okButtonLabel: 'OK',
-        chipLabelStyle:
-            GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.black)),
-        dialogTextStyle: GoogleFonts.robotoSlab(),
-        cancelButtonLabel: 'CANCEL',
-        hintWidget: Text(
-          "Please choose one or more",
-          style:
-              GoogleFonts.robotoSlab(textStyle: TextStyle(color: Colors.grey)),
-        ),
-        title: Text(
-          "Assigned Profiles",
-          style: GoogleFonts.robotoSlab(
-              textStyle: TextStyle(color: Colors.grey[700]),
-              fontSize: screenWidth / 26),
-        ),
-        initialValue: _filtersFormData["assigned_users"],
-        onSaved: (value) {
-          if (value == null) return;
-          setState(() {
-            _filtersFormData["assigned_users"] = value;
-          });
-        },
-      ),
-    );
   }
 
   Widget _buildTabBar(int length) {
@@ -103,12 +61,12 @@ class _TeamsListState extends State<TeamsList> {
                         color: Colors.grey[600], fontSize: screenWidth / 20)),
                 children: <TextSpan>[
                   TextSpan(
-                      text: _teams.length.toString(),
+                      text: _tasks.length.toString(),
                       style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                               color: submitButtonColor,
                               fontSize: screenWidth / 20))),
-                  TextSpan(text: (_teams.length < 2) ? ' Team.' : ' Teams.')
+                  TextSpan(text: (_tasks.length < 2) ? ' Task.' : ' Tasks.')
                 ]),
           )),
           GestureDetector(
@@ -120,7 +78,7 @@ class _TeamsListState extends State<TeamsList> {
               child: Container(
                   padding: EdgeInsets.all(5.0),
                   color:
-                      _teams.length > 0 ? bottomNavBarTextColor : Colors.grey,
+                      _tasks.length > 0 ? bottomNavBarTextColor : Colors.grey,
                   child: SvgPicture.asset(
                     !_isFilter
                         ? 'assets/images/filter.svg'
@@ -145,9 +103,9 @@ class _TeamsListState extends State<TeamsList> {
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
-                      initialValue: _filtersFormData["team_name"],
+                      initialValue: _filtersFormData["title"],
                       onSaved: (newValue) {
-                        _filtersFormData["team_name"] = newValue;
+                        _filtersFormData["title"] = newValue;
                       },
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
@@ -157,7 +115,7 @@ class _TeamsListState extends State<TeamsList> {
                           errorBorder: boxBorder(),
                           fillColor: Colors.white,
                           filled: true,
-                          hintText: 'Enter Team Name',
+                          hintText: 'Enter Task Title',
                           errorStyle: GoogleFonts.robotoSlab(),
                           hintStyle: GoogleFonts.robotoSlab(
                               textStyle:
@@ -168,57 +126,51 @@ class _TeamsListState extends State<TeamsList> {
                   Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       height: 48.0,
-                      child: DropdownSearch<String>(
-                        mode: Mode.BOTTOM_SHEET,
-                        items: teamBloc.userObjForDropDown,
-                        onChanged: print,
-                        selectedItem: _filtersFormData['created_by'] == ""
-                            ? null
-                            : _filtersFormData['created_by'],
-                        hint: "Select Creator",
-                        showSearchBox: true,
-                        showSelectedItem: false,
-                        showClearButton: true,
-                        searchBoxDecoration: InputDecoration(
-                          border: boxBorder(),
-                          enabledBorder: boxBorder(),
-                          focusedErrorBorder: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          errorBorder: boxBorder(),
-                          contentPadding: EdgeInsets.all(12),
-                          hintText: "Search a Creator here.",
-                          hintStyle: GoogleFonts.robotoSlab(),
-                        ),
-                        popupTitle: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColorDark,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Created By',
-                              style: GoogleFonts.robotoSlab(
-                                  textStyle: TextStyle(
-                                      fontSize: screenWidth / 20,
-                                      color: Colors.white)),
-                            ),
-                          ),
-                        ),
-                        popupShape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(24),
-                            topRight: Radius.circular(24),
-                          ),
-                        ),
-                        onSaved: (newValue) {
-                          _filtersFormData['created_by'] = newValue;
+                      child: DropdownButtonFormField(
+                        decoration: InputDecoration(
+                            border: boxBorder(),
+                            contentPadding: EdgeInsets.all(12.0)),
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.black)),
+                        hint: Text('Select Status'),
+                        value: _filtersFormData['status'] != ""
+                            ? _filtersFormData['status']
+                            : null,
+                        onChanged: (value) {
+                          FocusScope.of(context).unfocus();
+                          _filtersFormData['status'] = value;
                         },
+                        items: taskBloc.status.map((status) {
+                          return DropdownMenuItem(
+                            child: new Text(status[1]),
+                            value: status[0],
+                          );
+                        }).toList(),
                       )),
-                  _buildMultiSelectDropdown(leadBloc.usersObjForDropdown),
+                  Container(
+                      margin: EdgeInsets.only(bottom: 10.0),
+                      height: 48.0,
+                      child: DropdownButtonFormField(
+                        decoration: InputDecoration(
+                            border: boxBorder(),
+                            contentPadding: EdgeInsets.all(12.0)),
+                        style: GoogleFonts.robotoSlab(
+                            textStyle: TextStyle(color: Colors.black)),
+                        hint: Text('Select Priority'),
+                        value: _filtersFormData['priority'] != ""
+                            ? _filtersFormData['priority']
+                            : null,
+                        onChanged: (value) {
+                          FocusScope.of(context).unfocus();
+                          _filtersFormData['priority'] = value;
+                        },
+                        items: taskBloc.priorities.map((priority) {
+                          return DropdownMenuItem(
+                            child: new Text(priority[1]),
+                            value: priority[0],
+                          );
+                        }).toList(),
+                      )),
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -262,9 +214,9 @@ class _TeamsListState extends State<TeamsList> {
                             FocusScope.of(context).unfocus();
                             setState(() {
                               _filtersFormData = {
-                                "name": "",
-                                "created_by": "",
-                                "assigned_users": []
+                                "title": "",
+                                "status": "",
+                                "priority": ""
                               };
                             });
                             _saveForm();
@@ -290,19 +242,19 @@ class _TeamsListState extends State<TeamsList> {
         : Container();
   }
 
-  Widget _buildTeamList() {
+  Widget _buildTaskList() {
     return Container(
       margin: EdgeInsets.only(top: 10.0),
       child: ListView.builder(
-          itemCount: _teams.length,
+          itemCount: _tasks.length,
           physics: const AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               onTap: () {
-                teamBloc.currentTeam = _teams[index];
-                teamBloc.currentTeamIndex = index;
-                Navigator.pushNamed(context, '/team_details');
+                taskBloc.currentTask = _tasks[index];
+                taskBloc.currentTaskIndex = index;
+                Navigator.pushNamed(context, '/task_details');
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 5.0),
@@ -316,7 +268,7 @@ class _TeamsListState extends State<TeamsList> {
                       child: CircleAvatar(
                         radius: screenWidth / 15,
                         backgroundImage:
-                            NetworkImage(_teams[index].createdBy.profileUrl),
+                            NetworkImage(_tasks[index].createdBy.profileUrl),
                       ),
                     ),
                     Column(
@@ -324,14 +276,15 @@ class _TeamsListState extends State<TeamsList> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
+                          width: screenWidth * 0.72,
                           margin: EdgeInsets.only(bottom: 5.0),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: screenWidth * 0.47,
+                                width: screenWidth * 0.3,
                                 child: Text(
-                                  "${_teams[index].name}",
+                                  "${_tasks[index].title}",
                                   style: GoogleFonts.robotoSlab(
                                       color: Theme.of(context)
                                           .secondaryHeaderColor,
@@ -341,14 +294,21 @@ class _TeamsListState extends State<TeamsList> {
                               ),
                               Container(
                                 alignment: Alignment.centerRight,
-                                width: screenWidth * 0.25,
                                 child: Text(
-                                  _teams[index].createdOnText == ""
-                                      ? _teams[index].createdOn
-                                      : _teams[index].createdOnText,
+                                  _tasks[index].createdOn,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.robotoSlab(
                                       color: bottomNavBarTextColor,
+                                      fontSize: screenWidth / 27),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  _tasks[index].status,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.robotoSlab(
+                                      color: Colors.blue,
                                       fontSize: screenWidth / 27),
                                 ),
                               )
@@ -356,13 +316,45 @@ class _TeamsListState extends State<TeamsList> {
                           ),
                         ),
                         Container(
+                          width: screenWidth * 0.72,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                child: Text(
+                                    "Due : " +
+                                        (_tasks[index].dueDate != null &&
+                                                _tasks[index].dueDate != ""
+                                            ? _tasks[index].dueDate
+                                            : "N/A"),
+                                    style: GoogleFonts.robotoSlab(
+                                        color: bottomNavBarTextColor,
+                                        fontSize: screenWidth / 27)),
+                              ),
+                              Container(
+                                child: Text(
+                                    "Priority : " +
+                                        (_tasks[index].priority != null &&
+                                                _tasks[index].priority != ""
+                                            ? _tasks[index].priority
+                                            : "N/A"),
+                                    style: GoogleFonts.robotoSlab(
+                                        color: bottomNavBarTextColor,
+                                        fontSize: screenWidth / 27)),
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: screenWidth * 0.72,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
                                 width: screenWidth * 0.53,
                                 margin: EdgeInsets.only(top: 5.0),
-                                child: ProfilePicViewWidget(_teams[index]
-                                    .users
+                                child: ProfilePicViewWidget(_tasks[index]
+                                    .assignedTo
                                     .map((assignedUser) =>
                                         assignedUser.profileUrl)
                                     .toList()),
@@ -373,10 +365,10 @@ class _TeamsListState extends State<TeamsList> {
                                   children: [
                                     GestureDetector(
                                       onTap: () async {
-                                        await teamBloc.updateCurrentEditTeam(
-                                            _teams[index]);
+                                        await taskBloc.updateCurrentEditTask(
+                                            _tasks[index]);
                                         Navigator.pushNamed(
-                                            context, '/create_team');
+                                            context, '/create_task');
                                       },
                                       child: Container(
                                         margin: EdgeInsets.only(right: 8.0),
@@ -396,8 +388,8 @@ class _TeamsListState extends State<TeamsList> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        showDeleteTeamAlertDialog(
-                                            context, _teams[index], index);
+                                        showDeleteTaskAlertDialog(
+                                            context, _tasks[index], index);
                                       },
                                       child: Container(
                                         margin: EdgeInsets.only(right: 8.0),
@@ -431,18 +423,18 @@ class _TeamsListState extends State<TeamsList> {
     );
   }
 
-  void showDeleteTeamAlertDialog(BuildContext context, Team team, index) {
+  void showDeleteTaskAlertDialog(BuildContext context, Task task, index) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
             title: Text(
-              team.name,
+              task.title,
               style: GoogleFonts.robotoSlab(
                   color: Theme.of(context).secondaryHeaderColor),
             ),
             content: Text(
-              "Are you sure you want to delete this Team?",
+              "Are you sure you want to delete this Task?",
               style: GoogleFonts.robotoSlab(fontSize: 15.0),
             ),
             actions: <Widget>[
@@ -460,7 +452,7 @@ class _TeamsListState extends State<TeamsList> {
                   isDefaultAction: true,
                   onPressed: () async {
                     Navigator.pop(context);
-                    deleteTeam(index, team);
+                    deleteTask(index, task);
                   },
                   child: Text(
                     "Delete",
@@ -471,11 +463,11 @@ class _TeamsListState extends State<TeamsList> {
         });
   }
 
-  deleteTeam(index, team) async {
+  deleteTask(index, task) async {
     setState(() {
       _isLoading = true;
     });
-    Map _result = await teamBloc.deleteTeam(team);
+    Map _result = await taskBloc.deleteTask(task);
     setState(() {
       _isLoading = false;
     });
@@ -484,12 +476,12 @@ class _TeamsListState extends State<TeamsList> {
     } else if (_result['error'] == true) {
       showToast(_result['message']);
     } else {
-      showErrorMessage(context, 'Something went wrong', index, team);
+      showErrorMessage(context, 'Something went wrong', index, task);
     }
   }
 
   void showErrorMessage(
-      BuildContext context, String errorContent, int index, Team team) {
+      BuildContext context, String errorContent, int index, Task task) {
     Flushbar(
       backgroundColor: Colors.white,
       messageText: Text(errorContent,
@@ -502,7 +494,7 @@ class _TeamsListState extends State<TeamsList> {
                 textStyle: TextStyle(color: Theme.of(context).accentColor))),
         onPressed: () {
           Navigator.of(context).pop(true);
-          deleteTeam(index, team);
+          deleteTask(index, task);
         },
       ),
       duration: Duration(seconds: 10),
@@ -524,7 +516,7 @@ class _TeamsListState extends State<TeamsList> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("Teams", style: GoogleFonts.robotoSlab()),
+        title: Text("Tasks", style: GoogleFonts.robotoSlab()),
         automaticallyImplyLeading: false,
       ),
       body: Stack(
@@ -534,14 +526,14 @@ class _TeamsListState extends State<TeamsList> {
             padding: EdgeInsets.all(10.0),
             child: Column(
               children: [
-                _buildTabBar(_teams.length),
+                _buildTabBar(_tasks.length),
                 _buildFilterWidget(),
-                _teams.length > 0
-                    ? Expanded(child: _buildTeamList())
+                _tasks.length > 0
+                    ? Expanded(child: _buildTaskList())
                     : Container(
                         margin: EdgeInsets.only(top: 30.0),
                         child: Text(
-                          "No Teams Found",
+                          "No Tasks Found",
                           style: GoogleFonts.robotoSlab(),
                         ),
                       )
@@ -555,7 +547,7 @@ class _TeamsListState extends State<TeamsList> {
         ],
       ),
       floatingActionButton:
-          SquareFloatingActionButton('/create_team', "Add Team", "Teams"),
+          SquareFloatingActionButton('/create_task', "Add Task", "Tasks"),
       bottomNavigationBar: BottomNavigationBarWidget(),
     );
   }

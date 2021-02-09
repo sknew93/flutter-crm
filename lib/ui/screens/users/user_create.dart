@@ -25,7 +25,6 @@ class _CreateUserState extends State<CreateUser> {
   FocusNode _usernameFocusNode = new FocusNode();
   FocusNode _passwordFocusNode = new FocusNode();
   FocusNode _emailFocusNode = new FocusNode();
-  bool accessError = false;
 
   @override
   void initState() {
@@ -40,7 +39,6 @@ class _CreateUserState extends State<CreateUser> {
     _usernameFocusNode.dispose();
     _passwordFocusNode.dispose();
     _emailFocusNode.dispose();
-
     super.dispose();
   }
 
@@ -68,7 +66,6 @@ class _CreateUserState extends State<CreateUser> {
     });
     if (userBloc.currentEditUserId != null) {
       _result = await userBloc.editUser();
-      // _result = await userBloc.createUser();
     } else {
       _result = await userBloc.createUser();
     }
@@ -483,9 +480,6 @@ class _CreateUserState extends State<CreateUser> {
                       value: (userBloc.currentEditUser['is_admin'] != "")
                           ? userBloc.currentEditUser['is_admin']
                           : null,
-                      // onSaved: (value) {
-                      //   leadBloc.currentEditLead['status'] = value;
-                      // },
                       onChanged: (value) {
                         setState(() {
                           userBloc.currentEditUser['is_admin'] = value;
@@ -523,7 +517,7 @@ class _CreateUserState extends State<CreateUser> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(bottom: 5.0),
                         child: Text(
-                          'Marketing  :',
+                          'Marketing :',
                           style: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(
                                   color: Theme.of(context).secondaryHeaderColor,
@@ -553,7 +547,7 @@ class _CreateUserState extends State<CreateUser> {
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.only(bottom: 5.0),
                         child: Text(
-                          'Sales  :',
+                          'Sales :',
                           style: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(
                                   color: Theme.of(context).secondaryHeaderColor,
@@ -580,17 +574,6 @@ class _CreateUserState extends State<CreateUser> {
                           )),
                     ],
                   ),
-                  (accessError == true)
-                      ? Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Please choose one or more.",
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color: Colors.red[700], fontSize: 12.0)),
-                          ),
-                        )
-                      : Container(),
                   Divider(color: Colors.grey)
                 ],
               ),
@@ -624,9 +607,6 @@ class _CreateUserState extends State<CreateUser> {
                       value: (userBloc.currentEditUser['is_active'] != "")
                           ? userBloc.currentEditUser['is_active']
                           : null,
-                      // onSaved: (value) {
-                      //   leadBloc.currentEditLead['status'] = value;
-                      // },
                       onChanged: (value) {
                         userBloc.currentEditUser['is_active'] = value;
                       },
@@ -704,19 +684,7 @@ class _CreateUserState extends State<CreateUser> {
                   GestureDetector(
                     onTap: () {
                       FocusScope.of(context).unfocus();
-                      if (userBloc.currentEditUser['has_marketing_access'] ==
-                              false &&
-                          userBloc.currentEditUser['has_sales_access'] ==
-                              false) {
-                        setState(() {
-                          accessError = true;
-                        });
-                      } else {
-                        setState(() {
-                          accessError = false;
-                          _saveForm();
-                        });
-                      }
+                      _saveForm();
                     },
                     child: Container(
                       alignment: Alignment.center,

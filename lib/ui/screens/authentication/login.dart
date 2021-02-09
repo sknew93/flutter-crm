@@ -1,8 +1,3 @@
-import 'package:bottle_crm/bloc/account_bloc.dart';
-import 'package:bottle_crm/bloc/contact_bloc.dart';
-import 'package:bottle_crm/bloc/dashboard_bloc.dart';
-import 'package:bottle_crm/bloc/lead_bloc.dart';
-import 'package:bottle_crm/bloc/opportunity_bloc.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +8,8 @@ import 'package:bottle_crm/bloc/auth_bloc.dart';
 import 'package:bottle_crm/ui/widgets/bottleCrm_logo.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:bottle_crm/ui/widgets/footer_button.dart';
+
+import '../../../utils/utils.dart';
 
 class UserLogin extends StatefulWidget {
   UserLogin();
@@ -44,13 +41,7 @@ class _UserLoginState extends State<UserLogin> {
       setState(() {
         _errorMessage = null;
       });
-      await authBloc.getProfileDetails();
-      await dashboardBloc.fetchDashboardDetails();
-      await contactBloc.fetchContacts();
-      await accountBloc.fetchAccounts();
-      await leadBloc.fetchLeads();
-      await opportunityBloc.fetchOpportunities();
-      // await teamBloc.fetchTeams();
+      fetchRequiredData();
       Navigator.pushNamedAndRemoveUntil(
           context, '/dashboard', (route) => false);
     } else if (result['error'] == true) {

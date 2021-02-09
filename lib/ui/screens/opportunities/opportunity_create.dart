@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -237,17 +238,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Account',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Account :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                       margin: EdgeInsets.only(bottom: 10.0),
@@ -352,9 +349,10 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                           errorStyle: GoogleFonts.robotoSlab(),
                           hintStyle: GoogleFonts.robotoSlab(
                               textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [],
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       onSaved: (value) {
                         opportunityBloc.currentEditOpportunity['amount'] =
                             value;
@@ -384,17 +382,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Currency',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Currency :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                       margin: EdgeInsets.only(bottom: 10.0),
@@ -552,17 +546,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Lead Source',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Lead Source :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -860,17 +850,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Contacts',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Contacts :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 5.0),
@@ -892,7 +878,6 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                           textStyle: TextStyle(color: Colors.black)),
                       dialogTextStyle: GoogleFonts.robotoSlab(),
                       cancelButtonLabel: 'CANCEL',
-                      // required: true,
                       hintWidget: Text(
                         "Please choose one or more",
                         style: GoogleFonts.robotoSlab(
@@ -915,64 +900,56 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                 ],
               ),
             ),
-
-            (opportunityBloc.currentEditOpportunityId == null)
-                ? Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(bottom: 5.0),
-                          child: Text(
-                            'Due Date :',
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).secondaryHeaderColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth / 25)),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            _selectDate(context);
-                          },
-                          child: Container(
-                              height: 48.0,
-                              margin: EdgeInsets.only(bottom: 5.0),
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1)),
-                              child: Center(
-                                child: (_selectedDate != null)
-                                    ? Text(
-                                        DateFormat("dd-MM-yyyy").format(
-                                            DateFormat("yyyy-MM-dd").parse(
-                                                _selectedDate.toString())),
-                                        textAlign: TextAlign.center,
-                                        style: GoogleFonts.robotoSlab(),
-                                      )
-                                    : (opportunityBloc
-                                                .currentEditOpportunityId !=
-                                            null)
-                                        ? Text(
-                                            opportunityBloc
-                                                    .currentEditOpportunity[
-                                                'closed_on'],
-                                            style: GoogleFonts.robotoSlab())
-                                        : Text('Please choose a Due Date.',
-                                            style: GoogleFonts.robotoSlab(
-                                                color: Colors.grey)),
-                              )),
-                        ),
-                        Divider(color: Colors.grey)
-                      ],
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Due Date :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
                     ),
-                  )
-                : Container(),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _selectDate(context);
+                    },
+                    child: Container(
+                        height: 48.0,
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            border: Border.all(color: Colors.grey, width: 1)),
+                        child: Center(
+                          child: (_selectedDate != null)
+                              ? Text(
+                                  DateFormat("dd-MM-yyyy").format(
+                                      DateFormat("yyyy-MM-dd")
+                                          .parse(_selectedDate.toString())),
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.robotoSlab(),
+                                )
+                              : (opportunityBloc.currentEditOpportunityId !=
+                                      null)
+                                  ? Text(
+                                      opportunityBloc
+                                          .currentEditOpportunity['closed_on'],
+                                      style: GoogleFonts.robotoSlab())
+                                  : Text('Please choose a Due Date.',
+                                      style: GoogleFonts.robotoSlab(
+                                          color: Colors.grey)),
+                        )),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
             Container(
               child: Column(
                 children: [
@@ -1038,17 +1015,13 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
-                          text: 'Description',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
+                            text: 'Description :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
                       )),
                   Container(
                     margin: EdgeInsets.only(bottom: 10.0),
@@ -1170,7 +1143,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                     child: Container(
                       alignment: Alignment.center,
                       height: screenHeight * 0.06,
-                      width: screenWidth * 0.5,
+                      width: screenWidth * 0.52,
                       decoration: BoxDecoration(
                         color: submitButtonColor,
                         borderRadius: BorderRadius.all(Radius.circular(3.0)),

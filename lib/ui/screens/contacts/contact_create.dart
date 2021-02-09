@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:bottle_crm/bloc/contact_bloc.dart';
 import 'package:bottle_crm/bloc/lead_bloc.dart';
@@ -479,7 +480,8 @@ class _CreateContactState extends State<CreateContact> {
                         cancelButtonLabel: 'CANCEL',
                         hintWidget: Text(
                           "Please choose one or more",
-                          style: GoogleFonts.robotoSlab(),
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(color: Colors.grey)),
                         ),
                         title: Text(
                           "Teams",
@@ -526,10 +528,9 @@ class _CreateContactState extends State<CreateContact> {
                             textStyle: TextStyle(color: Colors.black)),
                         dialogTextStyle: GoogleFonts.robotoSlab(),
                         cancelButtonLabel: 'CANCEL',
-                        hintWidget: Text(
-                          "Please choose one or more",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
+                        hintWidget: Text("Please choose one or more",
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(color: Colors.grey))),
                         title: Text(
                           "Users",
                           style: GoogleFonts.robotoSlab(),
@@ -573,18 +574,15 @@ class _CreateContactState extends State<CreateContact> {
                             textStyle: TextStyle(color: Colors.black)),
                         dialogTextStyle: GoogleFonts.robotoSlab(),
                         cancelButtonLabel: 'CANCEL',
-                        // required: true,
-                        hintWidget: Text(
-                          "Please choose one or more",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
+                        hintWidget: Text("Please choose one or more",
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(color: Colors.grey))),
                         title: Text(
                           "Assigned To",
                           style: GoogleFonts.robotoSlab(),
                         ),
                         initialValue:
                             contactBloc.currentEditContact['assigned_to'],
-
                         onSaved: (value) {
                           if (value == null) return;
                           contactBloc.currentEditContact['assigned_to'] = value;
@@ -616,19 +614,13 @@ class _CreateContactState extends State<CreateContact> {
                               margin: EdgeInsets.only(bottom: 5.0),
                               child: RichText(
                                 text: TextSpan(
-                                  text: 'Billing Address',
-                                  style: GoogleFonts.robotoSlab(
-                                      textStyle: TextStyle(
-                                          color: Theme.of(context)
-                                              .secondaryHeaderColor,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: screenWidth / 25)),
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text: ': ',
-                                        style: GoogleFonts.robotoSlab())
-                                  ],
-                                ),
+                                    text: 'Billing Address :',
+                                    style: GoogleFonts.robotoSlab(
+                                        textStyle: TextStyle(
+                                            color: Theme.of(context)
+                                                .secondaryHeaderColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: screenWidth / 25))),
                               )),
                           Container(
                             margin: EdgeInsets.only(bottom: 10.0),
@@ -702,7 +694,10 @@ class _CreateContactState extends State<CreateContact> {
                                         hintStyle: GoogleFonts.robotoSlab(
                                             textStyle:
                                                 TextStyle(fontSize: 14.0))),
-                                    keyboardType: TextInputType.phone,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly
+                                    ],
                                     initialValue: contactBloc
                                             .currentEditContact['address']
                                         ['postcode'],
@@ -790,7 +785,6 @@ class _CreateContactState extends State<CreateContact> {
                                   ? null
                                   : contactBloc.currentEditContact['address']
                                       ['country'],
-                              // hint: 'Country',
                               label: "Country",
                               showSearchBox: true,
                               showSelectedItem: false,
@@ -848,18 +842,13 @@ class _CreateContactState extends State<CreateContact> {
                         margin: EdgeInsets.only(bottom: 5.0),
                         child: RichText(
                           text: TextSpan(
-                            text: 'Description',
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).secondaryHeaderColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth / 25)),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: ' :', style: GoogleFonts.robotoSlab())
-                            ],
-                          ),
+                              text: 'Description :',
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .secondaryHeaderColor,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: screenWidth / 25))),
                         )),
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),

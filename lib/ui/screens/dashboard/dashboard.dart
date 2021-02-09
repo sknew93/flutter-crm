@@ -1,3 +1,4 @@
+import 'package:bottle_crm/bloc/setting_bloc.dart';
 import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:bottle_crm/bloc/dashboard_bloc.dart';
@@ -29,6 +30,9 @@ class _DashboardState extends State<Dashboard> {
     await userBloc.fetchUsers();
     await documentBLoc.fetchDocuments();
     await teamBloc.fetchTeams();
+    await settingsBloc.fetchSettingsContacts();
+    await settingsBloc.fetchBlockedDomains();
+    await settingsBloc.fetchBlockedEmails();
   }
 
   OutlineInputBorder boxBorder(Color color) {

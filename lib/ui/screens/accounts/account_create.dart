@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:bottle_crm/bloc/account_bloc.dart';
 import 'package:bottle_crm/bloc/contact_bloc.dart';
@@ -623,7 +624,10 @@ class _CreateAccountState extends State<CreateAccount> {
                                 errorStyle: GoogleFonts.robotoSlab(),
                                 hintStyle: GoogleFonts.robotoSlab(
                                     textStyle: TextStyle(fontSize: 14.0))),
-                            keyboardType: TextInputType.phone,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             validator: (value) {
                               if (value.isEmpty) {
                                 if (_focuserr == null) {

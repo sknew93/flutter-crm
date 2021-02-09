@@ -4,6 +4,8 @@ import 'package:bottle_crm/model/contact.dart';
 import 'package:bottle_crm/model/team.dart';
 import 'package:bottle_crm/services/crm_services.dart';
 
+import 'dashboard_bloc.dart';
+
 class ContactBloc {
   List<Contact> _contacts = [];
   List _contactsObjForDropdown = [];
@@ -48,6 +50,8 @@ class ContactBloc {
         .then((response) {
       var res = (json.decode(response.body));
       _contacts.clear();
+      _contactsObjForDropdown.clear();
+      _teams.clear();
       res['contact_obj_list'].forEach((_contact) {
         Contact contact = Contact.fromJson(_contact);
         _contacts.add(contact);
@@ -74,61 +78,6 @@ class ContactBloc {
     }).catchError((onError) {
       print("fetchContacts Error>> $onError");
     });
-  }
-
-  cancelCurrentEditContact() {
-    _currentEditContactId = null;
-    _currentEditContact = {
-      'first_name': "",
-      'last_name': "",
-      'email': "",
-      'phone': "",
-      'address': {
-        "address_line": "",
-        "street": "",
-        "city": "",
-        "state": "",
-        "postcode": "",
-        "country": ""
-      },
-      'description': "",
-      'assigned_to': [],
-      'teams': [],
-    };
-  }
-
-  updateCurrentEditContact(Contact editContact) {
-    _currentEditContactId = editContact.id.toString();
-    List teams = [];
-    List assignedUsers = [];
-    // List<String> profilePicList = [];
-
-    editContact.teams.forEach((team) {
-      teams.add(team.id);
-    });
-
-    editContact.assignedTo.forEach((user) {
-      assignedUsers.add(user.id);
-    });
-
-    _currentEditContact['id'] = editContact.id;
-    _currentEditContact['first_name'] = editContact.firstName;
-    _currentEditContact['last_name'] = editContact.lastName;
-    _currentEditContact['email'] = editContact.email;
-    _currentEditContact['phone'] = editContact.phone;
-    _currentEditContact['description'] = editContact.description;
-    _currentEditContact['created_by'] = editContact.createdBy;
-    _currentEditContact['created_on'] = editContact.createdOn;
-    _currentEditContact['is_active'] = editContact.isActive;
-    _currentEditContact['company'] = editContact.company;
-    _currentEditContact['address'] = editContact.address;
-    countriesList.forEach((country) {
-      if (country[0] == editContact.address['country']) {
-        _currentEditContact['address']['country'] = country[1];
-      }
-    });
-    _currentEditContact['teams'] = teams;
-    _currentEditContact['assigned_to'] = assignedUsers;
   }
 
   createContact() async {
@@ -168,14 +117,11 @@ class ContactBloc {
         .then((response) async {
       var res = json.decode(response.body);
 
-      if (res["error"] != null || res["error"] != "") {
-        if (res['error'] == false) {
-          await fetchContacts();
-          await cancelCurrentEditContact();
-        }
+      if (res['error'] == false) {
+        await fetchContacts();
+        dashboardBloc.fetchDashboardDetails();
       }
       result = res;
-      print('createContact Response >> $res');
     }).catchError((onError) {
       print('createContact Error >> $onError');
       result = {"status": "error", "message": "Something went wrong"};
@@ -216,11 +162,9 @@ class ContactBloc {
         .then((response) async {
       var res = json.decode(response.body);
 
-      if (res['error'] != null) {
-        cancelCurrentEditContact();
-        // res['error'] = true;
-      } else {
+      if (res['error'] == false) {
         await fetchContacts();
+        dashboardBloc.fetchDashboardDetails();
       }
       _result = res;
     }).catchError((onError) {
@@ -235,12 +179,67 @@ class ContactBloc {
     await CrmService().deleteContact(contact.id).then((response) async {
       var res = (json.decode(response.body));
       await fetchContacts();
+      dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteContact Error >> $onError");
       result = {"status": "error", "message": "Something went wrong."};
     });
     return result;
+  }
+
+  cancelCurrentEditContact() {
+    _currentEditContactId = null;
+    _currentEditContact = {
+      'first_name': "",
+      'last_name': "",
+      'email': "",
+      'phone': "",
+      'address': {
+        "address_line": "",
+        "street": "",
+        "city": "",
+        "state": "",
+        "postcode": "",
+        "country": ""
+      },
+      'description': "",
+      'assigned_to': [],
+      'teams': [],
+    };
+  }
+
+  updateCurrentEditContact(Contact editContact) {
+    _currentEditContactId = editContact.id.toString();
+    List teams = [];
+    List assignedUsers = [];
+
+    editContact.teams.forEach((team) {
+      teams.add(team.id);
+    });
+
+    editContact.assignedTo.forEach((user) {
+      assignedUsers.add(user.id);
+    });
+
+    _currentEditContact['id'] = editContact.id;
+    _currentEditContact['first_name'] = editContact.firstName;
+    _currentEditContact['last_name'] = editContact.lastName;
+    _currentEditContact['email'] = editContact.email;
+    _currentEditContact['phone'] = editContact.phone;
+    _currentEditContact['description'] = editContact.description;
+    _currentEditContact['created_by'] = editContact.createdBy;
+    _currentEditContact['created_on'] = editContact.createdOn;
+    _currentEditContact['is_active'] = editContact.isActive;
+    _currentEditContact['company'] = editContact.company;
+    _currentEditContact['address'] = editContact.address;
+    countriesList.forEach((country) {
+      if (country[0] == editContact.address['country']) {
+        _currentEditContact['address']['country'] = country[1];
+      }
+    });
+    _currentEditContact['teams'] = teams;
+    _currentEditContact['assigned_to'] = assignedUsers;
   }
 
   Map get currentEditContact {

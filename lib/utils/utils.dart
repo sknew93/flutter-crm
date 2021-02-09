@@ -1,9 +1,18 @@
 import 'dart:io';
 
+import 'package:bottle_crm/bloc/task_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:random_color/random_color.dart';
+
+import '../bloc/account_bloc.dart';
+import '../bloc/auth_bloc.dart';
+import '../bloc/contact_bloc.dart';
+import '../bloc/dashboard_bloc.dart';
+import '../bloc/lead_bloc.dart';
+import '../bloc/opportunity_bloc.dart';
+import '../bloc/team_bloc.dart';
 
 var screenWidth;
 var screenHeight;
@@ -40,8 +49,8 @@ showToast(message) {
     toastLength: Toast.LENGTH_LONG,
     gravity: ToastGravity.BOTTOM,
     timeInSecForIosWeb: 1,
-    backgroundColor: Colors.grey,
-    textColor: Colors.white,
+    backgroundColor: bottomNavBarSelectedBGColor,
+    textColor: bottomNavBarSelectedTextColor,
     fontSize: screenWidth / 26,
   );
 }
@@ -74,4 +83,16 @@ Future<void> requestDownload(String _url, String _name) async {
       showToast("$_name, Successfully Downloaded");
     }
   });
+}
+
+fetchRequiredData() async {
+  print("fetching data....");
+  await authBloc.getProfileDetails();
+  await dashboardBloc.fetchDashboardDetails();
+  await contactBloc.fetchContacts();
+  await accountBloc.fetchAccounts();
+  await leadBloc.fetchLeads();
+  await teamBloc.fetchTeams();
+  await opportunityBloc.fetchOpportunities();
+  await taskBloc.fetchTasks();
 }

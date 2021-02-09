@@ -438,7 +438,8 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                      _opportunities[index].stage != null
+                                      _opportunities[index].stage != null &&
+                                              _opportunities[index].stage != ""
                                           ? _opportunities[index]
                                               .stage
                                               .toLowerCase()
@@ -467,7 +468,11 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
                                 ),
                                 Expanded(
                                   child: Text(
-                                      _opportunities[index].leadSource != ""
+                                      _opportunities[index].leadSource !=
+                                                  null &&
+                                              _opportunities[index]
+                                                      .leadSource !=
+                                                  ""
                                           ? _opportunities[index]
                                               .leadSource
                                               .toLowerCase()

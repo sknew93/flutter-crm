@@ -23,12 +23,6 @@ class _CreateTeamState extends State<CreateTeam> {
   FilePickerResult result;
   PlatformFile file;
   bool _isLoading = false;
-
-  FocusNode _focusErr;
-  FocusNode _titleFocusNode = FocusNode();
-  FocusNode _assingedToFocusNode = FocusNode();
-  FocusNode _descriptionFocusNode = FocusNode();
-
   Map _errors;
 
   @override
@@ -38,21 +32,7 @@ class _CreateTeamState extends State<CreateTeam> {
 
   @override
   void dispose() {
-    if (_focusErr != null) {
-      _focusErr.dispose();
-    }
-    _titleFocusNode.dispose();
-    _assingedToFocusNode.dispose();
-    _descriptionFocusNode.dispose();
-
     super.dispose();
-  }
-
-  focusError() {
-    setState(() {
-      FocusManager.instance.primaryFocus.unfocus();
-      Focus.of(context).requestFocus(_focusErr);
-    });
   }
 
   void showErrorMessage(BuildContext context, String errorContent) {
@@ -76,13 +56,11 @@ class _CreateTeamState extends State<CreateTeam> {
   }
 
   _saveForm() async {
-    _focusErr = null;
     setState(() {
       _errors = null;
     });
 
     if (!_createTeamFormKey.currentState.validate()) {
-      focusError();
       return;
     }
     _createTeamFormKey.currentState.save();
@@ -95,7 +73,7 @@ class _CreateTeamState extends State<CreateTeam> {
     if (teamBloc.currentEditTeamId == null) {
       _result = await teamBloc.createTeam();
     } else {
-      // _result = await teamBloc.editTeam();
+      _result = await teamBloc.editTeam();
     }
 
     setState(() {
@@ -112,28 +90,10 @@ class _CreateTeamState extends State<CreateTeam> {
       setState(() {
         _errors = _result['errors'];
       });
-
-      // if (_errors['name'] != null && _focusErr == null) {
-      //   _focusErr = _titleFocusNode;
-      //   focusError();
-      // }
-
-      // if (_errors['description'] != null && _focusErr == null) {
-      //   _focusErr = _descriptionFocusNode;
-      //   focusError();
-      // }
-
-      if (_errors['users'] != null && _focusErr == null) {
-        _focusErr = _assingedToFocusNode;
-        focusError();
-      } else {
-        print(_errors);
-      }
     } else {
       setState(() {
         _errors = null;
       });
-
       showErrorMessage(context, "Something went wrong.");
     }
   }
@@ -171,7 +131,6 @@ class _CreateTeamState extends State<CreateTeam> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
-                        focusNode: _titleFocusNode,
                         maxLines: 1,
                         initialValue: teamBloc.currentEditTeam['name'],
                         decoration: InputDecoration(
@@ -189,9 +148,6 @@ class _CreateTeamState extends State<CreateTeam> {
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value.isEmpty) {
-                            if (_focusErr == null) {
-                              _focusErr = _titleFocusNode;
-                            }
                             return 'This field is required.';
                           }
                           return null;
@@ -244,7 +200,6 @@ class _CreateTeamState extends State<CreateTeam> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.0),
                       child: TextFormField(
-                        focusNode: _descriptionFocusNode,
                         maxLines: 5,
                         initialValue: teamBloc.currentEditTeam['description'],
                         decoration: InputDecoration(
@@ -262,9 +217,6 @@ class _CreateTeamState extends State<CreateTeam> {
                         keyboardType: TextInputType.text,
                         validator: (value) {
                           if (value.isEmpty) {
-                            if (_focusErr == null) {
-                              _focusErr = _descriptionFocusNode;
-                            }
                             return 'This field is required.';
                           }
                           return null;
@@ -317,7 +269,6 @@ class _CreateTeamState extends State<CreateTeam> {
                     Container(
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: Focus(
-                        focusNode: _assingedToFocusNode,
                         child: MultiSelectFormField(
                           border: boxBorder(),
                           fillColor: Colors.white,
@@ -330,11 +281,9 @@ class _CreateTeamState extends State<CreateTeam> {
                               textStyle: TextStyle(color: Colors.black)),
                           dialogTextStyle: GoogleFonts.robotoSlab(),
                           cancelButtonLabel: 'CANCEL',
-                          // required: true,
-                          hintWidget: Text(
-                            "Please choose one or more",
-                            style: GoogleFonts.robotoSlab(),
-                          ),
+                          hintWidget: Text("Please choose one or more",
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(color: Colors.grey))),
                           title: Text(
                             "Assigned To",
                             style: GoogleFonts.robotoSlab(),
@@ -343,9 +292,6 @@ class _CreateTeamState extends State<CreateTeam> {
                               teamBloc.currentEditTeam['assign_users'],
                           validator: (value) {
                             if (value.length == 0) {
-                              if (_focusErr == null) {
-                                _focusErr = _assingedToFocusNode;
-                              }
                               return 'This field is required.';
                             }
                             return null;

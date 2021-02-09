@@ -109,6 +109,7 @@ class _LeadsListState extends State<LeadsList> {
                   textStyle: TextStyle(color: Colors.red),
                   isDefaultAction: true,
                   onPressed: () async {
+                    Navigator.pop(context);
                     deleteLead(index, lead);
                   },
                   child: Text(
@@ -121,15 +122,17 @@ class _LeadsListState extends State<LeadsList> {
   }
 
   deleteLead(index, lead) async {
+    setState(() {
+      _isLoading = true;
+    });
     Map result = await leadBloc.deleteLead(lead);
+    setState(() {
+      _isLoading = false;
+    });
     if (result['error'] == false) {
       showToast(result['message']);
-      Navigator.pop(context);
-      // setState(() {
-      //   _leads.removeAt(index);
-      // });
     } else if (result['error'] == true) {
-      Navigator.pop(context);
+      showToast(result['message']);
     } else {
       showErrorMessage(context, 'Something went wrong', lead, index);
     }
