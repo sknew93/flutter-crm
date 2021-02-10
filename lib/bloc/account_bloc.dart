@@ -106,7 +106,7 @@ class AccountBloc {
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchAccounts();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -145,9 +145,9 @@ class AccountBloc {
         .editAccount(_copyCurrentEditAccount, _currentEditAccountId)
         .then((response) async {
       var res = json.decode(response.body);
-      if (res["errors"] == false) {
+      if (res["error"] == false) {
         await fetchAccounts();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -162,7 +162,7 @@ class AccountBloc {
     await CrmService().deleteAccount(account.id).then((response) async {
       var res = (json.decode(response.body));
       await fetchAccounts();
-      dashboardBloc.fetchDashboardDetails();
+      await dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteAccount Error >> $onError");

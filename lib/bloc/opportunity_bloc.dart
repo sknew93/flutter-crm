@@ -141,7 +141,7 @@ class OpportunityBloc {
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -210,7 +210,7 @@ class OpportunityBloc {
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -227,7 +227,7 @@ class OpportunityBloc {
         .then((response) async {
       var res = (json.decode(response.body));
       await fetchOpportunities();
-      dashboardBloc.fetchDashboardDetails();
+      await dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteOpportunity Error >> $onError");

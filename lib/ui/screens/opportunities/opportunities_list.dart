@@ -686,7 +686,7 @@ class _OpportunitiesListState extends State<OpportunitiesList> {
         ],
       ),
       floatingActionButton: SquareFloatingActionButton(
-          '/create_opportunity', "Add Opportunity", "Opportunities"),
+          '/create_opportunity', "Opportunity", "Opportunities"),
       bottomNavigationBar: BottomNavigationBarWidget(),
     );
   }

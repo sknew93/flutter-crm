@@ -119,7 +119,7 @@ class ContactBloc {
 
       if (res['error'] == false) {
         await fetchContacts();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -164,7 +164,7 @@ class ContactBloc {
 
       if (res['error'] == false) {
         await fetchContacts();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       _result = res;
     }).catchError((onError) {
@@ -179,7 +179,7 @@ class ContactBloc {
     await CrmService().deleteContact(contact.id).then((response) async {
       var res = (json.decode(response.body));
       await fetchContacts();
-      dashboardBloc.fetchDashboardDetails();
+      await dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteContact Error >> $onError");

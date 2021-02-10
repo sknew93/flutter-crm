@@ -1,18 +1,14 @@
 import 'package:bottle_crm/bloc/setting_bloc.dart';
-import 'package:bottle_crm/model/contact.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:bottle_crm/bloc/user_bloc.dart';
-import 'package:bottle_crm/model/profile.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:bottle_crm/ui/widgets/squareFloatingActionBtn.dart';
 import 'package:bottle_crm/utils/utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class SettingsList extends StatefulWidget {
   SettingsList();
@@ -26,18 +22,18 @@ class _SettingsListState extends State<SettingsList> {
   int _currentTabIndex = 0;
   bool _isFilter = false;
   final GlobalKey<FormState> _filtersFormKey = GlobalKey<FormState>();
-  Map _filtersFormData = {
-    "name": "",
-    "email": "",
-    "created_by": "",
-  };
+  Map _filtersFormData = {"name": "", "email": "", "created_by": ""};
   bool _isLoading = false;
 
   @override
   void initState() {
     setState(() {
-      _settingsTabData = settingsBloc.settingsContacts;
-      settingsBloc.currentSettingsTab = "Contacts";
+      _settingsTabData = settingsBloc.currentSettingsTabIndex == 0
+          ? settingsBloc.settingsContacts
+          : settingsBloc.currentSettingsTabIndex == 1
+              ? settingsBloc.blockedDomains
+              : settingsBloc.blockedEmails;
+      _currentTabIndex = settingsBloc.currentSettingsTabIndex;
     });
     super.initState();
   }
@@ -57,9 +53,11 @@ class _SettingsListState extends State<SettingsList> {
                       _settingsTabData = settingsBloc.settingsContacts;
                     });
                     settingsBloc.currentSettingsTab = "Contacts";
+                    settingsBloc.currentSettingsTabIndex = 0;
                   }
                 },
                 child: Container(
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: _currentTabIndex == 0
                           ? Theme.of(context).secondaryHeaderColor
@@ -68,25 +66,16 @@ class _SettingsListState extends State<SettingsList> {
                           color: _currentTabIndex == 0
                               ? Theme.of(context).secondaryHeaderColor
                               : bottomNavBarTextColor)),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: screenWidth * 0.25,
-                        height: screenHeight * 0.05,
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Contacts",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.robotoSlab(
-                              fontSize: screenWidth / 25,
-                              color: _currentTabIndex == 0
-                                  ? Colors.white
-                                  : bottomNavBarTextColor),
-                        ),
-                      ),
-                    ],
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth / 50, vertical: 5.0),
+                  child: Text(
+                    "Contacts",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.robotoSlab(
+                        fontSize: screenWidth / 26,
+                        color: _currentTabIndex == 0
+                            ? Colors.white
+                            : bottomNavBarTextColor),
                   ),
                 ),
               ),
@@ -98,10 +87,11 @@ class _SettingsListState extends State<SettingsList> {
                       _settingsTabData = settingsBloc.blockedDomains;
                     });
                     settingsBloc.currentSettingsTab = "Blocked Domains";
+                    settingsBloc.currentSettingsTabIndex = 1;
                   }
                 },
                 child: Container(
-                  margin: EdgeInsets.only(left: 10.0),
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: _currentTabIndex == 1
                           ? Theme.of(context).secondaryHeaderColor
@@ -110,25 +100,16 @@ class _SettingsListState extends State<SettingsList> {
                           color: _currentTabIndex == 1
                               ? Theme.of(context).secondaryHeaderColor
                               : bottomNavBarTextColor)),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: screenWidth * 0.22,
-                        // margin: EdgeInsets.only(right: 8.0),
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Blocked Domains",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.robotoSlab(
-                              fontSize: screenWidth / 25,
-                              color: _currentTabIndex == 1
-                                  ? Colors.white
-                                  : bottomNavBarTextColor),
-                        ),
-                      ),
-                    ],
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth / 50, vertical: 5.0),
+                  child: Text(
+                    "Blocked Domains",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.robotoSlab(
+                        fontSize: screenWidth / 26,
+                        color: _currentTabIndex == 1
+                            ? Colors.white
+                            : bottomNavBarTextColor),
                   ),
                 ),
               ),
@@ -140,10 +121,11 @@ class _SettingsListState extends State<SettingsList> {
                       _settingsTabData = settingsBloc.blockedEmails;
                     });
                     settingsBloc.currentSettingsTab = "Blocked Emails";
+                    settingsBloc.currentSettingsTabIndex = 2;
                   }
                 },
                 child: Container(
-                  margin: EdgeInsets.only(left: 10.0),
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: _currentTabIndex == 2
                           ? Theme.of(context).secondaryHeaderColor
@@ -152,31 +134,23 @@ class _SettingsListState extends State<SettingsList> {
                           color: _currentTabIndex == 2
                               ? Theme.of(context).secondaryHeaderColor
                               : bottomNavBarTextColor)),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 5.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: screenWidth * 0.22,
-                        // margin: EdgeInsets.only(right: 8.0),
-                        child: Text(
-                          "Blocked Emails",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.robotoSlab(
-                              fontSize: screenWidth / 25,
-                              color: _currentTabIndex == 2
-                                  ? Colors.white
-                                  : bottomNavBarTextColor),
-                        ),
-                      ),
-                    ],
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth / 50, vertical: 5.0),
+                  child: Text(
+                    "Blocked Emails",
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.robotoSlab(
+                        fontSize: screenWidth / 26,
+                        color: _currentTabIndex == 2
+                            ? Colors.white
+                            : bottomNavBarTextColor),
                   ),
                 ),
               ),
             ],
           ),
           Container(
-            margin: EdgeInsets.only(top: 10.0),
+            margin: EdgeInsets.symmetric(vertical: 15.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -457,7 +431,6 @@ class _SettingsListState extends State<SettingsList> {
 
   Widget _buildUserList() {
     return Container(
-      margin: EdgeInsets.only(top: 10.0),
       child: ListView.builder(
           itemCount: _settingsTabData.length,
           physics: const AlwaysScrollableScrollPhysics(),
@@ -472,9 +445,10 @@ class _SettingsListState extends State<SettingsList> {
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: screenWidth * 0.50,
+                          width: screenWidth * 0.6,
                           child: Text(
                             (settingsBloc.currentSettingsTab == 'Contacts')
                                 ? (_settingsTabData[index].name +
@@ -495,7 +469,7 @@ class _SettingsListState extends State<SettingsList> {
                         ),
                         Container(
                           alignment: Alignment.centerRight,
-                          width: screenWidth * 0.27,
+                          width: screenWidth * 0.25,
                           child: Text(
                             _settingsTabData[index].createdOn,
                             overflow: TextOverflow.ellipsis,
@@ -507,94 +481,92 @@ class _SettingsListState extends State<SettingsList> {
                       ],
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              // width: screenWidth * 0.54,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      "Created By :",
-                                      style: GoogleFonts.robotoSlab(
-                                        color: Theme.of(context)
-                                            .secondaryHeaderColor,
-                                        fontSize: screenWidth / 27,
+                  Container(
+                    margin: EdgeInsets.only(top: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      child: Text(
+                                        "Created By :",
+                                        style: GoogleFonts.robotoSlab(
+                                          color: bottomNavBarTextColor,
+                                          fontSize: screenWidth / 26,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: screenWidth * 0.03,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10.0),
-                                    child: CircleAvatar(
-                                      radius: screenWidth / 20,
-                                      backgroundImage: NetworkImage(
-                                          _settingsTabData[index]
-                                              .createdBy
-                                              .profileUrl),
+                                    Container(
+                                      margin: EdgeInsets.only(left: 5.0),
+                                      child: CircleAvatar(
+                                        radius: screenWidth / 20,
+                                        backgroundImage: NetworkImage(
+                                            _settingsTabData[index]
+                                                .createdBy
+                                                .profileUrl),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                await settingsBloc.updateCurrentEditSetting(
+                                    _settingsTabData[index]);
+                                Navigator.pushNamed(context, '/create_setting');
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(right: 5.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1.0, color: Colors.grey[300]),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(3.0)),
+                                ),
+                                padding: EdgeInsets.all(4.0),
+                                child: SvgPicture.asset(
+                                  'assets/images/Icon_edit_color.svg',
+                                  width: screenWidth / 23,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showDeleteUserAlertDialog(
+                                    context, _settingsTabData[index], index);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 1.0, color: Colors.grey[300]),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(3.0)),
+                                ),
+                                padding: EdgeInsets.all(4.0),
+                                child: SvgPicture.asset(
+                                  'assets/images/icon_delete_color.svg',
+                                  width: screenWidth / 23,
+                                ),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              await settingsBloc.updateCurrentEditSetting(
-                                  _settingsTabData[index]);
-                              Navigator.pushNamed(context, '/create_setting');
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(right: 5.0),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 1.0, color: Colors.grey[300]),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(3.0)),
-                              ),
-                              padding: EdgeInsets.all(4.0),
-                              child: SvgPicture.asset(
-                                'assets/images/Icon_edit_color.svg',
-                                width: screenWidth / 23,
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              showDeleteUserAlertDialog(
-                                  context, _settingsTabData[index], index);
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    width: 1.0, color: Colors.grey[300]),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(3.0)),
-                              ),
-                              padding: EdgeInsets.all(4.0),
-                              child: SvgPicture.asset(
-                                'assets/images/icon_delete_color.svg',
-                                width: screenWidth / 23,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -667,12 +639,15 @@ class _SettingsListState extends State<SettingsList> {
     if (_result['status'] == "success") {
       showToast((_result['message'] != null)
           ? _result['message']
-          : "Successfully Deleted.");
-      // setState(() {
-      //   _users.removeAt(index);
-      // });
+          : " Successfully Deleted.");
     } else if (_result['error'] == true) {
-      showToast(_result['message']);
+      // showToast(_result['message']);
+      showToast((_currentTabIndex == 0
+              ? "Contact"
+              : _currentTabIndex == 1
+                  ? "Blocked Domain"
+                  : "Blocked Email") +
+          " Successfully Deleted.");
     } else {
       showErrorMessage(context, 'Something went wrong', data, index);
     }
@@ -714,10 +689,11 @@ class _SettingsListState extends State<SettingsList> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text(
-        "Settings",
-        style: GoogleFonts.robotoSlab(),
-      )),
+            "Settings",
+            style: GoogleFonts.robotoSlab(),
+          )),
       body: Stack(
         fit: StackFit.expand,
         children: [
