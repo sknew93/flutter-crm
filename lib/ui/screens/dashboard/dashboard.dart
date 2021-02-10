@@ -1,9 +1,5 @@
-import 'package:bottle_crm/bloc/setting_bloc.dart';
-import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:bottle_crm/bloc/dashboard_bloc.dart';
-import 'package:bottle_crm/bloc/document_bloc.dart';
-import 'package:bottle_crm/bloc/user_bloc.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
 import 'package:bottle_crm/ui/widgets/dashboard_count_card.dart';
 import 'package:bottle_crm/ui/widgets/recent_card_widget.dart';
@@ -21,18 +17,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
-    loadAdditonalData();
-    // dashboardBloc.fetchDashboardDetails();
     super.initState();
-  }
-
-  loadAdditonalData() async {
-    await userBloc.fetchUsers();
-    await documentBLoc.fetchDocuments();
-    await teamBloc.fetchTeams();
-    await settingsBloc.fetchSettingsContacts();
-    await settingsBloc.fetchBlockedDomains();
-    await settingsBloc.fetchBlockedEmails();
   }
 
   OutlineInputBorder boxBorder(Color color) {

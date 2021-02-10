@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:bottle_crm/bloc/document_bloc.dart';
+import 'package:bottle_crm/bloc/setting_bloc.dart';
 import 'package:bottle_crm/bloc/task_bloc.dart';
+import 'package:bottle_crm/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -95,4 +98,9 @@ fetchRequiredData() async {
   await teamBloc.fetchTeams();
   await opportunityBloc.fetchOpportunities();
   await taskBloc.fetchTasks();
+  await userBloc.fetchUsers();
+  await documentBLoc.fetchDocuments();
+  await settingsBloc.fetchSettingsContacts();
+  await settingsBloc.fetchBlockedDomains();
+  await settingsBloc.fetchBlockedEmails();
 }

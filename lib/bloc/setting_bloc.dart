@@ -5,7 +5,6 @@ import 'package:bottle_crm/model/domain.dart';
 import 'package:bottle_crm/model/email.dart';
 import 'package:bottle_crm/model/profile.dart';
 import 'package:bottle_crm/services/crm_services.dart';
-import 'package:bottle_crm/ui/screens/authentication/sub_domain.dart';
 import 'package:intl/intl.dart';
 
 class SettingsBloc {
