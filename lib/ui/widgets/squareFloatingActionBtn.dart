@@ -1,3 +1,4 @@
+import 'package:bottle_crm/bloc/case_bloc.dart';
 import 'package:bottle_crm/bloc/opportunity_bloc.dart';
 import 'package:bottle_crm/bloc/setting_bloc.dart';
 import 'package:bottle_crm/bloc/task_bloc.dart';
@@ -76,6 +77,7 @@ class SquareFloatingActionButton extends StatelessWidget {
           teamBloc.cancelCurrentEditTeam();
           taskBloc.cancelCurrentEditTask();
           settingsBloc.resetValues();
+          caseBloc.cancelCurrentEditCase();
           Navigator.pushNamed(context, _route);
         }
       },

@@ -145,7 +145,7 @@ class OpportunityBloc {
       }
       result = res;
     }).catchError((onError) {
-      print("editOpportunity Error >> $onError");
+      print("createOpportunity Error >> $onError");
       result = {"status": "error", "message": "Something went wrong"};
     });
     return result;
@@ -339,6 +339,10 @@ class OpportunityBloc {
 
   List<String> get accountsObjforDropDown {
     return _accountsObjforDropDown;
+  }
+
+  List get accountsList {
+    return _accountsList;
   }
 
   List get stageObjforDropDown {

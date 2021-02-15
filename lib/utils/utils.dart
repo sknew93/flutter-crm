@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bottle_crm/bloc/case_bloc.dart';
 import 'package:bottle_crm/bloc/document_bloc.dart';
 import 'package:bottle_crm/bloc/setting_bloc.dart';
 import 'package:bottle_crm/bloc/task_bloc.dart';
@@ -103,4 +104,5 @@ fetchRequiredData() async {
   await settingsBloc.fetchSettingsContacts();
   await settingsBloc.fetchBlockedDomains();
   await settingsBloc.fetchBlockedEmails();
+  await caseBloc.fetchCases();
 }
