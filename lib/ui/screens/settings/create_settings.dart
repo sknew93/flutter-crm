@@ -387,14 +387,15 @@ class _CreateSettingState extends State<CreateSetting> {
                       },
                       child: Container(
                         alignment: Alignment.center,
-                        height: screenHeight * 0.06,
-                        width: screenWidth * 0.55,
+                        padding: EdgeInsets.all(10.0),
+                        // height: screenHeight * 0.06,
+                        // width: screenWidth * 0.55,
                         decoration: BoxDecoration(
                           color: submitButtonColor,
                           borderRadius: BorderRadius.all(Radius.circular(3.0)),
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               settingsBloc.currentEditSettingId == null
@@ -406,7 +407,10 @@ class _CreateSettingState extends State<CreateSetting> {
                                       fontWeight: FontWeight.w500,
                                       fontSize: screenWidth / 24)),
                             ),
-                            SvgPicture.asset('assets/images/arrow_forward.svg')
+                            Container(
+                                margin: EdgeInsets.only(left: 5.0),
+                                child: SvgPicture.asset(
+                                    'assets/images/arrow_forward.svg'))
                           ],
                         ),
                       ),

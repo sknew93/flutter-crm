@@ -141,11 +141,11 @@ class OpportunityBloc {
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
-      print("editOpportunity Error >> $onError");
+      print("createOpportunity Error >> $onError");
       result = {"status": "error", "message": "Something went wrong"};
     });
     return result;
@@ -210,7 +210,7 @@ class OpportunityBloc {
       var res = json.decode(response.body);
       if (res["error"] == false) {
         await fetchOpportunities();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -227,7 +227,7 @@ class OpportunityBloc {
         .then((response) async {
       var res = (json.decode(response.body));
       await fetchOpportunities();
-      dashboardBloc.fetchDashboardDetails();
+      await dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteOpportunity Error >> $onError");
@@ -339,6 +339,10 @@ class OpportunityBloc {
 
   List<String> get accountsObjforDropDown {
     return _accountsObjforDropDown;
+  }
+
+  List get accountsList {
+    return _accountsList;
   }
 
   List get stageObjforDropDown {

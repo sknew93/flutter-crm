@@ -1,4 +1,5 @@
 import 'package:bottle_crm/bloc/account_bloc.dart';
+import 'package:bottle_crm/bloc/case_bloc.dart';
 import 'package:bottle_crm/bloc/contact_bloc.dart';
 import 'package:bottle_crm/bloc/opportunity_bloc.dart';
 import 'package:bottle_crm/ui/widgets/bottom_navigation_bar.dart';
@@ -14,31 +15,48 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
-import 'package:textfield_tags/textfield_tags.dart';
-import 'package:number_inc_dec/number_inc_dec.dart';
 
-class CreateOpportunity extends StatefulWidget {
-  CreateOpportunity();
+class CreateCase extends StatefulWidget {
+  CreateCase();
   @override
-  State createState() => _CreateOpportunityState();
+  State createState() => _CreateCaseState();
 }
 
-class _CreateOpportunityState extends State<CreateOpportunity> {
-  final GlobalKey<FormState> _createOpportunityFormKey = GlobalKey<FormState>();
+class _CreateCaseState extends State<CreateCase> {
+  final GlobalKey<FormState> _createCaseFormKey = GlobalKey<FormState>();
   FilePickerResult result;
   PlatformFile file;
   Map _errors;
   bool _isLoading = false;
   FocusNode _focuserr;
   FocusNode _nameFocusNode = new FocusNode();
-  FocusNode _stageFocusNode = new FocusNode();
-  FocusNode _probabilityFocusNode = new FocusNode();
+  FocusNode _statusFocusNode = new FocusNode();
+  FocusNode _priorityFocusNode = new FocusNode();
 
   DateTime _selectedDate;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  _selectDate(BuildContext context) async {
+    _selectedDate = DateTime.now();
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(_selectedDate.year - 5),
+      lastDate: DateTime(_selectedDate.year + 5),
+    );
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        _selectedDate = picked;
+        caseBloc.currentEditCase['closed_on'] = DateFormat("dd-MM-yyyy")
+            .format(DateFormat("yyyy-MM-dd").parse(_selectedDate.toString()));
+      });
+    } else {
+      _selectedDate = null;
+    }
   }
 
   // @override
@@ -60,44 +78,24 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
     });
   }
 
-  _selectDate(BuildContext context) async {
-    _selectedDate = DateTime.now();
-    final DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(_selectedDate.year - 5),
-      lastDate: DateTime(_selectedDate.year + 5),
-    );
-    if (picked != null && picked != DateTime.now()) {
-      setState(() {
-        _selectedDate = picked;
-        opportunityBloc.currentEditOpportunity['closed_on'] =
-            DateFormat("dd-MM-yyyy").format(
-                DateFormat("yyyy-MM-dd").parse(_selectedDate.toString()));
-      });
-    } else {
-      _selectedDate = null;
-    }
-  }
-
   _saveForm() async {
     _focuserr = null;
     setState(() {
       _errors = null;
     });
-    if (!_createOpportunityFormKey.currentState.validate()) {
+    if (!_createCaseFormKey.currentState.validate()) {
       focusError();
       return;
     }
-    _createOpportunityFormKey.currentState.save();
+    _createCaseFormKey.currentState.save();
     Map _result;
     setState(() {
       _isLoading = true;
     });
-    if (opportunityBloc.currentEditOpportunityId != null) {
-      _result = await opportunityBloc.editOpportunity(file);
+    if (caseBloc.currentEditCaseId != null) {
+      _result = await caseBloc.editCase(file);
     } else {
-      _result = await opportunityBloc.createOpportunity(file);
+      _result = await caseBloc.createCase(file);
     }
     setState(() {
       _isLoading = false;
@@ -107,7 +105,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
         _errors = null;
       });
       showToast(_result['message']);
-      Navigator.pushReplacementNamed(context, '/opportunities');
+      Navigator.pushReplacementNamed(context, '/cases');
     } else if (_result['error'] == true) {
       setState(() {
         _errors = _result['errors'];
@@ -116,12 +114,12 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
         _focuserr = _nameFocusNode;
         focusError();
       }
-      if (_errors['stage'] != null && _focuserr == null) {
-        _focuserr = _stageFocusNode;
+      if (_errors['status'] != null && _focuserr == null) {
+        _focuserr = _statusFocusNode;
         focusError();
       }
-      if (_errors['probability'] != null && _focuserr == null) {
-        _focuserr = _probabilityFocusNode;
+      if (_errors['priority'] != null && _focuserr == null) {
+        _focuserr = _priorityFocusNode;
         focusError();
       }
     } else {
@@ -155,7 +153,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
   Widget _buildForm() {
     return Container(
       child: Form(
-        key: _createOpportunityFormKey,
+        key: _createCaseFormKey,
         child: Column(
           children: [
             Container(
@@ -186,8 +184,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
                       focusNode: _nameFocusNode,
-                      initialValue:
-                          opportunityBloc.currentEditOpportunity['name'],
+                      initialValue: caseBloc.currentEditCase['name'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -211,7 +208,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         return null;
                       },
                       onSaved: (value) {
-                        opportunityBloc.currentEditOpportunity['name'] = value;
+                        caseBloc.currentEditCase['name'] = value;
                       },
                     ),
                   ),
@@ -238,6 +235,238 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: RichText(
                         text: TextSpan(
+                          text: 'Status',
+                          style: GoogleFonts.robotoSlab(
+                              textStyle: TextStyle(
+                                  color: Theme.of(context).secondaryHeaderColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: screenWidth / 25)),
+                          children: <TextSpan>[
+                            TextSpan(
+                                text: '* ',
+                                style: GoogleFonts.robotoSlab(
+                                    textStyle: TextStyle(color: Colors.red))),
+                            TextSpan(
+                                text: ': ', style: GoogleFonts.robotoSlab())
+                          ],
+                        ),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: DropdownButtonFormField(
+                      focusNode: _statusFocusNode,
+                      decoration: InputDecoration(
+                          border: boxBorder(),
+                          focusedBorder: boxBorder(),
+                          contentPadding: EdgeInsets.all(12.0)),
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      hint: Text('Select Status'),
+                      value: (caseBloc.currentEditCase['status'] != "")
+                          ? caseBloc.currentEditCase['status']
+                          : null,
+                      onChanged: (value) {
+                        FocusScope.of(context).unfocus();
+                        caseBloc.currentEditCase['status'] = value;
+                      },
+                      items: caseBloc.statusObjForDropDown.map((location) {
+                        return DropdownMenuItem(
+                          child: new Text(location[1]),
+                          value: location[0],
+                        );
+                      }).toList(),
+                      validator: (value) {
+                        if (value == null) {
+                          if (_focuserr == null) {
+                            _focuserr = _statusFocusNode;
+                          }
+                          return 'This field is required.';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  _errors != null && _errors['status'] != null
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _errors['status'][0],
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.red[700], fontSize: 12.0)),
+                          ),
+                        )
+                      : Container(),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                            text: 'Priority :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          border: boxBorder(),
+                          contentPadding: EdgeInsets.all(12.0)),
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      hint: Text('Select Priority'),
+                      value: (caseBloc.currentEditCase['priority'] != "")
+                          ? caseBloc.currentEditCase['priority']
+                          : null,
+                      onChanged: (value) {
+                        FocusScope.of(context).unfocus();
+                        caseBloc.currentEditCase['priority'] = value;
+                      },
+                      items: caseBloc.priorityObjForDropDown.map((location) {
+                        return DropdownMenuItem(
+                          child: new Text(location[1]),
+                          value: location[0],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  _errors != null && _errors['priority'] != null
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _errors['priority'][0],
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.red[700], fontSize: 12.0)),
+                          ),
+                        )
+                      : Container(),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
+                            text: 'Type of Case :',
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color:
+                                        Theme.of(context).secondaryHeaderColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: screenWidth / 25))),
+                      )),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                          border: boxBorder(),
+                          contentPadding: EdgeInsets.all(12.0)),
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(color: Colors.black)),
+                      hint: Text('Select Case Type'),
+                      value: (caseBloc.currentEditCase['case_type'] != "")
+                          ? caseBloc.currentEditCase['case_type']
+                          : null,
+                      onChanged: (value) {
+                        FocusScope.of(context).unfocus();
+                        caseBloc.currentEditCase['case_type'] = value;
+                      },
+                      items: caseBloc.typeOfCaseObjForDropDown.map((location) {
+                        return DropdownMenuItem(
+                          child: new Text(location[1]),
+                          value: location[0],
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  _errors != null && _errors['case_type'] != null
+                      ? Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _errors['case_type'][0],
+                            style: GoogleFonts.robotoSlab(
+                                textStyle: TextStyle(
+                                    color: Colors.red[700], fontSize: 12.0)),
+                          ),
+                        )
+                      : Container(),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      'Close Date :',
+                      style: GoogleFonts.robotoSlab(
+                          textStyle: TextStyle(
+                              color: Theme.of(context).secondaryHeaderColor,
+                              fontWeight: FontWeight.w500,
+                              fontSize: screenWidth / 25)),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      _selectDate(context);
+                    },
+                    child: Container(
+                        height: 48.0,
+                        margin: EdgeInsets.only(bottom: 5.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            border: Border.all(color: Colors.grey, width: 1)),
+                        child: Center(
+                          child: (_selectedDate != null)
+                              ? Text(
+                                  DateFormat("dd-MM-yyyy").format(
+                                      DateFormat("yyyy-MM-dd")
+                                          .parse(_selectedDate.toString())),
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.robotoSlab(),
+                                )
+                              : (caseBloc.currentEditCaseId != null)
+                                  ? Text(caseBloc.currentEditCase['closed_on'],
+                                      style: GoogleFonts.robotoSlab())
+                                  : Text('Please choose a Due Date.',
+                                      style: GoogleFonts.robotoSlab(
+                                          color: Colors.grey)),
+                        )),
+                  ),
+                  Divider(color: Colors.grey)
+                ],
+              ),
+            ),
+
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.only(bottom: 5.0),
+                      child: RichText(
+                        text: TextSpan(
                             text: 'Account :',
                             style: GoogleFonts.robotoSlab(
                                 textStyle: TextStyle(
@@ -253,11 +482,9 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         mode: Mode.BOTTOM_SHEET,
                         items: opportunityBloc.accountsObjforDropDown,
                         onChanged: print,
-                        selectedItem: opportunityBloc
-                                    .currentEditOpportunity['account'] ==
-                                ""
+                        selectedItem: caseBloc.currentEditCase['account'] == ""
                             ? null
-                            : opportunityBloc.currentEditOpportunity['account'],
+                            : caseBloc.currentEditCase['account'],
                         hint: "Select Account",
                         showSearchBox: true,
                         showSelectedItem: false,
@@ -298,8 +525,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                           ),
                         ),
                         onSaved: (newValue) {
-                          opportunityBloc.currentEditOpportunity['account'] =
-                              newValue;
+                          caseBloc.currentEditCase['account'] = newValue;
                         },
                       )),
                   _errors != null && _errors['account'] != null
@@ -317,368 +543,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                 ],
               ),
             ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: Text(
-                        'Amount :',
-                        style: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(
-                                color: Theme.of(context).secondaryHeaderColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth / 25)),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: TextFormField(
-                      initialValue:
-                          opportunityBloc.currentEditOpportunity['amount'],
-                      controller: null,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(12.0),
-                          enabledBorder: boxBorder(),
-                          focusedErrorBorder: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          errorBorder: boxBorder(),
-                          fillColor: Colors.white,
-                          filled: true,
-                          hintText: 'Enter Amount',
-                          errorStyle: GoogleFonts.robotoSlab(),
-                          hintStyle: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(fontSize: 14.0))),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly
-                      ],
-                      onSaved: (value) {
-                        opportunityBloc.currentEditOpportunity['amount'] =
-                            value;
-                      },
-                    ),
-                  ),
-                  _errors != null && _errors['amount'] != null
-                      ? Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _errors['amount'][0],
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color: Colors.red[700], fontSize: 12.0)),
-                          ),
-                        )
-                      : Container(),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                            text: 'Currency :',
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).secondaryHeaderColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth / 25))),
-                      )),
-                  Container(
-                      margin: EdgeInsets.only(bottom: 10.0),
-                      height: 48.0,
-                      child: DropdownSearch<String>(
-                        mode: Mode.BOTTOM_SHEET,
-                        items: opportunityBloc.currencyObjforDropDown,
-                        onChanged: print,
-                        selectedItem: opportunityBloc
-                                    .currentEditOpportunity['currency'] ==
-                                ""
-                            ? null
-                            : opportunityBloc
-                                .currentEditOpportunity['currency'],
-                        hint: "Select Currency",
-                        showSearchBox: true,
-                        showSelectedItem: false,
-                        showClearButton: true,
-                        searchBoxDecoration: InputDecoration(
-                          border: boxBorder(),
-                          enabledBorder: boxBorder(),
-                          focusedErrorBorder: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          errorBorder: boxBorder(),
-                          contentPadding: EdgeInsets.all(12),
-                          hintText: "Search an Currency here.",
-                          hintStyle: GoogleFonts.robotoSlab(),
-                        ),
-                        popupTitle: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColorDark,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(20),
-                              topRight: Radius.circular(20),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Currency',
-                              style: GoogleFonts.robotoSlab(
-                                  textStyle: TextStyle(
-                                      fontSize: screenWidth / 20,
-                                      color: Colors.white)),
-                            ),
-                          ),
-                        ),
-                        popupShape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(24),
-                            topRight: Radius.circular(24),
-                          ),
-                        ),
-                        onSaved: (newValue) {
-                          opportunityBloc.currentEditOpportunity['currency'] =
-                              newValue;
-                        },
-                      )),
-                  _errors != null && _errors['currency'] != null
-                      ? Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _errors['currency'][0],
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color: Colors.red[700], fontSize: 12.0)),
-                          ),
-                        )
-                      : Container(),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Stage',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: DropdownButtonFormField(
-                      focusNode: _stageFocusNode,
-                      decoration: InputDecoration(
-                          border: boxBorder(),
-                          focusedBorder: boxBorder(),
-                          contentPadding: EdgeInsets.all(12.0)),
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(color: Colors.black)),
-                      hint: Text('Select Stage'),
-                      value: (opportunityBloc.currentEditOpportunity['stage'] !=
-                              "")
-                          ? opportunityBloc.currentEditOpportunity['stage']
-                          : null,
-                      onChanged: (value) {
-                        FocusScope.of(context).unfocus();
-                        opportunityBloc.currentEditOpportunity['stage'] = value;
-                      },
-                      items:
-                          opportunityBloc.stageObjforDropDown.map((location) {
-                        return DropdownMenuItem(
-                          child: new Text(location[1]),
-                          value: location[0],
-                        );
-                      }).toList(),
-                      validator: (value) {
-                        if (value == null) {
-                          if (_focuserr == null) {
-                            _focuserr = _stageFocusNode;
-                          }
-                          return 'This field is required.';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  _errors != null && _errors['stage'] != null
-                      ? Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _errors['stage'][0],
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color: Colors.red[700], fontSize: 12.0)),
-                          ),
-                        )
-                      : Container(),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                            text: 'Lead Source :',
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color:
-                                        Theme.of(context).secondaryHeaderColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: screenWidth / 25))),
-                      )),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                          border: boxBorder(),
-                          contentPadding: EdgeInsets.all(12.0)),
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(color: Colors.black)),
-                      hint: Text('Select Lead Source'),
-                      value: (opportunityBloc
-                                  .currentEditOpportunity['lead_source'] !=
-                              "")
-                          ? opportunityBloc
-                              .currentEditOpportunity['lead_source']
-                          : null,
-                      onChanged: (value) {
-                        FocusScope.of(context).unfocus();
-                        opportunityBloc.currentEditOpportunity['lead_source'] =
-                            value;
-                      },
-                      items: opportunityBloc.leadSourceObjforDropDown
-                          .map((location) {
-                        return DropdownMenuItem(
-                          child: new Text(location[1]),
-                          value: location[0],
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  _errors != null && _errors['lead_source'] != null
-                      ? Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _errors['lead_source'][0],
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color: Colors.red[700], fontSize: 12.0)),
-                          ),
-                        )
-                      : Container(),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Probability',
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(
-                                  color: Theme.of(context).secondaryHeaderColor,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: screenWidth / 25)),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: '* ',
-                                style: GoogleFonts.robotoSlab(
-                                    textStyle: TextStyle(color: Colors.red))),
-                            TextSpan(
-                                text: ': ', style: GoogleFonts.robotoSlab())
-                          ],
-                        ),
-                      )),
-                  Focus(
-                    autofocus: true,
-                    focusNode: _probabilityFocusNode,
-                    child: NumberInputWithIncrementDecrement(
-                      controller: TextEditingController(),
-                      initialValue:
-                          opportunityBloc.currentEditOpportunity['probability'],
-                      widgetContainerDecoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 1,
-                          )),
-                      numberFieldDecoration: InputDecoration(
-                          border: null,
-                          hintText: 'Input value between 1 and 100',
-                          labelStyle: null),
-                      onDecrement: (value) {
-                        opportunityBloc.currentEditOpportunity['probability'] -=
-                            1;
-                      },
-                      onIncrement: (value) {
-                        opportunityBloc.currentEditOpportunity['probability'] +=
-                            1;
-                      },
-                      onSubmitted: (value) {
-                        opportunityBloc.currentEditOpportunity['probability'] =
-                            value;
-                      },
-                      min: 0,
-                      max: 100,
-                      validator: (value) {
-                        if (int.parse(value) == 0) {
-                          if (_focuserr == null) {
-                            _focuserr = _probabilityFocusNode;
-                          }
-                          return 'This field is required and needs to be greater than 0.';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  _errors != null && _errors['probability'] != null
-                      ? Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            _errors['probability'][0],
-                            style: GoogleFonts.robotoSlab(
-                                textStyle: TextStyle(
-                                    color: Colors.red[700], fontSize: 12.0)),
-                          ),
-                        )
-                      : Container(),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
+
             Container(
               child: Column(
                 children: [
@@ -717,14 +582,12 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         "Teams",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue:
-                          opportunityBloc.currentEditOpportunity['teams'],
+                      initialValue: caseBloc.currentEditCase['teams'],
                       onSaved: (value) {
                         if (value == null) {
-                          opportunityBloc.currentEditOpportunity['teams'] = [];
+                          caseBloc.currentEditCase['teams'] = [];
                         } else {
-                          opportunityBloc.currentEditOpportunity['teams'] =
-                              value;
+                          caseBloc.currentEditCase['teams'] = value;
                         }
                       },
                     ),
@@ -733,60 +596,6 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                 ],
               ),
             ),
-
-            // Users MultiSelectDropDown Field. <disabled> - needs data
-            // Container(
-            //   child: Column(
-            //     children: [
-            //       Container(
-            //         alignment: Alignment.centerLeft,
-            //         margin: EdgeInsets.only(bottom: 5.0),
-            //         child: Text(
-            //           'Users :',
-            //           style: GoogleFonts.robotoSlab(
-            //               textStyle: TextStyle(
-            //                   color: Theme.of(context).secondaryHeaderColor,
-            //                   fontWeight: FontWeight.w500,
-            //                   fontSize: screenWidth / 25)),
-            //         ),
-            //       ),
-            //       Container(
-            //         margin: EdgeInsets.only(bottom: 5.0),
-            //         child: MultiSelectFormField(
-            //           border: boxBorder(),
-            //           enabled: false,
-            //           fillColor: Colors.white,
-            //           autovalidate: false,
-            //           dataSource: [
-            //             {'name': '', 'id': ''}
-            //           ],
-            //           textField: 'name',
-            //           valueField: 'id',
-            //           okButtonLabel: 'OK',
-            //           chipLabelStyle: GoogleFonts.robotoSlab(
-            //               textStyle: TextStyle(color: Colors.black)),
-            //           dialogTextStyle: GoogleFonts.robotoSlab(),
-            //           cancelButtonLabel: 'CANCEL',
-            //           hintWidget: Text(
-            //             "Please choose one or more",
-            //             style: GoogleFonts.robotoSlab(
-            //                 textStyle: TextStyle(color: Colors.grey)),
-            //           ),
-            //           title: Text(
-            //             "Users",
-            //             style: GoogleFonts.robotoSlab(),
-            //           ),
-            //           // initialValue: accountBloc.currentEditAccount['users'],
-            //           onSaved: (value) {
-            //             // accountBloc.currentEditAccount['users'] = value;
-            //           },
-            //         ),
-            //       ),
-            //       Divider(color: Colors.grey)
-            //     ],
-            //   ),
-            // ),
-
             Container(
               child: Column(
                 children: [
@@ -825,15 +634,12 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         "Assigned To",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue:
-                          opportunityBloc.currentEditOpportunity['assigned_to'],
+                      initialValue: caseBloc.currentEditCase['assigned_to'],
                       onSaved: (value) {
                         if (value == null) {
-                          opportunityBloc
-                              .currentEditOpportunity['assigned_to'] = [];
+                          caseBloc.currentEditCase['assigned_to'] = [];
                         } else {
-                          opportunityBloc
-                              .currentEditOpportunity['assigned_to'] = value;
+                          caseBloc.currentEditCase['assigned_to'] = value;
                         }
                       },
                     ),
@@ -887,12 +693,10 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         "Contacts",
                         style: GoogleFonts.robotoSlab(),
                       ),
-                      initialValue:
-                          opportunityBloc.currentEditOpportunity['contacts'],
+                      initialValue: caseBloc.currentEditCase['contacts'],
                       onSaved: (value) {
                         if (value == null) return;
-                        opportunityBloc.currentEditOpportunity['contacts'] =
-                            value;
+                        caseBloc.currentEditCase['contacts'] = value;
                       },
                     ),
                   ),
@@ -900,113 +704,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                 ],
               ),
             ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: Text(
-                      'Due Date :',
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: screenWidth / 25)),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      _selectDate(context);
-                    },
-                    child: Container(
-                        height: 48.0,
-                        margin: EdgeInsets.only(bottom: 5.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            border: Border.all(color: Colors.grey, width: 1)),
-                        child: Center(
-                          child: (_selectedDate != null)
-                              ? Text(
-                                  DateFormat("dd-MM-yyyy").format(
-                                      DateFormat("yyyy-MM-dd")
-                                          .parse(_selectedDate.toString())),
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.robotoSlab(),
-                                )
-                              : (opportunityBloc.currentEditOpportunityId !=
-                                      null)
-                                  ? Text(
-                                      opportunityBloc
-                                          .currentEditOpportunity['closed_on'],
-                                      style: GoogleFonts.robotoSlab())
-                                  : Text('Please choose a Due Date.',
-                                      style: GoogleFonts.robotoSlab(
-                                          color: Colors.grey)),
-                        )),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
-            Container(
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: Text(
-                      'Tags :',
-                      style: GoogleFonts.robotoSlab(
-                          textStyle: TextStyle(
-                              color: Theme.of(context).secondaryHeaderColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: screenWidth / 25)),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 5.0),
-                    child: TextFieldTags(
-                      initialTags:
-                          opportunityBloc.currentEditOpportunity['tags'],
-                      textFieldStyler: TextFieldStyler(
-                        contentPadding: EdgeInsets.all(12.0),
-                        textFieldBorder: boxBorder(),
-                        textFieldFocusedBorder: boxBorder(),
-                        hintText: 'Enter Tags',
-                        hintStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(fontSize: 14.0)),
-                        helperText: null,
-                      ),
-                      tagsStyler: TagsStyler(
-                          tagTextPadding: EdgeInsets.symmetric(horizontal: 5.0),
-                          tagTextStyle: GoogleFonts.robotoSlab(),
-                          tagDecoration: BoxDecoration(
-                            color: Colors.lightGreen[300],
-                            borderRadius: BorderRadius.circular(0.0),
-                          ),
-                          tagCancelIcon: Icon(Icons.cancel,
-                              size: 18.0, color: Colors.green[900]),
-                          tagPadding: const EdgeInsets.all(6.0)),
-                      onTag: (tag) {
-                        setState(() {
-                          opportunityBloc.currentEditOpportunity['tags']
-                              .add(tag);
-                        });
-                      },
-                      onDelete: (tag) {
-                        setState(() {
-                          opportunityBloc.currentEditOpportunity['tags']
-                              .remove(tag);
-                        });
-                      },
-                    ),
-                  ),
-                  Divider(color: Colors.grey)
-                ],
-              ),
-            ),
+
             Container(
               child: Column(
                 children: [
@@ -1027,8 +725,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                     margin: EdgeInsets.only(bottom: 10.0),
                     child: TextFormField(
                       maxLines: 5,
-                      initialValue:
-                          opportunityBloc.currentEditOpportunity['description'],
+                      initialValue: caseBloc.currentEditCase['description'],
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           enabledBorder: boxBorder(),
@@ -1043,8 +740,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                               textStyle: TextStyle(fontSize: 14.0))),
                       keyboardType: TextInputType.text,
                       onSaved: (value) {
-                        opportunityBloc.currentEditOpportunity['description'] =
-                            value;
+                        caseBloc.currentEditCase['description'] = value;
                       },
                     ),
                   ),
@@ -1102,16 +798,12 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                       ),
                     ),
                   ),
-                  (opportunityBloc.currentEditOpportunityId != null)
+                  (caseBloc.currentEditCaseId != null)
                       ? Container(
-                          child: (opportunityBloc
-                                      .currentEditOpportunity[
-                                          'opportunity_attachment']
-                                      .length >
-                                  0)
+                          child: (caseBloc.currentEditCase['case_attachment'] !=
+                                  null)
                               ? Text(
-                                  opportunityBloc.currentEditOpportunity[
-                                          'opportunity_attachment']
+                                  caseBloc.currentEditCase['case_attachment']
                                       .split('/')
                                       .last,
                                   style: GoogleFonts.robotoSlab(),
@@ -1152,7 +844,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            opportunityBloc.currentEditOpportunityId == null
+                            caseBloc.currentEditCaseId == null
                                 ? 'Create Opportunity'
                                 : 'Edit Opportunity',
                             style: GoogleFonts.robotoSlab(
@@ -1169,7 +861,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
-                      opportunityBloc.cancelCurrentEditOpportunity();
+                      caseBloc.cancelCurrentEditCase();
                     },
                     child: Container(
                       child: Text(
@@ -1207,7 +899,7 @@ class _CreateOpportunityState extends State<CreateOpportunity> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Text(
-            "Create Opportunity",
+            "Create Case",
             style: GoogleFonts.robotoSlab(),
           ),
         ),

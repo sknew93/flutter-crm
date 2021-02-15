@@ -286,6 +286,17 @@ class _CreateTaskState extends State<CreateTask> {
                             );
                           }).toList(),
                         )),
+                    _errors != null && _errors['status'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['status'][0],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -348,6 +359,17 @@ class _CreateTaskState extends State<CreateTask> {
                             );
                           }).toList(),
                         )),
+                    _errors != null && _errors['priority'] != null
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              _errors['priority'][0],
+                              style: GoogleFonts.robotoSlab(
+                                  textStyle: TextStyle(
+                                      color: Colors.red[700], fontSize: 12.0)),
+                            ),
+                          )
+                        : Container(),
                     Divider(color: Colors.grey)
                   ],
                 ),
@@ -550,7 +572,7 @@ class _CreateTaskState extends State<CreateTask> {
                       alignment: Alignment.centerLeft,
                       margin: EdgeInsets.only(bottom: 5.0),
                       child: Text(
-                        'Tasks :',
+                        'Teams :',
                         style: GoogleFonts.robotoSlab(
                             textStyle: TextStyle(
                                 color: Theme.of(context).secondaryHeaderColor,
@@ -597,57 +619,57 @@ class _CreateTaskState extends State<CreateTask> {
               ),
 
               // Users MultiSelectDropDown Field. <disabled> - needs data
-              Container(
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: Text(
-                        'Users :',
-                        style: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(
-                                color: Theme.of(context).secondaryHeaderColor,
-                                fontWeight: FontWeight.w500,
-                                fontSize: screenWidth / 25)),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(bottom: 5.0),
-                      child: MultiSelectFormField(
-                        border: boxBorder(),
-                        enabled: false,
-                        fillColor: Colors.white,
-                        autovalidate: false,
-                        dataSource: [
-                          {'name': '', 'id': ''}
-                        ],
-                        textField: 'name',
-                        valueField: 'id',
-                        okButtonLabel: 'OK',
-                        chipLabelStyle: GoogleFonts.robotoSlab(
-                            textStyle: TextStyle(color: Colors.black)),
-                        dialogTextStyle: GoogleFonts.robotoSlab(),
-                        cancelButtonLabel: 'CANCEL',
-                        hintWidget: Text(
-                          "Please choose one or more",
-                          style: GoogleFonts.robotoSlab(
-                              textStyle: TextStyle(color: Colors.grey)),
-                        ),
-                        title: Text(
-                          "Users",
-                          style: GoogleFonts.robotoSlab(),
-                        ),
-                        // initialValue: accountBloc.currentEditAccount['users'],
-                        onSaved: (value) {
-                          // accountBloc.currentEditAccount['users'] = value;
-                        },
-                      ),
-                    ),
-                    Divider(color: Colors.grey)
-                  ],
-                ),
-              ),
+              // Container(
+              //   child: Column(
+              //     children: [
+              //       Container(
+              //         alignment: Alignment.centerLeft,
+              //         margin: EdgeInsets.only(bottom: 5.0),
+              //         child: Text(
+              //           'Users :',
+              //           style: GoogleFonts.robotoSlab(
+              //               textStyle: TextStyle(
+              //                   color: Theme.of(context).secondaryHeaderColor,
+              //                   fontWeight: FontWeight.w500,
+              //                   fontSize: screenWidth / 25)),
+              //         ),
+              //       ),
+              //       Container(
+              //         margin: EdgeInsets.only(bottom: 5.0),
+              //         child: MultiSelectFormField(
+              //           border: boxBorder(),
+              //           enabled: false,
+              //           fillColor: Colors.white,
+              //           autovalidate: false,
+              //           dataSource: [
+              //             {'name': '', 'id': ''}
+              //           ],
+              //           textField: 'name',
+              //           valueField: 'id',
+              //           okButtonLabel: 'OK',
+              //           chipLabelStyle: GoogleFonts.robotoSlab(
+              //               textStyle: TextStyle(color: Colors.black)),
+              //           dialogTextStyle: GoogleFonts.robotoSlab(),
+              //           cancelButtonLabel: 'CANCEL',
+              //           hintWidget: Text(
+              //             "Please choose one or more",
+              //             style: GoogleFonts.robotoSlab(
+              //                 textStyle: TextStyle(color: Colors.grey)),
+              //           ),
+              //           title: Text(
+              //             "Users",
+              //             style: GoogleFonts.robotoSlab(),
+              //           ),
+              //           // initialValue: accountBloc.currentEditAccount['users'],
+              //           onSaved: (value) {
+              //             // accountBloc.currentEditAccount['users'] = value;
+              //           },
+              //         ),
+              //       ),
+              //       Divider(color: Colors.grey)
+              //     ],
+              //   ),
+              // ),
 
               Container(
                 child: Column(

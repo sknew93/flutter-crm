@@ -6,7 +6,9 @@ import 'package:bottle_crm/ui/screens/authentication/forgot_password.dart';
 import 'package:bottle_crm/ui/screens/authentication/login.dart';
 import 'package:bottle_crm/ui/screens/authentication/profile_details.dart';
 import 'package:bottle_crm/ui/screens/authentication/register.dart';
-import 'package:bottle_crm/ui/screens/cases/cases_index.dart';
+import 'package:bottle_crm/ui/screens/cases/case_details.dart';
+import 'package:bottle_crm/ui/screens/cases/cases_list.dart';
+import 'package:bottle_crm/ui/screens/cases/create_case.dart';
 import 'package:bottle_crm/ui/screens/contacts/contact_create.dart';
 import 'package:bottle_crm/ui/screens/contacts/contact_details.dart';
 import 'package:bottle_crm/ui/screens/contacts/contacts_list.dart';
@@ -63,7 +65,9 @@ class MyApp extends StatelessWidget {
         '/account_list': (BuildContext context) => AccountsList(),
         '/account_details': (BuildContext context) => AccountDetails(),
         '/create_account': (BuildContext context) => CreateAccount(),
-        '/cases': (BuildContext context) => CasesScreen(),
+        '/cases': (BuildContext context) => CasesList(),
+        '/create_case': (BuildContext context) => CreateCase(),
+        '/case_details': (BuildContext context) => CaseDetails(),
         '/contacts': (BuildContext context) => ContactsList(),
         '/create_contact': (BuildContext context) => CreateContact(),
         '/contact_details': (BuildContext context) => ContactDetails(),

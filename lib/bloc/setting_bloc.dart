@@ -5,7 +5,7 @@ import 'package:bottle_crm/model/domain.dart';
 import 'package:bottle_crm/model/email.dart';
 import 'package:bottle_crm/model/profile.dart';
 import 'package:bottle_crm/services/crm_services.dart';
-import 'package:bottle_crm/ui/screens/authentication/sub_domain.dart';
+import 'package:intl/intl.dart';
 
 class SettingsBloc {
   Map _currentEditSetting = {
@@ -15,6 +15,7 @@ class SettingsBloc {
     'domain': ""
   };
   String _currentEditSettingId;
+  int _currentSettingsTabIndex = 0;
 
 //////////////// CONTACTS /////////////////////////
   List<List> _users = [];
@@ -34,16 +35,20 @@ class SettingsBloc {
         }
       });
     }
-    _settingsContacts.clear();
-    _usersObjForDropDown.clear();
-    _users.clear();
+
     await CrmService()
         .getSettingsContacts(queryParams: _copyFiltersData)
         .then((response) {
       var res = json.decode(response.body);
+      _settingsContacts.clear();
+      _usersObjForDropDown.clear();
+      _users.clear();
 
       res['contacts'].forEach((_contact) {
         Contact contact = Contact.fromJson(_contact);
+        if (_contact['created_on'] != null && _contact['created_on'] != "")
+          contact.createdOn = DateFormat("dd MMM, yyyy")
+              .format(DateFormat("yyyy-MM-dd").parse(_contact['created_on']));
         _settingsContacts.add(contact);
       });
       res['users'].forEach((_user) {
@@ -96,12 +101,12 @@ class SettingsBloc {
   Future fetchBlockedDomains({filtersData}) async {
     Map _copyFiltersData =
         filtersData != null ? new Map.from(filtersData) : null;
-    _blockedDomains.clear();
 
     await CrmService()
         .getBlockedDomains(queryParams: _copyFiltersData)
         .then((response) {
       var res = json.decode(response.body);
+      _blockedDomains.clear();
 
       res['blocked_domains'].forEach((_domain) {
         Domain domain = Domain.fromJson(_domain);
@@ -134,12 +139,12 @@ class SettingsBloc {
   Future fetchBlockedEmails({filtersData}) async {
     Map _copyFiltersData =
         filtersData != null ? new Map.from(filtersData) : null;
-    _blockedEmails.clear();
 
     await CrmService()
         .getBlockedEmails(queryParams: _copyFiltersData)
         .then((response) {
       var res = json.decode(response.body);
+      _blockedEmails.clear();
 
       res['blocked_emails'].forEach((_email) {
         Email email = Email.fromJson(_email);
@@ -168,6 +173,8 @@ class SettingsBloc {
   Future createSetting() async {
     Map _result;
     Map _copyOfCurrentEditSetting = Map.from(_currentEditSetting);
+    print(_currentEditSetting);
+    print(_currentSettingsTab);
     await CrmService()
         .createSetting(_copyOfCurrentEditSetting)
         .then((response) async {
@@ -199,6 +206,13 @@ class SettingsBloc {
     }
   }
 
+  resetValues() {
+    _currentEditSetting['name'] = "";
+    _currentEditSetting['last_name'] = "";
+    _currentEditSetting['email'] = "";
+    _currentEditSetting['domain'] = "";
+  }
+
   Future editSetting() async {
     Map _result;
     Map _copyOfCurrentEditSetting = Map.from(_currentEditSetting);
@@ -225,6 +239,14 @@ class SettingsBloc {
 
   String get currentEditSettingId {
     return _currentEditSettingId;
+  }
+
+  int get currentSettingsTabIndex {
+    return _currentSettingsTabIndex;
+  }
+
+  set currentSettingsTabIndex(currentSettingsTabIndex) {
+    _currentSettingsTabIndex = currentSettingsTabIndex;
   }
 }
 

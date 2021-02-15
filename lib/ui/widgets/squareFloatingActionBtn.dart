@@ -1,4 +1,6 @@
+import 'package:bottle_crm/bloc/case_bloc.dart';
 import 'package:bottle_crm/bloc/opportunity_bloc.dart';
+import 'package:bottle_crm/bloc/setting_bloc.dart';
 import 'package:bottle_crm/bloc/task_bloc.dart';
 import 'package:bottle_crm/bloc/team_bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,6 +76,8 @@ class SquareFloatingActionButton extends StatelessWidget {
           opportunityBloc.cancelCurrentEditOpportunity();
           teamBloc.cancelCurrentEditTeam();
           taskBloc.cancelCurrentEditTask();
+          settingsBloc.resetValues();
+          caseBloc.cancelCurrentEditCase();
           Navigator.pushNamed(context, _route);
         }
       },
@@ -97,6 +101,7 @@ class SquareFloatingActionButton extends StatelessWidget {
               width: screenWidth * 0.25,
               child: Text(
                 btnTitle,
+                textAlign: TextAlign.center,
                 style: GoogleFonts.robotoSlab(
                     textStyle: TextStyle(
                         color: Color.fromRGBO(234, 67, 53, 1),

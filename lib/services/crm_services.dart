@@ -575,4 +575,41 @@ class CrmService {
     return await networkService.put(baseUrl + '$_url/$id/',
         headers: getFormatedHeaders(_headers), body: data);
   }
+
+  ///////////////////// CASES-SERVICES ///////////////////////////////
+
+  Future<Response> getCases({queryParams}) async {
+    await updateHeaders();
+    String url;
+    if (queryParams != null) {
+      queryParams.removeWhere((key, value) => value == "");
+      queryParams.removeWhere((key, value) => value == null);
+      queryParams.removeWhere((key, value) => value == []);
+
+      String queryString =
+          Uri(queryParameters: getFormatedHeaders(queryParams)).query;
+      url = baseUrl + 'cases/' + '?' + queryString;
+    } else {
+      url = baseUrl + 'cases/';
+    }
+    return await networkService.get(url, headers: getFormatedHeaders(_headers));
+  }
+
+  Future<Response> createCase(data) async {
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    await updateHeaders();
+    return await networkService.post(baseUrl + 'cases/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
+
+  Future<Response> editCase(data, id, [PlatformFile file]) async {
+    await updateHeaders();
+    data.removeWhere((key, value) => value == "[]");
+    data.removeWhere((key, value) => value == "");
+    data.removeWhere((key, value) => value == null);
+    return await networkService.put(baseUrl + 'cases/$id/',
+        headers: getFormatedHeaders(_headers), body: data);
+  }
 }

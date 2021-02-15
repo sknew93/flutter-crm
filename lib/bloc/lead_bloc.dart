@@ -158,7 +158,7 @@ class LeadBloc {
       var res = json.decode(response.body);
       if (res['error'] == false) {
         await fetchLeads();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -193,7 +193,7 @@ class LeadBloc {
 
       if (res["error"] == false) {
         await fetchLeads();
-        dashboardBloc.fetchDashboardDetails();
+        await dashboardBloc.fetchDashboardDetails();
       }
       result = res;
     }).catchError((onError) {
@@ -208,7 +208,7 @@ class LeadBloc {
     await CrmService().deleteLead(lead.id).then((response) async {
       var res = (json.decode(response.body));
       await fetchLeads();
-      dashboardBloc.fetchDashboardDetails();
+      await dashboardBloc.fetchDashboardDetails();
       result = res;
     }).catchError((onError) {
       print("deleteLead Error >> $onError");

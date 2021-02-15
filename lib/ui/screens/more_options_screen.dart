@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:bottle_crm/bloc/setting_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -194,6 +195,10 @@ class _MoreOptionsState extends State<MoreOptions> {
                     if (_bottomOptionsList[index]['title'] == "Logout") {
                       showLogoutAlertDialog(context);
                     } else {
+                      if (_bottomOptionsList[index]['title'] == "Settings") {
+                        settingsBloc.currentSettingsTab = "Contacts";
+                        settingsBloc.currentSettingsTabIndex = 0;
+                      }
                       Navigator.pushNamed(
                           context, _bottomOptionsList[index]['route']);
                     }
